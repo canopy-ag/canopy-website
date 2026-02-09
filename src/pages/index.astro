@@ -1,0 +1,90 @@
+---
+import Layout from '../layouts/Layout.astro';
+---
+
+<Layout title="Canopy - Growing the Future of Agriculture">
+  <!-- Hero Section -->
+  <section class="py-20 px-4">
+    <div class="max-w-6xl mx-auto text-center">
+      <div class="flex justify-center mb-8">
+        <img src="/logo-full.svg" alt="Canopy" class="h-32" />
+      </div>
+      <h1 class="text-5xl md:text-6xl font-bold mb-6 text-white">
+        Growing the <span class="text-[#00D4FF]">Future</span> of Agriculture
+      </h1>
+      <p class="text-xl text-white/70 max-w-2xl mx-auto mb-10">
+        Canopy connects horticulture growers with technology to optimize operations, 
+        increase yields, and build sustainable farming practices.
+      </p>
+      <div class="flex gap-4 justify-center">
+        <a 
+          href="/blog" 
+          class="bg-[#00D4FF] text-[#0A1628] px-8 py-3 rounded-lg font-semibold hover:bg-[#0099CC] transition"
+        >
+          Read Our Blog
+        </a>
+        <a 
+          href="/about" 
+          class="border border-[#00D4FF] text-[#00D4FF] px-8 py-3 rounded-lg font-semibold hover:bg-[#00D4FF]/10 transition"
+        >
+          Learn More
+        </a>
+      </div>
+    </div>
+  </section>
+
+  <!-- Features Section -->
+  <section class="py-20 px-4 border-t border-white/10">
+    <div class="max-w-6xl mx-auto">
+      <h2 class="text-3xl font-bold text-center mb-16 text-[#00D4FF]">Why Canopy?</h2>
+      
+      <div class="grid md:grid-cols-3 gap-8">
+        <div class="p-6 rounded-xl bg-white/5 border border-white/10">
+          <div class="w-12 h-12 bg-[#00D4FF]/20 rounded-lg flex items-center justify-center mb-4">
+            <svg class="w-6 h-6 text-[#00D4FF]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z"/>
+            </svg>
+          </div>
+          <h3 class="text-xl font-semibold mb-2">Data-Driven Insights</h3>
+          <p class="text-white/70">Make informed decisions with real-time analytics and industry benchmarks.</p>
+        </div>
+
+        <div class="p-6 rounded-xl bg-white/5 border border-white/10">
+          <div class="w-12 h-12 bg-[#00D4FF]/20 rounded-lg flex items-center justify-center mb-4">
+            <svg class="w-6 h-6 text-[#00D4FF]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6V4m0 2a2 2 0 100 4m0-4a2 2 0 110 4m-6 8a2 2 0 100-4m0 4a2 2 0 110-4m0 4v2m0-6V4m6 6v10m6-2a2 2 0 100-4m0 4a2 2 0 110-4m0 4v2m0-6V4"/>
+            </svg>
+          </div>
+          <h3 class="text-xl font-semibold mb-2">Operations Management</h3>
+          <p class="text-white/70">Streamline your workflow from seed to sale with integrated tools.</p>
+        </div>
+
+        <div class="p-6 rounded-xl bg-white/5 border border-white/10">
+          <div class="w-12 h-12 bg-[#00D4FF]/20 rounded-lg flex items-center justify-center mb-4">
+            <svg class="w-6 h-6 text-[#00D4FF]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z"/>
+            </svg>
+          </div>
+          <h3 class="text-xl font-semibold mb-2">Grower Community</h3>
+          <p class="text-white/70">Connect with fellow growers and share best practices.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- CTA Section -->
+  <section class="py-20 px-4 border-t border-white/10">
+    <div class="max-w-4xl mx-auto text-center">
+      <h2 class="text-3xl font-bold mb-4 text-[#00D4FF]">Ready to grow with Canopy?</h2>
+      <p class="text-white/70 mb-8">
+        Join thousands of growers who are transforming their operations with data and technology.
+      </p>
+      <a 
+        href="/blog" 
+        class="inline-block bg-[#00D4FF] text-[#0A1628] px-8 py-3 rounded-lg font-semibold hover:bg-[#0099CC] transition"
+      >
+        Explore Our Insights
+      </a>
+    </div>
+  </section>
+</Layout>

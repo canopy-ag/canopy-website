@@ -1,0 +1,54 @@
+---
+import Layout from '../../layouts/Layout.astro';
+
+export async function getStaticPaths() {
+  const posts = await Astro.glob('../../content/posts/*.mdx');
+  return posts.map((post) => ({
+    params: { slug: post.file.split('/').pop().replace('.mdx', '') },
+    props: { post },
+  }));
+}
+
+const { post } = Astro.props;
+const { Content } = post;
+---
+
+<Layout title={`${post.frontmatter.title} - Canopy Blog`} description={post.frontmatter.description}>
+  <article class="max-w-3xl mx-auto px-4 py-12">
+    {post.frontmatter.heroImage && (
+      <img 
+        src={post.frontmatter.heroImage} 
+        alt={post.frontmatter.title}
+        class="w-full h-64 object-cover rounded-xl mb-8"
+      />
+    )}
+    
+    <header class="mb-8">
+      <h1 class="text-4xl font-bold mb-4 text-[#00D4FF]">{post.frontmatter.title}</h1>
+      <div class="flex items-center gap-4 text-white/60">
+        <time datetime={post.frontmatter.pubDate}>
+          {new Date(post.frontmatter.pubDate).toLocaleDateString('en-US', {
+            year: 'numeric',
+            month: 'long',
+            day: 'numeric',
+          })}
+        </time>
+        {post.frontmatter.tags && (
+          <div class="flex gap-2">
+            {post.frontmatter.tags.map((tag) => (
+              <span class="px-2 py-1 bg-[#00D4FF]/10 rounded text-[#00D4FF] text-sm">{tag}</span>
+            ))}
+          </div>
+        )}
+      </div>
+    </header>
+    
+    <div class="prose prose-lg max-w-none">
+      <Content />
+    </div>
+    
+    <div class="mt-12 pt-8 border-t border-white/10">
+      <a href="/blog" class="text-[#00D4FF] hover:text-[#0099CC] transition">← Back to blog</a>
+    </div>
+  </article>
+</Layout>

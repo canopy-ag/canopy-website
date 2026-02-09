@@ -1,0 +1,45 @@
+---
+interface Props {
+  title: string;
+  description?: string;
+}
+
+const { title, description = 'Canopy - Growing the future of agriculture' } = Astro.props;
+---
+
+<!DOCTYPE html>
+<html lang="en" class="dark">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+    <meta name="description" content={description} />
+    <title>{title}</title>
+    <link rel="stylesheet" href="/src/styles/global.css" />
+  </head>
+  <body class="bg-[#0A1628] text-white min-h-screen">
+    <nav class="border-b border-white/10">
+      <div class="max-w-6xl mx-auto px-4 py-4 flex items-center justify-between">
+        <a href="/" class="flex items-center gap-3">
+          <img src="/logo-icon.svg" alt="Canopy" class="w-10 h-10" />
+          <span class="text-xl font-bold text-[#00D4FF]">CANOPY</span>
+        </a>
+        <div class="flex gap-6">
+          <a href="/" class="hover:text-[#00D4FF] transition">Home</a>
+          <a href="/blog" class="hover:text-[#00D4FF] transition">Blog</a>
+          <a href="/about" class="hover:text-[#00D4FF] transition">About</a>
+        </div>
+      </div>
+    </nav>
+    
+    <main>
+      <slot />
+    </main>
+    
+    <footer class="border-t border-white/10 mt-20">
+      <div class="max-w-6xl mx-auto px-4 py-8 text-center text-white/60">
+        <p>&copy; {new Date().getFullYear()} Canopy. Growing the future of agriculture.</p>
+      </div>
+    </footer>
+  </body>
+</html>

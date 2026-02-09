@@ -1,0 +1,28 @@
+@import "tailwindcss";
+
+@theme {
+  --color-canopy-blue: #00D4FF;
+  --color-canopy-dark: #0A1628;
+  --color-canopy-blue-dark: #0099CC;
+}
+
+body {
+  font-family: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+}
+
+.prose {
+  color: white;
+}
+
+.prose h1, .prose h2, .prose h3, .prose h4 {
+  color: #00D4FF;
+}
+
+.prose a {
+  color: #00D4FF;
+  text-decoration: underline;
+}
+
+.prose a:hover {
+  color: #0099CC;
+}
