@@ -2,27 +2,177 @@
 
 @theme {
   --color-canopy-blue: #00D4FF;
-  --color-canopy-dark: #0A1628;
   --color-canopy-blue-dark: #0099CC;
+  --color-canopy-dark: #0A1628;
+  --color-canopy-darker: #070F1A;
+  --color-canopy-card: #111D2F;
 }
 
 body {
-  font-family: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+  font-family: 'Inter', system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+  background: linear-gradient(180deg, #0A1628 0%, #070F1A 100%);
+  min-height: 100vh;
 }
 
-.prose {
+/* Smooth scrolling */
+html {
+  scroll-behavior: smooth;
+}
+
+/* Custom selection color */
+::selection {
+  background: rgba(0, 212, 255, 0.3);
   color: white;
+}
+
+/* Glass effect for cards */
+.glass {
+  background: rgba(17, 29, 47, 0.6);
+  backdrop-filter: blur(12px);
+  border: 1px solid rgba(0, 212, 255, 0.1);
+}
+
+.glass:hover {
+  border-color: rgba(0, 212, 255, 0.3);
+}
+
+/* Glow effect */
+.glow {
+  box-shadow: 0 0 40px rgba(0, 212, 255, 0.15);
+}
+
+.glow-text {
+  text-shadow: 0 0 40px rgba(0, 212, 255, 0.5);
+}
+
+/* Prose styles for blog posts */
+.prose {
+  color: rgba(255, 255, 255, 0.85);
+  line-height: 1.8;
 }
 
 .prose h1, .prose h2, .prose h3, .prose h4 {
   color: #00D4FF;
+  font-weight: 600;
+  margin-top: 2em;
+  margin-bottom: 0.8em;
+}
+
+.prose h1 {
+  font-size: 2.5em;
+  margin-top: 0;
+}
+
+.prose h2 {
+  font-size: 1.8em;
+  border-bottom: 1px solid rgba(0, 212, 255, 0.2);
+  padding-bottom: 0.3em;
+}
+
+.prose p {
+  margin-bottom: 1.2em;
 }
 
 .prose a {
   color: #00D4FF;
-  text-decoration: underline;
+  text-decoration: none;
+  border-bottom: 1px solid rgba(0, 212, 255, 0.3);
+  transition: all 0.2s;
 }
 
 .prose a:hover {
   color: #0099CC;
+  border-bottom-color: #00D4FF;
+}
+
+.prose ul, .prose ol {
+  margin-bottom: 1.2em;
+  padding-left: 1.5em;
+}
+
+.prose li {
+  margin-bottom: 0.4em;
+}
+
+.prose code {
+  background: rgba(0, 212, 255, 0.1);
+  color: #00D4FF;
+  padding: 0.2em 0.4em;
+  border-radius: 4px;
+  font-size: 0.9em;
+}
+
+.prose pre {
+  background: #111D2F;
+  border: 1px solid rgba(0, 212, 255, 0.2);
+  border-radius: 12px;
+  padding: 1.5em;
+  overflow-x: auto;
+  margin-bottom: 1.5em;
+}
+
+.prose pre code {
+  background: none;
+  padding: 0;
+}
+
+/* Button styles */
+.btn-primary {
+  background: linear-gradient(135deg, #00D4FF 0%, #0099CC 100%);
+  color: #0A1628;
+  font-weight: 600;
+  padding: 0.75rem 1.5rem;
+  border-radius: 8px;
+  transition: all 0.2s;
+  border: none;
+  cursor: pointer;
+}
+
+.btn-primary:hover {
+  transform: translateY(-1px);
+  box-shadow: 0 4px 20px rgba(0, 212, 255, 0.4);
+}
+
+.btn-secondary {
+  background: transparent;
+  color: #00D4FF;
+  font-weight: 600;
+  padding: 0.75rem 1.5rem;
+  border-radius: 8px;
+  border: 1px solid rgba(0, 212, 255, 0.4);
+  transition: all 0.2s;
+  cursor: pointer;
+}
+
+.btn-secondary:hover {
+  background: rgba(0, 212, 255, 0.1);
+  border-color: #00D4FF;
+}
+
+/* Gradient text */
+.gradient-text {
+  background: linear-gradient(135deg, #00D4FF 0%, #0099CC 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+/* Nav link hover effect */
+.nav-link {
+  position: relative;
+}
+
+.nav-link::after {
+  content: '';
+  position: absolute;
+  bottom: -4px;
+  left: 0;
+  width: 0;
+  height: 2px;
+  background: #00D4FF;
+  transition: width 0.2s;
+}
+
+.nav-link:hover::after {
+  width: 100%;
 }

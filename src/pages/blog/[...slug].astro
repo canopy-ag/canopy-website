@@ -15,18 +15,10 @@ const { Content } = await post.render();
 ---
 
 <Layout title={`${post.data.title} - Canopy Blog`} description={post.data.description}>
-  <article class="max-w-3xl mx-auto px-4 py-12">
-    {post.data.heroImage && (
-      <img 
-        src={post.data.heroImage} 
-        alt={post.data.title}
-        class="w-full h-64 object-cover rounded-xl mb-8"
-      />
-    )}
-    
-    <header class="mb-8">
-      <h1 class="text-4xl font-bold mb-4 text-[#00D4FF]">{post.data.title}</h1>
-      <div class="flex items-center gap-4 text-white/60">
+  <article class="max-w-3xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
+    <!-- Header -->
+    <header class="mb-12 text-center">
+      <div class="flex items-center justify-center gap-4 text-sm text-white/40 mb-6">
         <time datetime={post.data.pubDate.toISOString()}>
           {post.data.pubDate.toLocaleDateString('en-US', {
             year: 'numeric',
@@ -35,21 +27,50 @@ const { Content } = await post.render();
           })}
         </time>
         {post.data.tags.length > 0 && (
-          <div class="flex gap-2">
-            {post.data.tags.map((tag) => (
-              <span class="px-2 py-1 bg-[#00D4FF]/10 rounded text-[#00D4FF] text-sm">{tag}</span>
-            ))}
-          </div>
+          <>
+            <span>•</span>
+            <div class="flex gap-2">
+              {post.data.tags.map((tag) => (
+                <span class="px-2 py-1 rounded-full bg-[#00D4FF]/10 text-[#00D4FF]">{tag}</span>
+              ))}
+            </div>
+          </>
         )}
       </div>
+      <h1 class="text-4xl sm:text-5xl font-bold mb-6 gradient-text">{post.data.title}</h1>
+      <p class="text-xl text-white/60 max-w-2xl mx-auto">{post.data.description}</p>
     </header>
     
+    <!-- Hero Image -->
+    {post.data.heroImage && (
+      <div class="aspect-video rounded-2xl overflow-hidden mb-12">
+        <img 
+          src={post.data.heroImage} 
+          alt={post.data.title}
+          class="w-full h-full object-cover"
+        />
+      </div>
+    )}
+    
+    <!-- Content -->
     <div class="prose prose-lg max-w-none">
       <Content />
     </div>
     
-    <div class="mt-12 pt-8 border-t border-white/10">
-      <a href="/blog" class="text-[#00D4FF] hover:text-[#0099CC] transition">← Back to blog</a>
+    <!-- Back link -->
+    <div class="mt-16 pt-8 border-t border-white/10 flex items-center justify-between">
+      <a href="/blog" class="inline-flex items-center gap-2 text-white/60 hover:text-[#00D4FF] transition">
+        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 19l-7-7m0 0l7-7m-7 7h18"/>
+        </svg>
+        Back to blog
+      </a>
+      <a 
+        href="mailto:hello@canopy.ag?subject=Re: {post.data.title}" 
+        class="text-white/60 hover:text-[#00D4FF] transition"
+      >
+        Reply via email
+      </a>
     </div>
   </article>
 </Layout>

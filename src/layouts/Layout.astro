@@ -15,30 +15,70 @@ const { title, description = 'Canopy - Growing the future of agriculture' } = As
     <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
     <meta name="description" content={description} />
     <title>{title}</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="/src/styles/global.css" />
   </head>
-  <body class="bg-[#0A1628] text-white min-h-screen">
-    <nav class="border-b border-white/10">
-      <div class="max-w-6xl mx-auto px-4 py-4 flex items-center justify-between">
-        <a href="/" class="flex items-center gap-3">
-          <img src="/logo-icon.svg" alt="Canopy" class="w-10 h-10" />
-          <span class="text-xl font-bold text-[#00D4FF]">CANOPY</span>
-        </a>
-        <div class="flex gap-6">
-          <a href="/" class="hover:text-[#00D4FF] transition">Home</a>
-          <a href="/blog" class="hover:text-[#00D4FF] transition">Blog</a>
-          <a href="/about" class="hover:text-[#00D4FF] transition">About</a>
+  <body class="text-white antialiased">
+    <!-- Navigation -->
+    <nav class="fixed top-0 left-0 right-0 z-50 glass">
+      <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div class="flex items-center justify-between h-16">
+          <a href="/" class="flex items-center gap-3 group">
+            <img src="/logo-icon.svg" alt="Canopy" class="w-9 h-9 group-hover:scale-105 transition" />
+            <span class="text-lg font-bold tracking-wide gradient-text">CANOPY</span>
+          </a>
+          <div class="hidden md:flex items-center gap-8">
+            <a href="/" class="nav-link text-white/70 hover:text-white transition">Home</a>
+            <a href="/blog" class="nav-link text-white/70 hover:text-white transition">Blog</a>
+            <a href="/about" class="nav-link text-white/70 hover:text-white transition">About</a>
+          </div>
+          <a href="mailto:hello@canopy.ag" class="btn-secondary text-sm hidden sm:block">
+            Get in Touch
+          </a>
         </div>
       </div>
     </nav>
     
-    <main>
+    <!-- Main content with padding for fixed nav -->
+    <main class="pt-16">
       <slot />
     </main>
     
-    <footer class="border-t border-white/10 mt-20">
-      <div class="max-w-6xl mx-auto px-4 py-8 text-center text-white/60">
-        <p>&copy; {new Date().getFullYear()} Canopy. Growing the future of agriculture.</p>
+    <!-- Footer -->
+    <footer class="border-t border-white/10 mt-24">
+      <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
+        <div class="grid md:grid-cols-3 gap-8 mb-8">
+          <div>
+            <div class="flex items-center gap-2 mb-4">
+              <img src="/logo-icon.svg" alt="Canopy" class="w-7 h-7" />
+              <span class="font-bold gradient-text">CANOPY</span>
+            </div>
+            <p class="text-white/50 text-sm">
+              Growing the future of agriculture through technology and data-driven insights.
+            </p>
+          </div>
+          <div>
+            <h4 class="font-semibold mb-4 text-white/80">Links</h4>
+            <ul class="space-y-2 text-sm">
+              <li><a href="/" class="text-white/50 hover:text-[#00D4FF] transition">Home</a></li>
+              <li><a href="/blog" class="text-white/50 hover:text-[#00D4FF] transition">Blog</a></li>
+              <li><a href="/about" class="text-white/50 hover:text-[#00D4FF] transition">About</a></li>
+            </ul>
+          </div>
+          <div>
+            <h4 class="font-semibold mb-4 text-white/80">Connect</h4>
+            <ul class="space-y-2 text-sm">
+              <li><a href="mailto:hello@canopy.ag" class="text-white/50 hover:text-[#00D4FF] transition">hello@canopy.ag</a></li>
+              <li><span class="text-white/30">GitHub</span></li>
+              <li><span class="text-white/30">Twitter</span></li>
+            </ul>
+          </div>
+        </div>
+        <div class="pt-8 border-t border-white/10 text-center text-white/40 text-sm">
+          <p>&copy; {new Date().getFullYear()} Canopy. All rights reserved.</p>
+        </div>
       </div>
     </footer>
   </body>

@@ -1,55 +1,65 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 120 120">
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 120 120" fill="none">
   <defs>
-    <linearGradient id="canopyGradient" x1="0%" y1="0%" x2="100%" y2="100%">
-      <stop offset="0%" style="stop-color:#00D4FF"/>
-      <stop offset="100%" style="stop-color:#0099CC"/>
+    <linearGradient id="canopyGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#00D4FF"/>
+      <stop offset="100%" stop-color="#0099CC"/>
     </linearGradient>
-    <filter id="glow">
-      <feGaussianBlur stdDeviation="2" result="coloredBlur"/>
+    <filter id="glow" x="-50%" y="-50%" width="200%" height="200%">
+      <feGaussianBlur stdDeviation="3" result="blur"/>
       <feMerge>
-        <feMergeNode in="coloredBlur"/>
+        <feMergeNode in="blur"/>
         <feMergeNode in="SourceGraphic"/>
       </feMerge>
     </filter>
   </defs>
   
-  <!-- Outer circle -->
-  <circle cx="60" cy="60" r="56" fill="none" stroke="url(#canopyGradient)" stroke-width="2" opacity="0.3"/>
+  <!-- Outer ring -->
+  <circle cx="60" cy="60" r="56" stroke="url(#canopyGrad)" stroke-width="1.5" opacity="0.3"/>
+  
+  <!-- Inner background -->
   <circle cx="60" cy="60" r="52" fill="#0A1628"/>
   
   <!-- Leaf shape -->
-  <path d="M60 20 Q75 35 75 55 Q75 70 60 75 Q45 70 45 55 Q45 35 60 20" fill="url(#canopyGradient)" filter="url(#glow)"/>
-  <path d="M60 20 Q60 45 60 75" stroke="#00D4FF" stroke-width="1.5" fill="none" opacity="0.6"/>
+  <path 
+    d="M60 24 C72 32 76 48 72 60 C68 68 60 72 60 72 C60 72 52 68 48 60 C44 48 48 32 60 24Z" 
+    fill="url(#canopyGrad)" 
+    filter="url(#glow)"
+  />
   
-  <!-- Circuit/network roots -->
-  <g stroke="url(#canopyGradient)" stroke-width="1.5" fill="none" opacity="0.9">
-    <!-- Main stem lines -->
-    <path d="M60 75 L60 85"/>
-    <path d="M60 85 L45 95"/>
-    <path d="M60 85 L75 95"/>
-    <path d="M60 85 L60 100"/>
+  <!-- Leaf vein -->
+  <path d="M60 28 V72" stroke="#00D4FF" stroke-width="1" opacity="0.5"/>
+  
+  <!-- Circuit network -->
+  <g stroke="url(#canopyGrad)" stroke-width="1.5" stroke-linecap="round">
+    <!-- Main stem -->
+    <path d="M60 72 V82"/>
     
-    <!-- Branching lines -->
-    <path d="M45 95 L35 105"/>
-    <path d="M45 95 L50 108"/>
-    <path d="M75 95 L85 105"/>
-    <path d="M75 95 L70 108"/>
-    <path d="M60 100 L55 108"/>
-    <path d="M60 100 L65 108"/>
+    <!-- First level branches -->
+    <path d="M60 82 L44 92"/>
+    <path d="M60 82 L60 96"/>
+    <path d="M60 82 L76 92"/>
+    
+    <!-- Second level branches -->
+    <path d="M44 92 L36 102"/>
+    <path d="M44 92 L48 106"/>
+    <path d="M76 92 L84 102"/>
+    <path d="M76 92 L72 106"/>
+    <path d="M60 96 L54 106"/>
+    <path d="M60 96 L66 106"/>
   </g>
   
   <!-- Circuit nodes -->
   <g fill="#00D4FF">
-    <circle cx="60" cy="75" r="2"/>
-    <circle cx="60" cy="85" r="2.5"/>
-    <circle cx="45" cy="95" r="2"/>
-    <circle cx="75" cy="95" r="2"/>
-    <circle cx="60" cy="100" r="2"/>
-    <circle cx="35" cy="105" r="1.5"/>
-    <circle cx="50" cy="108" r="1.5"/>
-    <circle cx="85" cy="105" r="1.5"/>
-    <circle cx="70" cy="108" r="1.5"/>
-    <circle cx="55" cy="108" r="1.5"/>
-    <circle cx="65" cy="108" r="1.5"/>
+    <circle cx="60" cy="72" r="2.5"/>
+    <circle cx="60" cy="82" r="2"/>
+    <circle cx="44" cy="92" r="2"/>
+    <circle cx="60" cy="96" r="2"/>
+    <circle cx="76" cy="92" r="2"/>
+    <circle cx="36" cy="102" r="1.5"/>
+    <circle cx="48" cy="106" r="1.5"/>
+    <circle cx="54" cy="106" r="1.5"/>
+    <circle cx="66" cy="106" r="1.5"/>
+    <circle cx="72" cy="106" r="1.5"/>
+    <circle cx="84" cy="102" r="1.5"/>
   </g>
 </svg>

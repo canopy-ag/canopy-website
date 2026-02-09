@@ -3,34 +3,91 @@ import Layout from '~/layouts/Layout.astro';
 ---
 
 <Layout title="About - Canopy">
-  <div class="max-w-3xl mx-auto px-4 py-12">
-    <h1 class="text-4xl font-bold mb-8 text-[#00D4FF]">About Canopy</h1>
-    
-    <div class="prose prose-lg">
-      <p class="text-xl text-white/80 mb-6">
+  <!-- Hero -->
+  <div class="relative py-20 border-b border-white/10">
+    <div class="absolute inset-0 bg-gradient-to-b from-[#00D4FF]/5 to-transparent pointer-events-none"></div>
+    <div class="relative max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
+      <h1 class="text-5xl font-bold mb-4 gradient-text">About Canopy</h1>
+      <p class="text-xl text-white/60">Building technology for the future of agriculture.</p>
+    </div>
+  </div>
+
+  <div class="max-w-3xl mx-auto px-4 sm:px-6 lg:px-8 py-16">
+    <!-- Mission -->
+    <section class="mb-16">
+      <h2 class="text-2xl font-semibold mb-6 text-[#00D4FF]">Our Mission</h2>
+      <p class="text-lg text-white/80 leading-relaxed mb-6">
         Canopy is building the future of agriculture technology. We believe that data-driven 
         insights and modern tools can help growers of all sizes optimize their operations 
         and build more sustainable, profitable businesses.
       </p>
-      
-      <h2 class="text-2xl font-semibold mt-8 mb-4 text-[#00D4FF]">Our Mission</h2>
-      <p class="text-white/70 mb-4">
-        To empower horticulture growers with accessible technology that increases yields, 
-        reduces waste, and creates a more resilient food system.
+      <p class="text-lg text-white/80 leading-relaxed">
+        From small urban farms to large commercial operations, we're creating accessible 
+        technology that transforms how we grow food.
       </p>
-      
-      <h2 class="text-2xl font-semibold mt-8 mb-4 text-[#00D4FF]">What We Do</h2>
-      <ul class="space-y-3 text-white/70">
-        <li>Provide data analytics tools tailored for horticulture operations</li>
-        <li>Connect growers with industry benchmarks and best practices</li>
-        <li>Build a community of forward-thinking agriculture professionals</li>
-        <li>Develop integrations with existing farm management systems</li>
-      </ul>
-      
-      <h2 class="text-2xl font-semibold mt-8 mb-4 text-[#00D4FF]">Get in Touch</h2>
-      <p class="text-white/70">
-        Interested in learning more? Reach out to us at <a href="mailto:hello@canopy.ag" class="text-[#00D4FF]">hello@canopy.ag</a>
+    </section>
+
+    <!-- What We Do -->
+    <section class="mb-16">
+      <h2 class="text-2xl font-semibold mb-6 text-[#00D4FF]">What We Do</h2>
+      <div class="grid sm:grid-cols-2 gap-6">
+        <div class="glass rounded-xl p-6">
+          <div class="w-10 h-10 rounded-lg bg-[#00D4FF]/10 flex items-center justify-center mb-4">
+            <svg class="w-5 h-5 text-[#00D4FF]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z"/>
+            </svg>
+          </div>
+          <h3 class="font-semibold mb-2">Data Analytics</h3>
+          <p class="text-white/60 text-sm">Real-time insights tailored for horticulture operations.</p>
+        </div>
+        
+        <div class="glass rounded-xl p-6">
+          <div class="w-10 h-10 rounded-lg bg-[#00D4FF]/10 flex items-center justify-center mb-4">
+            <svg class="w-5 h-5 text-[#00D4FF]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z"/>
+            </svg>
+          </div>
+          <h3 class="font-semibold mb-2">Community</h3>
+          <p class="text-white/60 text-sm">Connect with growers and share best practices.</p>
+        </div>
+        
+        <div class="glass rounded-xl p-6">
+          <div class="w-10 h-10 rounded-lg bg-[#00D4FF]/10 flex items-center justify-center mb-4">
+            <svg class="w-5 h-5 text-[#00D4FF]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M13 10V3L4 14h7v7l9-11h-7z"/>
+            </svg>
+          </div>
+          <h3 class="font-semibold mb-2">Integrations</h3>
+          <p class="text-white/60 text-sm">Works with your existing farm management systems.</p>
+        </div>
+        
+        <div class="glass rounded-xl p-6">
+          <div class="w-10 h-10 rounded-lg bg-[#00D4FF]/10 flex items-center justify-center mb-4">
+            <svg class="w-5 h-5 text-[#00D4FF]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"/>
+            </svg>
+          </div>
+          <h3 class="font-semibold mb-2">Best Practices</h3>
+          <p class="text-white/60 text-sm">Industry benchmarks and proven methodologies.</p>
+        </div>
+      </div>
+    </section>
+
+    <!-- CTA -->
+    <section class="glass rounded-2xl p-8 text-center">
+      <h2 class="text-2xl font-semibold mb-4">Get in Touch</h2>
+      <p class="text-white/60 mb-6">
+        Interested in learning more or partnering with us? We'd love to hear from you.
       </p>
-    </div>
+      <a 
+        href="mailto:hello@canopy.ag" 
+        class="btn-primary inline-flex items-center gap-2"
+      >
+        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"/>
+        </svg>
+        hello@canopy.ag
+      </a>
+    </section>
   </div>
 </Layout>
