@@ -21,3 +21,4 @@ pnpm-debug.log*
 # tina
 .tina/__generated__
 admin/
+.vercel
