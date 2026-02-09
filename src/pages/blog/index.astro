@@ -1,10 +1,11 @@
 ---
 import Layout from '../layouts/Layout.astro';
+import { getCollection } from 'astro:content';
 
-const posts = await Astro.glob('../content/posts/*.mdx');
-const publishedPosts = posts
-  .filter((post) => !post.frontmatter.draft)
-  .sort((a, b) => new Date(b.frontmatter.pubDate).getTime() - new Date(a.frontmatter.pubDate).getTime());
+const allPosts = await getCollection('posts');
+const publishedPosts = allPosts
+  .filter((post) => !post.data.draft)
+  .sort((a, b) => b.data.pubDate.getTime() - a.data.pubDate.getTime());
 ---
 
 <Layout title="Blog - Canopy">
@@ -19,30 +20,30 @@ const publishedPosts = posts
       <div class="space-y-8">
         {publishedPosts.map((post) => (
           <article class="p-6 rounded-xl bg-white/5 border border-white/10 hover:border-[#00D4FF]/50 transition">
-            {post.frontmatter.heroImage && (
+            {post.data.heroImage && (
               <img 
-                src={post.frontmatter.heroImage} 
-                alt={post.frontmatter.title}
+                src={post.data.heroImage} 
+                alt={post.data.title}
                 class="w-full h-48 object-cover rounded-lg mb-4"
               />
             )}
             <h2 class="text-2xl font-semibold mb-2">
-              <a href={`/blog/${post.frontmatter.slug || post.file.split('/').pop().replace('.mdx', '')}`} class="hover:text-[#00D4FF] transition">
-                {post.frontmatter.title}
+              <a href={`/blog/${post.slug}`} class="hover:text-[#00D4FF] transition">
+                {post.data.title}
               </a>
             </h2>
-            <p class="text-white/60 mb-3">{post.frontmatter.description}</p>
+            <p class="text-white/60 mb-3">{post.data.description}</p>
             <div class="flex items-center gap-4 text-sm text-white/40">
-              <time datetime={post.frontmatter.pubDate}>
-                {new Date(post.frontmatter.pubDate).toLocaleDateString('en-US', {
+              <time datetime={post.data.pubDate.toISOString()}>
+                {post.data.pubDate.toLocaleDateString('en-US', {
                   year: 'numeric',
                   month: 'long',
                   day: 'numeric',
                 })}
               </time>
-              {post.frontmatter.tags && (
+              {post.data.tags.length > 0 && (
                 <div class="flex gap-2">
-                  {post.frontmatter.tags.map((tag: string) => (
+                  {post.data.tags.map((tag) => (
                     <span class="px-2 py-1 bg-[#00D4FF]/10 rounded text-[#00D4FF]">{tag}</span>
                   ))}
                 </div>

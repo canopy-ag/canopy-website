@@ -5,7 +5,7 @@ A modern Astro website for Canopy — growing the future of agriculture.
 ## Tech Stack
 
 - **Astro 5** — Static site generator
-- **TinaCMS** — Content management for the blog
+- **Astro Content Collections** — Type-safe Markdown/MDX content
 - **Tailwind CSS v4** — Styling with electric blue (#00D4FF) theme
 - **React** — Interactive components
 - **Vercel** — Deployment
@@ -16,18 +16,29 @@ A modern Astro website for Canopy — growing the future of agriculture.
 # Install dependencies
 npm install
 
-# Run dev server with TinaCMS
+# Run dev server
 npm run dev
 
 # Build for production
 npm run build
 ```
 
-## TinaCMS Setup
+## Adding Blog Posts
 
-1. Copy `.env.example` to `.env`
-2. Set up Tina Cloud at [app.tina.io](https://app.tina.io)
-3. Add your `TINA_CLIENT_ID` and `TINA_TOKEN` to `.env`
+Create a new `.md` or `.mdx` file in `src/content/posts/`:
+
+```yaml
+---
+title: "Your Post Title"
+description: "Brief description"
+pubDate: 2026-02-09
+draft: false
+tags: ["tag1", "tag2"]
+heroImage: "/images/your-image.jpg"  # optional
+---
+
+Your content here...
+```
 
 ## Deployment
 
