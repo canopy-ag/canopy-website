@@ -1,16 +1,18 @@
 @import "tailwindcss";
 
 @theme {
+  --color-canopy-green: #22C55E;
+  --color-canopy-green-light: #4ADE80;
   --color-canopy-blue: #00D4FF;
   --color-canopy-blue-dark: #0099CC;
-  --color-canopy-dark: #0A1628;
+  --color-canopy-dark: #0B1120;
   --color-canopy-darker: #070F1A;
   --color-canopy-card: #111D2F;
 }
 
 body {
   font-family: 'Inter', system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
-  background: linear-gradient(180deg, #0A1628 0%, #070F1A 100%);
+  background: linear-gradient(180deg, #0B1120 0%, #070F1A 100%);
   min-height: 100vh;
 }
 
@@ -21,7 +23,7 @@ html {
 
 /* Custom selection color */
 ::selection {
-  background: rgba(0, 212, 255, 0.3);
+  background: rgba(34, 197, 94, 0.3);
   color: white;
 }
 
@@ -38,11 +40,11 @@ html {
 
 /* Glow effect */
 .glow {
-  box-shadow: 0 0 40px rgba(0, 212, 255, 0.15);
+  box-shadow: 0 0 40px rgba(34, 197, 94, 0.15);
 }
 
 .glow-text {
-  text-shadow: 0 0 40px rgba(0, 212, 255, 0.5);
+  text-shadow: 0 0 40px rgba(34, 197, 94, 0.5);
 }
 
 /* Prose styles for blog posts */
@@ -52,7 +54,7 @@ html {
 }
 
 .prose h1, .prose h2, .prose h3, .prose h4 {
-  color: #00D4FF;
+  color: #22C55E;
   font-weight: 600;
   margin-top: 2em;
   margin-bottom: 0.8em;
@@ -65,7 +67,7 @@ html {
 
 .prose h2 {
   font-size: 1.8em;
-  border-bottom: 1px solid rgba(0, 212, 255, 0.2);
+  border-bottom: 1px solid rgba(34, 197, 94, 0.2);
   padding-bottom: 0.3em;
 }
 
@@ -118,8 +120,8 @@ html {
 
 /* Button styles */
 .btn-primary {
-  background: linear-gradient(135deg, #00D4FF 0%, #0099CC 100%);
-  color: #0A1628;
+  background: linear-gradient(135deg, #22C55E 0%, #4ADE80 100%);
+  color: #0B1120;
   font-weight: 600;
   padding: 0.75rem 1.5rem;
   border-radius: 8px;
@@ -130,7 +132,7 @@ html {
 
 .btn-primary:hover {
   transform: translateY(-1px);
-  box-shadow: 0 4px 20px rgba(0, 212, 255, 0.4);
+  box-shadow: 0 4px 20px rgba(34, 197, 94, 0.4);
 }
 
 .btn-secondary {
@@ -151,7 +153,7 @@ html {
 
 /* Gradient text */
 .gradient-text {
-  background: linear-gradient(135deg, #00D4FF 0%, #0099CC 100%);
+  background: linear-gradient(135deg, #22C55E 0%, #4ADE80 100%);
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
   background-clip: text;
@@ -169,7 +171,7 @@ html {
   left: 0;
   width: 0;
   height: 2px;
-  background: #00D4FF;
+  background: #22C55E;
   transition: width 0.2s;
 }
 

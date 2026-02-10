@@ -1,8 +1,8 @@
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 280 100" fill="none">
   <defs>
     <linearGradient id="canopyGradFull" x1="0%" y1="0%" x2="100%" y2="100%">
-      <stop offset="0%" stop-color="#00D4FF"/>
-      <stop offset="100%" stop-color="#0099CC"/>
+      <stop offset="0%" stop-color="#22C55E"/>
+      <stop offset="100%" stop-color="#4ADE80"/>
     </linearGradient>
     <filter id="glowFull" x="-50%" y="-50%" width="200%" height="200%">
       <feGaussianBlur stdDeviation="2" result="blur"/>
@@ -16,7 +16,7 @@
   <!-- Icon -->
   <g transform="translate(10, 10)">
     <circle cx="40" cy="40" r="38" stroke="url(#canopyGradFull)" stroke-width="1" opacity="0.3"/>
-    <circle cx="40" cy="40" r="34" fill="#0A1628"/>
+    <circle cx="40" cy="40" r="34" fill="#0B1120"/>
     
     <!-- Leaf -->
     <path 
@@ -24,10 +24,10 @@
       fill="url(#canopyGradFull)" 
       filter="url(#glowFull)"
     />
-    <path d="M40 18 V51" stroke="#00D4FF" stroke-width="0.8" opacity="0.4"/>
+    <path d="M40 18 V51" stroke="#22C55E" stroke-width="0.8" opacity="0.4"/>
     
     <!-- Circuit -->
-    <g stroke="url(#canopyGradFull)" stroke-width="1.2" stroke-linecap="round">
+    <g stroke="#00D4FF" stroke-width="1.2" stroke-linecap="round">
       <path d="M40 51 V58"/>
       <path d="M40 58 L28 66"/>
       <path d="M40 58 L40 68"/>

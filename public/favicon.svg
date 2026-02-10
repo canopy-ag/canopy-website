@@ -1,12 +1,12 @@
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32" fill="none">
   <defs>
     <linearGradient id="canopyGradFav" x1="0%" y1="0%" x2="100%" y2="100%">
-      <stop offset="0%" stop-color="#00D4FF"/>
-      <stop offset="100%" stop-color="#0099CC"/>
+      <stop offset="0%" stop-color="#22C55E"/>
+      <stop offset="100%" stop-color="#4ADE80"/>
     </linearGradient>
   </defs>
   
-  <rect width="32" height="32" rx="8" fill="#0A1628"/>
+  <rect width="32" height="32" rx="8" fill="#0B1120"/>
   
   <!-- Simplified leaf -->
   <path 
@@ -15,7 +15,7 @@
   />
   
   <!-- Simple circuit lines -->
-  <g stroke="url(#canopyGradFav)" stroke-width="1" stroke-linecap="round">
+  <g stroke="#00D4FF" stroke-width="1" stroke-linecap="round">
     <path d="M16 22 V25"/>
     <path d="M16 25 L12 28"/>
     <path d="M16 25 L20 28"/>
