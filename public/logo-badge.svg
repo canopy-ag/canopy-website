@@ -1,29 +1,27 @@
 <svg xmlns="http://www.w3.org/2000/svg" width="256" height="256" viewBox="0 0 256 256" fill="none"> 
   <defs> 
-    <!-- Leaf fill --> 
     <linearGradient id="gLeaf" x1="0" y1="40" x2="0" y2="170"> 
       <stop offset="0%" stop-color="#32BA67"/> 
       <stop offset="100%" stop-color="#1E9B4A"/> 
     </linearGradient> 
   </defs> 
-  <!-- Badge - solid opaque background --> 
+  <!-- Badge - solid background --> 
   <circle cx="128" cy="128" r="120" fill="#03583A"/> 
   <!-- Circuit --> 
   <g stroke="#039E96" stroke-width="10" stroke-linecap="round" stroke-linejoin="round" fill="none"> 
-    <!-- Main horizontal - extended to circle edges (r=16) --> 
-    <path d="M44 132 H212"/> 
-    <!-- Main vertical (trunk) - extended to bottom circle edge --> 
-    <path d="M128 88 V190"/> 
-    <!-- Branches down - extended to circle edges --> 
-    <path d="M128 140 L66 176"/> 
-    <path d="M128 140 L190 176"/> 
-    <path d="M128 140 V190"/> 
-    <!-- Rings - slightly smaller to match thinner stroke --> 
-    <circle cx="44" cy="132" r="14" stroke-width="8"/> 
-    <circle cx="212" cy="132" r="14" stroke-width="8"/> 
-    <circle cx="66" cy="176" r="14" stroke-width="8"/> 
-    <circle cx="190" cy="176" r="14" stroke-width="8"/> 
-    <circle cx="128" cy="206" r="14" stroke-width="8"/> 
+    <!-- Main horizontal - shorter, stops at circle edges --> 
+    <path d="M74 132 H182"/> 
+    <!-- Main vertical (trunk) - stops at bottom circle --> 
+    <path d="M128 88 V162"/> 
+    <!-- Branches down - shorter --> 
+    <path d="M128 140 L93 163"/> 
+    <path d="M128 140 L163 163"/> 
+    <!-- Rings positioned at line ends --> 
+    <circle cx="74" cy="132" r="14" stroke-width="8"/> 
+    <circle cx="182" cy="132" r="14" stroke-width="8"/> 
+    <circle cx="93" cy="163" r="14" stroke-width="8"/> 
+    <circle cx="163" cy="163" r="14" stroke-width="8"/> 
+    <circle cx="128" cy="190" r="14" stroke-width="8"/> 
   </g> 
   <!-- Leaf --> 
   <path d="M128 34 C156 54 178 84 176 112 C174 140 152 160 128 170 C104 160 82 140 80 112 C78 84 100 54 128 34 Z" fill="url(#gLeaf)"/> 
