@@ -1,0 +1,38 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="256" height="256" viewBox="0 0 256 256" fill="none"> 
+  <defs> 
+    <!-- Badge background --> 
+    <radialGradient id="gBadge" cx="30%" cy="25%" r="85%"> 
+      <stop offset="0%" stop-color="#0B6A43"/> 
+      <stop offset="70%" stop-color="#03583A"/> 
+      <stop offset="100%" stop-color="#013A29"/> 
+    </radialGradient> 
+    <!-- Leaf fill --> 
+    <linearGradient id="gLeaf" x1="0" y1="40" x2="0" y2="170"> 
+      <stop offset="0%" stop-color="#32BA67"/> 
+      <stop offset="100%" stop-color="#1E9B4A"/> 
+    </linearGradient> 
+  </defs> 
+  <!-- Badge --> 
+  <circle cx="128" cy="128" r="120" fill="url(#gBadge)"/> 
+  <!-- Circuit --> 
+  <g stroke="#039E96" stroke-width="14" stroke-linecap="round" stroke-linejoin="round" fill="none"> 
+    <!-- Main horizontal --> 
+    <path d="M60 132 H196"/> 
+    <!-- Main vertical (trunk) --> 
+    <path d="M128 88 V194"/> 
+    <!-- Branches down --> 
+    <path d="M128 140 L82 176"/> 
+    <path d="M128 140 L174 176"/> 
+    <path d="M128 140 V206"/> 
+    <!-- Rings --> 
+    <circle cx="60" cy="132" r="16" stroke-width="10"/> 
+    <circle cx="196" cy="132" r="16" stroke-width="10"/> 
+    <circle cx="82" cy="176" r="16" stroke-width="10"/> 
+    <circle cx="174" cy="176" r="16" stroke-width="10"/> 
+    <circle cx="128" cy="206" r="16" stroke-width="10"/> 
+  </g> 
+  <!-- Leaf --> 
+  <path d="M128 34 C156 54 178 84 176 112 C174 140 152 160 128 170 C104 160 82 140 80 112 C78 84 100 54 128 34 Z" fill="url(#gLeaf)"/> 
+  <!-- Leaf inner slit --> 
+  <rect x="120" y="62" width="16" height="92" rx="8" fill="#064A33" opacity="0.9"/> 
+</svg>
