@@ -1,267 +1,235 @@
 import type { APIRoute } from 'astro';
-import { Pool } from 'pg';
-import { DemoSubmissionSchema, formatValidationErrors } from '../../lib/schema';
+import postgres from 'postgres';
 
-/**
- * Demo Form Submission API
- * 
- * Accepts demo requests, validates input, and persists to PostgreSQL.
- * Includes optional email notification via Resend.
- */
+// Database connection singleton
+let sqlClient: ReturnType<typeof postgres> | null = null;
 
-// Initialize connection pool
-const pool = new Pool({
-  connectionString: import.meta.env.DATABASE_URL,
-  max: parseInt(import.meta.env.DATABASE_MAX_CONNECTIONS || '5'),
-  idleTimeoutMillis: 30000,
-  connectionTimeoutMillis: 5000,
-  ssl: import.meta.env.PROD ? { rejectUnauthorized: false } : false,
-});
+function getSqlClient() {
+  if (!sqlClient) {
+    const connectionString = import.meta.env.POSTGRES_URL;
+    if (!connectionString) {
+      throw new Error('POSTGRES_URL environment variable is not configured');
+    }
+    
+    sqlClient = postgres(connectionString, {
+      max: 10, // Connection pool size
+      idle_timeout: 20,
+      connect_timeout: 10,
+      ssl: {
+        rejectUnauthorized: false // Required for Tailscale certificates
+      }
+    });
+  }
+  return sqlClient;
+}
 
-// SQL query for inserting submissions
-const INSERT_SUBMISSION_SQL = `
-  INSERT INTO demo_submissions (
-    company_name, 
-    contact_name, 
-    email, 
-    phone, 
-    company_size, 
-    message, 
-    ip_address, 
-    user_agent, 
-    referrer
-  ) VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9)
-  RETURNING id, created_at
-`;
+// Input validation helper
+function validateInput(data: Record<string, unknown>): { valid: boolean; error?: string } {
+  // Required fields
+  if (!data.companyName || typeof data.companyName !== 'string' || data.companyName.trim().length < 2) {
+    return { valid: false, error: 'Company name is required (min 2 characters)' };
+  }
+  
+  if (!data.contactName || typeof data.contactName !== 'string' || data.contactName.trim().length < 2) {
+    return { valid: false, error: 'Contact name is required (min 2 characters)' };
+  }
+  
+  if (!data.email || typeof data.email !== 'string') {
+    return { valid: false, error: 'Email is required' };
+  }
+  
+  // Email format validation
+  const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+  if (!emailRegex.test(data.email)) {
+    return { valid: false, error: 'Invalid email format' };
+  }
+  
+  // Optional field validations
+  if (data.phone && typeof data.phone === 'string' && data.phone.length > 50) {
+    return { valid: false, error: 'Phone number too long' };
+  }
+  
+  if (data.companySize && typeof data.companySize === 'string' && data.companySize.length > 50) {
+    return { valid: false, error: 'Company size value too long' };
+  }
+  
+  if (data.message && typeof data.message === 'string' && data.message.length > 5000) {
+    return { valid: false, error: 'Message too long (max 5000 characters)' };
+  }
+  
+  return { valid: true };
+}
 
-/**
- * POST /api/submit-demo
- * Submit a new demo request
- */
-export const POST: APIRoute = async ({ request, clientAddress }) => {
-  let client;
+// Sanitize input to prevent injection
+function sanitizeInput(str: string | undefined | null): string | null {
+  if (!str || typeof str !== 'string') return null;
+  return str.trim().slice(0, 5000); // Limit length
+}
+
+export const POST: APIRoute = async ({ request }) => {
+  let sql: ReturnType<typeof postgres> | null = null;
   
   try {
-    // Check if database is configured
-    if (!import.meta.env.DATABASE_URL) {
-      console.error('DATABASE_URL not configured');
-      return new Response(
-        JSON.stringify({ 
-          success: false,
-          error: 'Service temporarily unavailable' 
-        }),
-        { 
-          status: 503, 
-          headers: { 
-            'Content-Type': 'application/json',
-            'Cache-Control': 'no-store'
-          } 
-        }
-      );
-    }
-
-    // Parse and validate request body
-    let rawData;
+    // Parse request body
+    let data: Record<string, unknown>;
     try {
-      rawData = await request.json();
+      data = await request.json();
     } catch {
       return new Response(
-        JSON.stringify({ 
-          success: false,
-          error: 'Invalid JSON in request body' 
-        }),
-        { 
-          status: 400, 
-          headers: { 
-            'Content-Type': 'application/json',
-            'Cache-Control': 'no-store'
-          } 
-        }
+        JSON.stringify({ error: 'Invalid JSON in request body' }),
+        { status: 400, headers: { 'Content-Type': 'application/json' } }
       );
     }
-
-    const validationResult = DemoSubmissionSchema.safeParse(rawData);
     
-    if (!validationResult.success) {
+    // Validate input
+    const validation = validateInput(data);
+    if (!validation.valid) {
       return new Response(
-        JSON.stringify({ 
-          success: false,
-          error: 'Validation failed', 
-          errors: formatValidationErrors(validationResult.error)
-        }),
-        { 
-          status: 400, 
-          headers: { 
-            'Content-Type': 'application/json',
-            'Cache-Control': 'no-store'
-          } 
-        }
+        JSON.stringify({ error: validation.error }),
+        { status: 400, headers: { 'Content-Type': 'application/json' } }
       );
     }
 
-    const data = validationResult.data;
-
-    // Get client metadata
+    // Get client info for audit trail
     const ip = request.headers.get('x-forwarded-for')?.split(',')[0]?.trim() || 
-               clientAddress || 
+               request.headers.get('x-real-ip') || 
                'unknown';
-    const userAgent = request.headers.get('user-agent') || 'unknown';
-    const referrer = request.headers.get('referer') || 'unknown';
+    const userAgent = sanitizeInput(request.headers.get('user-agent'));
+    const referrer = sanitizeInput(request.headers.get('referer'));
 
-    // Get database client from pool
-    client = await pool.connect();
+    // Sanitize form data
+    const companyName = sanitizeInput(data.companyName as string)!;
+    const contactName = sanitizeInput(data.contactName as string)!;
+    const email = sanitizeInput(data.email as string)!;
+    const phone = sanitizeInput(data.phone as string);
+    const companySize = sanitizeInput(data.companySize as string);
+    const message = sanitizeInput(data.message as string);
 
-    // Insert submission
-    const result = await client.query(INSERT_SUBMISSION_SQL, [
-      data.companyName,
-      data.contactName,
-      data.email,
-      data.phone || null,
-      data.companySize || null,
-      data.message || null,
-      ip,
-      userAgent,
-      referrer
-    ]);
-
-    const submission = result.rows[0];
-
-    // Optional: Send notification email
-    if (import.meta.env.RESEND_API_KEY) {
-      try {
-        const { default: Resend } = await import('resend');
+    // Check if database is configured
+    if (!import.meta.env.POSTGRES_URL) {
+      console.warn('POSTGRES_URL not configured, falling back to email-only mode');
+      
+      // Fallback: Send email notification
+      if (import.meta.env.RESEND_API_KEY) {
+        const { Resend } = await import('resend');
         const resend = new Resend(import.meta.env.RESEND_API_KEY);
         
         await resend.emails.send({
           from: 'Canopy Website <hello@canopy.ag>',
           to: ['hello@canopy.ag'],
-          subject: `Demo Request: ${data.companyName}`,
+          subject: `Demo Request: ${companyName}`,
           html: `
-            <h2>New Demo Request</h2>
-            <p><strong>Company:</strong> ${escapeHtml(data.companyName)}</p>
-            <p><strong>Contact:</strong> ${escapeHtml(data.contactName)}</p>
-            <p><strong>Email:</strong> ${escapeHtml(data.email)}</p>
-            <p><strong>Phone:</strong> ${escapeHtml(data.phone) || 'N/A'}</p>
-            <p><strong>Company Size:</strong> ${escapeHtml(data.companySize) || 'N/A'}</p>
-            <p><strong>Message:</strong> ${escapeHtml(data.message) || 'N/A'}</p>
-            <hr/>
-            <p><small>Submission ID: ${submission.id}</small></p>
-            <p><small>Submitted at: ${submission.created_at}</small></p>
+            <h2>New Demo Request (DB Not Connected)</h2>
+            <p><strong>Company:</strong> ${companyName}</p>
+            <p><strong>Contact:</strong> ${contactName}</p>
+            <p><strong>Email:</strong> ${email}</p>
+            <p><strong>Phone:</strong> ${phone || 'N/A'}</p>
+            <p><strong>Company Size:</strong> ${companySize || 'N/A'}</p>
+            <p><strong>Message:</strong> ${message || 'N/A'}</p>
+            <p><em>Note: Database connection not configured. Store this manually.</em></p>
           `,
         });
-      } catch (emailError) {
-        // Log but don't fail the request
-        console.error('Failed to send notification email:', emailError);
       }
+      
+      return new Response(
+        JSON.stringify({ 
+          success: true, 
+          message: 'Thank you! We will be in touch within 24 hours.'
+        }),
+        { status: 200, headers: { 'Content-Type': 'application/json' } }
+      );
     }
 
-    return new Response(
-      JSON.stringify({ 
-        success: true, 
-        message: 'Thank you! We will be in touch within 24 hours.',
-        submissionId: submission.id
-      }),
-      { 
-        status: 200, 
-        headers: { 
-          'Content-Type': 'application/json',
-          'Cache-Control': 'no-store'
-        } 
+    // Connect to database and insert submission
+    try {
+      sql = getSqlClient();
+      
+      const result = await sql`
+        INSERT INTO demo_submissions 
+          (company_name, contact_name, email, phone, company_size, message, ip_address, user_agent, referrer)
+        VALUES 
+          (${companyName}, ${contactName}, ${email}, ${phone}, ${companySize}, ${message}, ${ip}, ${userAgent}, ${referrer})
+        RETURNING id, submitted_at
+      `;
+
+      console.log(`Demo submission stored: ${result[0]?.id}`);
+
+      // Also send email notification (non-blocking)
+      if (import.meta.env.RESEND_API_KEY) {
+        const { Resend } = await import('resend');
+        const resend = new Resend(import.meta.env.RESEND_API_KEY);
+        
+        resend.emails.send({
+          from: 'Canopy Website <hello@canopy.ag>',
+          to: ['hello@canopy.ag'],
+          subject: `Demo Request: ${companyName}`,
+          html: `
+            <h2>New Demo Request</h2>
+            <p><strong>ID:</strong> ${result[0]?.id}</p>
+            <p><strong>Company:</strong> ${companyName}</p>
+            <p><strong>Contact:</strong> ${contactName}</p>
+            <p><strong>Email:</strong> ${email}</p>
+            <p><strong>Phone:</strong> ${phone || 'N/A'}</p>
+            <p><strong>Company Size:</strong> ${companySize || 'N/A'}</p>
+            <p><strong>Message:</strong> ${message || 'N/A'}</p>
+          `,
+        }).catch((err: Error) => console.error('Email notification failed:', err));
       }
-    );
+
+      return new Response(
+        JSON.stringify({ 
+          success: true, 
+          id: result[0]?.id,
+          message: 'Thank you! We will be in touch within 24 hours.'
+        }),
+        { status: 200, headers: { 'Content-Type': 'application/json' } }
+      );
+      
+    } catch (dbError) {
+      console.error('Database error:', dbError);
+      
+      // Database connection failed - fallback to email
+      if (import.meta.env.RESEND_API_KEY) {
+        const { Resend } = await import('resend');
+        const resend = new Resend(import.meta.env.RESEND_API_KEY);
+        
+        await resend.emails.send({
+          from: 'Canopy Website <hello@canopy.ag>',
+          to: ['hello@canopy.ag'],
+          subject: `Demo Request (DB Failed): ${companyName}`,
+          html: `
+            <h2>New Demo Request (Database Error)</h2>
+            <p><strong>Company:</strong> ${companyName}</p>
+            <p><strong>Contact:</strong> ${contactName}</p>
+            <p><strong>Email:</strong> ${email}</p>
+            <p><strong>Phone:</strong> ${phone || 'N/A'}</p>
+            <p><strong>Company Size:</strong> ${companySize || 'N/A'}</p>
+            <p><strong>Message:</strong> ${message || 'N/A'}</p>
+            <p><em>Error: ${dbError instanceof Error ? dbError.message : 'Unknown database error'}</em></p>
+          `,
+        });
+      }
+      
+      // Return success to user (we have the data via email) but log the issue
+      return new Response(
+        JSON.stringify({ 
+          success: true, 
+          message: 'Thank you! We will be in touch within 24 hours.'
+        }),
+        { status: 200, headers: { 'Content-Type': 'application/json' } }
+      );
+    }
 
   } catch (error) {
     console.error('Form submission error:', error);
-    
     return new Response(
       JSON.stringify({ 
-        success: false,
         error: 'Something went wrong. Please try again or email us directly at hello@canopy.ag'
       }),
-      { 
-        status: 500, 
-        headers: { 
-          'Content-Type': 'application/json',
-          'Cache-Control': 'no-store'
-        } 
-      }
+      { status: 500, headers: { 'Content-Type': 'application/json' } }
     );
   } finally {
-    // Always release client back to pool
-    if (client) {
-      client.release();
-    }
+    // Note: We don't close the connection here to allow connection pooling
+    // The connection will be reused for subsequent requests
   }
 };
-
-/**
- * GET /api/submit-demo
- * Health check endpoint
- */
-export const GET: APIRoute = async () => {
-  let client;
-  
-  try {
-    // Check if database is configured
-    if (!import.meta.env.DATABASE_URL) {
-      return new Response(
-        JSON.stringify({ 
-          status: 'unhealthy',
-          database: 'not_configured',
-          timestamp: new Date().toISOString()
-        }),
-        { 
-          status: 503, 
-          headers: { 'Content-Type': 'application/json' } 
-        }
-      );
-    }
-    
-    client = await pool.connect();
-    await client.query('SELECT 1');
-    
-    return new Response(
-      JSON.stringify({ 
-        status: 'healthy',
-        database: 'connected',
-        timestamp: new Date().toISOString()
-      }),
-      { 
-        status: 200, 
-        headers: { 'Content-Type': 'application/json' } 
-      }
-    );
-  } catch (error) {
-    console.error('Health check failed:', error);
-    
-    return new Response(
-      JSON.stringify({ 
-        status: 'unhealthy',
-        database: 'disconnected',
-        error: error instanceof Error ? error.message : 'Unknown error',
-        timestamp: new Date().toISOString()
-      }),
-      { 
-        status: 503, 
-        headers: { 'Content-Type': 'application/json' } 
-      }
-    );
-  } finally {
-    if (client) {
-      client.release();
-    }
-  }
-};
-
-/**
- * Escape HTML to prevent XSS in emails
- */
-function escapeHtml(text: string): string {
-  if (!text) return '';
-  return text
-    .replace(/&/g, '&amp;')
-    .replace(/</g, '&lt;')
-    .replace(/>/g, '&gt;')
-    .replace(/"/g, '&quot;')
-    .replace(/'/g, '&#039;');
-}

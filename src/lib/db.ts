@@ -1,71 +1,57 @@
-import { Pool, PoolClient } from 'pg';
+import postgres from 'postgres';
 
 /**
- * PostgreSQL Connection Pool for Canopy Website
+ * PostgreSQL Connection for Canopy Website
  * 
- * Uses environment variable DATABASE_URL for connection.
- * Pool is shared across requests for connection efficiency.
+ * Uses environment variable POSTGRES_URL for connection.
+ * Connection is pooled automatically by the postgres client.
  */
 
 // Validate environment
-if (!import.meta.env.DATABASE_URL) {
-  console.warn('DATABASE_URL not set. Database operations will fail.');
+if (!import.meta.env.POSTGRES_URL) {
+  console.warn('POSTGRES_URL not set. Database operations will fail.');
 }
 
-// Connection pool configuration
-const pool = new Pool({
-  connectionString: import.meta.env.DATABASE_URL,
-  max: parseInt(import.meta.env.DATABASE_MAX_CONNECTIONS || '5'),
-  idleTimeoutMillis: 30000,
-  connectionTimeoutMillis: 5000,
-  // SSL configuration for Tailscale/production
-  ssl: import.meta.env.PROD ? { rejectUnauthorized: false } : false,
-});
-
-// Connection error handling
-pool.on('error', (err) => {
-  console.error('Unexpected PostgreSQL pool error:', err);
-});
-
-// Graceful shutdown handlers (Node.js environment only)
-if (typeof process !== 'undefined') {
-  process.on('SIGTERM', async () => {
-    console.log('SIGTERM received, closing database pool...');
-    await pool.end();
-  });
-  
-  process.on('SIGINT', async () => {
-    console.log('SIGINT received, closing database pool...');
-    await pool.end();
-  });
-}
+// Create sql client with connection pooling
+const sql = import.meta.env.POSTGRES_URL 
+  ? postgres(import.meta.env.POSTGRES_URL, {
+      max: parseInt(import.meta.env.DATABASE_MAX_CONNECTIONS || '10'),
+      idle_timeout: 20,
+      connect_timeout: 10,
+      // SSL configuration for Tailscale/production
+      ssl: {
+        rejectUnauthorized: false
+      }
+    })
+  : null;
 
 /**
  * Test database connectivity
  */
 export async function testConnection(): Promise<boolean> {
-  let client: PoolClient | null = null;
+  if (!sql) {
+    console.warn('Database not configured (POSTGRES_URL missing)');
+    return false;
+  }
   
   try {
-    client = await pool.connect();
-    await client.query('SELECT 1');
+    await sql`SELECT 1`;
     return true;
   } catch (error) {
     console.error('Database connection test failed:', error);
     return false;
-  } finally {
-    if (client) {
-      client.release();
-    }
   }
 }
 
 /**
- * Get a client from the pool (remember to release!)
+ * Get the sql client for database operations
  */
-export async function getClient(): Promise<PoolClient> {
-  return await pool.connect();
+export function getSql() {
+  if (!sql) {
+    throw new Error('Database not configured. Set POSTGRES_URL environment variable.');
+  }
+  return sql;
 }
 
-export { pool };
-export type { PoolClient };
+export { sql };
+export default sql;
