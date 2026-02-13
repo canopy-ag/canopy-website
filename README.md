@@ -44,6 +44,73 @@ Your content here...
 
 Push to the `main` branch and Vercel will automatically deploy.
 
+## Database Integration
+
+The demo form persists submissions to a CNPG PostgreSQL cluster via Tailscale Funnel.
+
+### Architecture
+
+```
+Vercel Edge → Tailscale Funnel → Home K8s Cluster → postgres-dev (CNPG)
+```
+
+### Database Schema
+
+**Table:** `demo_submissions`
+- `id` (UUID, PK) - Auto-generated
+- `company_name` (VARCHAR) - Required
+- `contact_name` (VARCHAR) - Required  
+- `email` (VARCHAR) - Required
+- `phone` (VARCHAR) - Optional
+- `company_size` (VARCHAR) - Optional
+- `message` (TEXT) - Optional
+- `ip_address` (INET) - Audit trail
+- `user_agent` (TEXT) - Audit trail
+- `referrer` (TEXT) - Audit trail
+- `submitted_at` (TIMESTAMPTZ) - Auto-generated
+- `status` (VARCHAR) - Default 'new'
+
+### Environment Variables
+
+Required for database connectivity:
+
+```bash
+# PostgreSQL connection string (via Tailscale Funnel)
+POSTGRES_URL="postgresql://canopy_vercel:PASSWORD@postgres-dev-canopy.tailnet-name.ts.net:5432/canopy_website?sslmode=require"
+
+# Optional: For email fallback notifications
+RESEND_API_KEY="re_xxxxxxxx"
+```
+
+### Setup Instructions
+
+1. **Apply K8s resources** (in canopy-k8s-configs repo):
+   ```bash
+   kubectl apply -k canopy-dev/postgres/
+   ```
+
+2. **Create database user** (run once):
+   ```sql
+   CREATE USER canopy_vercel WITH PASSWORD 'your-secure-password';
+   GRANT CONNECT ON DATABASE canopy_website TO canopy_vercel;
+   GRANT USAGE ON SCHEMA public TO canopy_vercel;
+   GRANT SELECT, INSERT ON demo_submissions TO canopy_vercel;
+   GRANT USAGE, SELECT ON SEQUENCE demo_submissions_id_seq TO canopy_vercel;
+   ```
+
+3. **Add Vercel environment variables**:
+   ```bash
+   vercel env add POSTGRES_URL
+   vercel env add RESEND_API_KEY  # optional
+   ```
+
+### Fallback Behavior
+
+If database connection fails:
+1. Form still returns success to user
+2. Data is sent via email as backup
+3. Error is logged for investigation
+
 ## Colors
 
 - Primary: `#00D4FF` (Electric Blue)
