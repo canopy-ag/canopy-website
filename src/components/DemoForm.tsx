@@ -15,7 +15,7 @@ interface FormErrors {
   email?: string;
 }
 
-const FORMSPREE_ENDPOINT = 'https://formspree.io/f/movvdwdw';
+const API_ENDPOINT = '/api/submit-demo';
 
 export default function DemoForm() {
   const [isOpen, setIsOpen] = useState(false);
@@ -84,16 +84,13 @@ export default function DemoForm() {
     setIsSubmitting(true);
     
     try {
-      const response = await fetch(FORMSPREE_ENDPOINT, {
+      const response = await fetch(API_ENDPOINT, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
           'Accept': 'application/json'
         },
-        body: JSON.stringify({
-          ...formData,
-          _subject: `Demo Request from ${formData.companyName}`,
-        }),
+        body: JSON.stringify(formData),
       });
       
       if (response.ok) {
