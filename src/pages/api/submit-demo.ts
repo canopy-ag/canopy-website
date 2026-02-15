@@ -91,7 +91,12 @@ export const POST: APIRoute = async ({ request }) => {
     const validation = validateInput(data);
     if (!validation.valid) {
       return new Response(
-       Verify Turnstile token
+        JSON.stringify({ error: validation.error }),
+        { status: 400, headers: { 'Content-Type': 'application/json' } }
+      );
+    }
+
+    // Verify Turnstile token
     const turnstileSecret = import.meta.env.TURNSTILE_SECRET_KEY;
     if (turnstileSecret) {
       const ip = request.headers.get('x-forwarded-for')?.split(',')[0]?.trim() || 
@@ -114,11 +119,6 @@ export const POST: APIRoute = async ({ request }) => {
       }
     } else {
       console.warn('TURNSTILE_SECRET_KEY not configured - skipping bot verification');
-    }
-
-    //  JSON.stringify({ error: validation.error }),
-        { status: 400, headers: { 'Content-Type': 'application/json' } }
-      );
     }
 
     // Get client info for audit trail
