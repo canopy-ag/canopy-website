@@ -1,5 +1,6 @@
 ---
 import '../styles/global.css';
+import { activeLogos } from '../lib/brand';
 
 interface Props {
   title: string;
@@ -14,7 +15,7 @@ const { title, description = 'Canopy - Growing the future of agriculture' } = As
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+    <link rel="icon" type="image/svg+xml" href={activeLogos.favicon} />
     <meta name="description" content={description} />
     <title>{title}</title>
     <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -27,7 +28,7 @@ const { title, description = 'Canopy - Growing the future of agriculture' } = As
       <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div class="flex items-center justify-between h-16">
           <a href="/" class="flex items-center gap-3 group">
-            <img src="/logo-badge.svg" alt="Canopy" class="w-9 h-9 group-hover:scale-105 transition" />
+            <img src={activeLogos.badge} alt="Canopy" class="w-9 h-9 group-hover:scale-105 transition" />
             <span class="text-lg font-bold tracking-wide gradient-text">CANOPY</span>
           </a>
           <div class="hidden md:flex items-center gap-8">
@@ -53,7 +54,7 @@ const { title, description = 'Canopy - Growing the future of agriculture' } = As
         <div class="grid md:grid-cols-3 gap-8 mb-8">
           <div>
             <div class="flex items-center gap-2 mb-4">
-              <img src="/logo-badge.svg" alt="Canopy" class="w-7 h-7" />
+              <img src={activeLogos.badge} alt="Canopy" class="w-7 h-7" />
               <span class="font-bold gradient-text">CANOPY</span>
             </div>
             <p class="text-white/50 text-sm">

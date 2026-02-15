@@ -1,6 +1,7 @@
 ---
 import Layout from '~/layouts/Layout.astro';
 import DemoForm from '~/components/DemoForm';
+import { activeLogos } from '~/lib/brand';
 ---
 
 <Layout title="Canopy - Growing the Future of Agriculture">
@@ -20,7 +21,7 @@ import DemoForm from '~/components/DemoForm';
       <div class="flex justify-center mb-10">
         <div class="relative">
           <div class="absolute inset-0 bg-[#22C55E]/20 blur-3xl rounded-full"></div>
-          <img src="/logo-badge.svg" alt="Canopy" class="relative w-[120px] h-[120px] glow" />
+          <img src={activeLogos.badge} alt="Canopy" class="relative w-[120px] h-[120px] glow" />
         </div>
       </div>
       

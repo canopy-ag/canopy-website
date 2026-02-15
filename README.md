@@ -82,6 +82,13 @@ POSTGRES_URL="postgresql://canopy_vercel:PASSWORD@postgres-dev-canopy.tailnet-na
 RESEND_API_KEY="re_xxxxxxxx"
 ```
 
+Optional branding:
+
+```bash
+# Logo variant selection: hex (default) or leafy
+PUBLIC_LOGO_VARIANT=hex
+```
+
 ### Setup Instructions
 
 1. **Apply K8s resources** (in canopy-k8s-configs repo):

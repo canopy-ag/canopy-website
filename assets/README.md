@@ -2,19 +2,24 @@
 
 This document describes the logo assets used across the Canopy website and brand.
 
+## Variants
+
+Logos live under `public/logos/<variant>/` where `<variant>` is `hex` or `leafy`.
+Switch between variants with `PUBLIC_LOGO_VARIANT` (defaults to `hex`).
+
 ## Files
 
-### `logo-icon.svg`
+### `icon.svg`
 - **Dimensions:** 48×48 viewBox
 - **Use case:** Navigation bar, footer, small inline icons
 - **Description:** Compact square icon with circuit and leaf elements
 
-### `logo-badge.svg`
+### `badge.svg`
 - **Dimensions:** 256×256 viewBox
 - **Use case:** Hero sections, feature highlights, large display contexts
 - **Description:** Full badge-style icon with radial gradient background, circuit tree, and leaf
 
-### `logo-wordmark.svg`
+### `wordmark.svg`
 - **Dimensions:** 1024×320 viewBox
 - **Use case:** Full brand presentations, print materials, external documents
 - **Description:** Horizontal layout combining the badge icon with "CANOPY" wordmark text
@@ -24,7 +29,7 @@ This document describes the logo assets used across the Canopy website and brand
 - **Use case:** Browser tab icon, bookmarks, PWA icon
 - **Description:** Optimized 32×32 version of logo-badge with scaled proportions
 
-### `logo-full.svg` (legacy)
+### `full.svg` (legacy)
 - **Dimensions:** Varies
 - **Use case:** Legacy reference (being phased out in favor of logo-wordmark.svg)
 - **Description:** Previous full logo implementation
@@ -50,11 +55,11 @@ Note: The logo colors above are refined versions of the site's UI brand colors:
 
 ## Usage Guidelines
 
-1. **Navigation**: Use `logo-icon.svg` at 36-48px
-2. **Hero Sections**: Use `logo-badge.svg` at 96-144px for visual impact
-3. **Footer**: Use `logo-icon.svg` at 28-32px
+1. **Navigation**: Use `icon.svg` at 36-48px
+2. **Hero Sections**: Use `badge.svg` at 96-144px for visual impact
+3. **Footer**: Use `icon.svg` at 28-32px
 4. **Favicon**: Use `favicon.svg` (32×32 optimized)
-5. **External/Print**: Use `logo-wordmark.svg` for full brand representation
+5. **External/Print**: Use `wordmark.svg` for full brand representation
 
 ## Technical Notes
 
