@@ -1,5 +1,6 @@
 import type { APIRoute } from 'astro';
 import postgres from 'postgres';
+import { verifyTurnstileToken } from '../../lib/turnstile';
 
 // Database connection singleton
 let sqlClient: ReturnType<typeof postgres> | null = null;
@@ -44,6 +45,11 @@ function validateInput(data: Record<string, unknown>): { valid: boolean; error?:
     return { valid: false, error: 'Invalid email format' };
   }
   
+  // Turnstile token validation
+  if (!data.turnstileToken || typeof data.turnstileToken !== 'string') {
+    return { valid: false, error: 'Bot verification failed. Please refresh and try again.' };
+  }
+  
   // Optional field validations
   if (data.phone && typeof data.phone === 'string' && data.phone.length > 50) {
     return { valid: false, error: 'Phone number too long' };
@@ -85,7 +91,32 @@ export const POST: APIRoute = async ({ request }) => {
     const validation = validateInput(data);
     if (!validation.valid) {
       return new Response(
-        JSON.stringify({ error: validation.error }),
+       Verify Turnstile token
+    const turnstileSecret = import.meta.env.TURNSTILE_SECRET_KEY;
+    if (turnstileSecret) {
+      const ip = request.headers.get('x-forwarded-for')?.split(',')[0]?.trim() || 
+                 request.headers.get('x-real-ip');
+      
+      const turnstileResult = await verifyTurnstileToken(
+        data.turnstileToken as string,
+        turnstileSecret,
+        ip || undefined
+      );
+
+      if (!turnstileResult.success) {
+        console.error('Turnstile verification failed:', turnstileResult.errorCodes);
+        return new Response(
+          JSON.stringify({ 
+            error: 'Bot verification failed. Please refresh the page and try again.' 
+          }),
+          { status: 403, headers: { 'Content-Type': 'application/json' } }
+        );
+      }
+    } else {
+      console.warn('TURNSTILE_SECRET_KEY not configured - skipping bot verification');
+    }
+
+    //  JSON.stringify({ error: validation.error }),
         { status: 400, headers: { 'Content-Type': 'application/json' } }
       );
     }

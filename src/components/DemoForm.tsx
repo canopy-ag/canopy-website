@@ -7,12 +7,14 @@ interface DemoFormData {
   phone: string;
   companySize: string;
   message: string;
+  turnstileToken?: string;
 }
 
 interface FormErrors {
   companyName?: string;
   contactName?: string;
   email?: string;
+  turnstile?: string;
 }
 
 const API_ENDPOINT = '/api/submit-demo';
@@ -23,6 +25,8 @@ export default function DemoForm() {
   const [isSuccess, setIsSuccess] = useState(false);
   const [errors, setErrors] = useState<FormErrors>({});
   const modalRef = useRef<HTMLDivElement>(null);
+  const turnstileRef = useRef<HTMLDivElement>(null);
+  const [turnstileLoaded, setTurnstileLoaded] = useState(false);
 
   const [formData, setFormData] = useState<DemoFormData>({
     companyName: '',
@@ -31,6 +35,35 @@ export default function DemoForm() {
     phone: '',
     companySize: '',
     message: '',
+    tLoad Turnstile script
+  useEffect(() => {
+    if (typeof window !== 'undefined' && !(window as any).turnstile) {
+      const script = document.createElement('script');
+      script.src = 'https://challenges.cloudflare.com/turnstile/v0/api.js';
+      script.async = true;
+      script.defer = true;
+      script.onload = () => setTurnstileLoaded(true);
+      document.head.appendChild(script);
+    } else if ((window as any).turnstile) {
+      setTurnstileLoaded(true);
+    }
+  }, []);
+
+  // Render Turnstile widget when modal opens
+  useEffect(() => {
+    if (isOpen && turnstileLoaded && turnstileRef.current && !formData.turnstileToken) {
+      (window as any).turnstile.render(turnstileRef.current, {
+        sitekey: import.meta.env.PUBLIC_TURNSTILE_SITE_KEY || '1x00000000000000000000AA',
+        callback: (token: string) => {
+          setFormData(prev => ({ ...prev, turnstileToken: token }));
+          setErrors(prev => ({ ...prev, turnstile: undefined }));
+        },
+        theme: 'dark',
+      });
+    }
+  }, [isOpen, turnstileLoaded, formData.turnstileToken]);
+
+  // urnstileToken: undefined,
   });
 
   // Close modal on escape key
@@ -41,6 +74,10 @@ export default function DemoForm() {
     if (isOpen) {
       document.addEventListener('keydown', handleEscape);
       document.body.style.overflow = 'hidden';
+    if (!formData.turnstileToken) {
+      newErrors.turnstile = 'Please complete the verification challenge';
+    }
+    
     }
     return () => {
       document.removeEventListener('keydown', handleEscape);
@@ -70,7 +107,8 @@ export default function DemoForm() {
       newErrors.email = 'Email is required';
     } else if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(formData.email)) {
       newErrors.email = 'Please enter a valid email address';
-    }
+    }  turnstileToken: undefined,
+        
     
     setErrors(newErrors);
     return Object.keys(newErrors).length === 0;
@@ -255,7 +293,15 @@ export default function DemoForm() {
                 <div>
                   <label htmlFor="companySize" className="block text-sm font-medium text-white/80 mb-2">
                     Company Size
-                  </label>
+                  </Turnstile Verification */}
+                <div>
+                  <div ref={turnstileRef} className="flex justify-center" />
+                  {errors.turnstile && (
+                    <p className="text-red-400 text-sm mt-2 text-center">{errors.turnstile}</p>
+                  )}
+                </div>
+
+                {/* label>
                   <select
                     id="companySize"
                     name="companySize"
