@@ -1,40 +1,20 @@
-<svg xmlns="http://www.w3.org/2000/svg" width="1024" height="320" viewBox="0 0 1024 320" fill="none"> 
-  <defs> 
-    <!-- Icon background --> 
-    <radialGradient id="gBadge" cx="30%" cy="25%" r="85%"> 
-      <stop offset="0%" stop-color="#0B6A43"/> 
-      <stop offset="70%" stop-color="#03583A"/> 
-      <stop offset="100%" stop-color="#013A29"/> 
-    </radialGradient> 
-    <!-- Leaf fill --> 
-    <linearGradient id="gLeaf" x1="0" y1="40" x2="0" y2="170"> 
-      <stop offset="0%" stop-color="#32BA67"/> 
-      <stop offset="100%" stop-color="#1E9B4A"/> 
-    </linearGradient> 
-    <!-- Wordmark fill --> 
-    <linearGradient id="gWord" x1="320" y1="0" x2="980" y2="0"> 
-      <stop offset="0%" stop-color="#23B157"/> 
-      <stop offset="100%" stop-color="#1FAE55"/> 
-    </linearGradient> 
-  </defs> 
-  <!-- ICON --> 
-  <g transform="translate(80,32)"> 
-    <circle cx="128" cy="128" r="120" fill="url(#gBadge)"/> 
-    <g stroke="#039E96" stroke-width="14" stroke-linecap="round" stroke-linejoin="round" fill="none"> 
-      <path d="M60 132 H196"/> 
-      <path d="M128 88 V194"/> 
-      <path d="M128 140 L82 176"/> 
-      <path d="M128 140 L174 176"/> 
-      <path d="M128 140 V206"/> 
-      <circle cx="60" cy="132" r="16" stroke-width="10"/> 
-      <circle cx="196" cy="132" r="16" stroke-width="10"/> 
-      <circle cx="82" cy="176" r="16" stroke-width="10"/> 
-      <circle cx="174" cy="176" r="16" stroke-width="10"/> 
-      <circle cx="128" cy="206" r="16" stroke-width="10"/> 
-    </g> 
-    <path d="M128 34 C156 54 178 84 176 112 C174 140 152 160 128 170 C104 160 82 140 80 112 C78 84 100 54 128 34 Z" fill="url(#gLeaf)"/> 
-    <rect x="120" y="62" width="16" height="92" rx="8" fill="#064A33" opacity="0.9"/> 
-  </g> 
-  <!-- WORDMARK (editable text) --> 
-  <text x="360" y="200" font-size="112" font-weight="800" letter-spacing="2" fill="url(#gWord)" font-family="Montserrat, Poppins, Inter, Arial, sans-serif"> CANOPY </text> 
+<svg width="500" height="500" viewBox="0 0 500 500" xmlns="http://www.w3.org/2000/svg">
+  <rect width="500" height="500" fill="#0d141b"/>
+  <circle cx="250" cy="250" r="235" fill="#185337"/>
+  <path d="M250,55 C320,130 320,220 250,285 C180,220 180,130 250,55 Z" fill="#54aa6b"/>
+  <g stroke="#3c9d92" stroke-width="14" stroke-linecap="round" fill="none">
+    <line x1="250" y1="120" x2="250" y2="330" />
+    <line x1="250" y1="330" x2="100" y2="310" />
+    <line x1="250" y1="330" x2="165" y2="420" />
+    <line x1="250" y1="330" x2="250" y2="450" />
+    <line x1="250" y1="330" x2="335" y2="420" />
+    <line x1="250" y1="330" x2="400" y2="310" />
+  </g>
+  <g fill="#185337" stroke="#3c9d92" stroke-width="12">
+    <circle cx="100" cy="310" r="18" />
+    <circle cx="165" cy="420" r="18" />
+    <circle cx="250" cy="450" r="18" />
+    <circle cx="335" cy="420" r="18" />
+    <circle cx="400" cy="310" r="18" />
+  </g>
 </svg>

@@ -1,65 +1,20 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 120 120" fill="none">
-  <defs>
-    <linearGradient id="canopyGrad" x1="0%" y1="0%" x2="100%" y2="100%">
-      <stop offset="0%" stop-color="#22C55E"/>
-      <stop offset="100%" stop-color="#4ADE80"/>
-    </linearGradient>
-    <filter id="glow" x="-50%" y="-50%" width="200%" height="200%">
-      <feGaussianBlur stdDeviation="3" result="blur"/>
-      <feMerge>
-        <feMergeNode in="blur"/>
-        <feMergeNode in="SourceGraphic"/>
-      </feMerge>
-    </filter>
-  </defs>
-  
-  <!-- Outer ring -->
-  <circle cx="60" cy="60" r="56" stroke="url(#canopyGrad)" stroke-width="1.5" opacity="0.3"/>
-  
-  <!-- Inner background -->
-  <circle cx="60" cy="60" r="52" fill="#0B1120"/>
-  
-  <!-- Leaf shape -->
-  <path 
-    d="M60 24 C72 32 76 48 72 60 C68 68 60 72 60 72 C60 72 52 68 48 60 C44 48 48 32 60 24Z" 
-    fill="url(#canopyGrad)" 
-    filter="url(#glow)"
-  />
-  
-  <!-- Leaf vein -->
-  <path d="M60 28 V72" stroke="#22C55E" stroke-width="1" opacity="0.5"/>
-  
-  <!-- Circuit network -->
-  <g stroke="#00D4FF" stroke-width="1.5" stroke-linecap="round">
-    <!-- Main stem -->
-    <path d="M60 72 V82"/>
-    
-    <!-- First level branches -->
-    <path d="M60 82 L44 92"/>
-    <path d="M60 82 L60 96"/>
-    <path d="M60 82 L76 92"/>
-    
-    <!-- Second level branches -->
-    <path d="M44 92 L36 102"/>
-    <path d="M44 92 L48 106"/>
-    <path d="M76 92 L84 102"/>
-    <path d="M76 92 L72 106"/>
-    <path d="M60 96 L54 106"/>
-    <path d="M60 96 L66 106"/>
+<svg width="500" height="500" viewBox="0 0 500 500" xmlns="http://www.w3.org/2000/svg">
+  <rect width="500" height="500" fill="#0d141b"/>
+  <circle cx="250" cy="250" r="235" fill="#185337"/>
+  <path d="M250,55 C320,130 320,220 250,285 C180,220 180,130 250,55 Z" fill="#54aa6b"/>
+  <g stroke="#3c9d92" stroke-width="14" stroke-linecap="round" fill="none">
+    <line x1="250" y1="120" x2="250" y2="330" />
+    <line x1="250" y1="330" x2="100" y2="310" />
+    <line x1="250" y1="330" x2="165" y2="420" />
+    <line x1="250" y1="330" x2="250" y2="450" />
+    <line x1="250" y1="330" x2="335" y2="420" />
+    <line x1="250" y1="330" x2="400" y2="310" />
   </g>
-  
-  <!-- Circuit nodes -->
-  <g fill="#00D4FF">
-    <circle cx="60" cy="72" r="2.5"/>
-    <circle cx="60" cy="82" r="2"/>
-    <circle cx="44" cy="92" r="2"/>
-    <circle cx="60" cy="96" r="2"/>
-    <circle cx="76" cy="92" r="2"/>
-    <circle cx="36" cy="102" r="1.5"/>
-    <circle cx="48" cy="106" r="1.5"/>
-    <circle cx="54" cy="106" r="1.5"/>
-    <circle cx="66" cy="106" r="1.5"/>
-    <circle cx="72" cy="106" r="1.5"/>
-    <circle cx="84" cy="102" r="1.5"/>
+  <g fill="#185337" stroke="#3c9d92" stroke-width="12">
+    <circle cx="100" cy="310" r="18" />
+    <circle cx="165" cy="420" r="18" />
+    <circle cx="250" cy="450" r="18" />
+    <circle cx="335" cy="420" r="18" />
+    <circle cx="400" cy="310" r="18" />
   </g>
 </svg>

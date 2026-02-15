@@ -1,30 +1,20 @@
-<svg xmlns="http://www.w3.org/2000/svg" width="256" height="256" viewBox="0 0 256 256" fill="none"> 
-  <defs> 
-    <linearGradient id="gLeaf" x1="0" y1="40" x2="0" y2="170"> 
-      <stop offset="0%" stop-color="#32BA67"/> 
-      <stop offset="100%" stop-color="#1E9B4A"/> 
-    </linearGradient> 
-  </defs> 
-  <!-- Badge - solid background --> 
-  <circle cx="128" cy="128" r="120" fill="#03583A"/> 
-  <!-- Circuit --> 
-  <g stroke="#039E96" stroke-width="10" stroke-linecap="round" stroke-linejoin="round" fill="none"> 
-    <!-- Main horizontal - shorter, stops at circle edges --> 
-    <path d="M74 132 H182"/> 
-    <!-- Main vertical (trunk) - stops at bottom circle --> 
-    <path d="M128 88 V162"/> 
-    <!-- Branches down - shorter --> 
-    <path d="M128 140 L93 163"/> 
-    <path d="M128 140 L163 163"/> 
-    <!-- Rings positioned at line ends --> 
-    <circle cx="74" cy="132" r="14" stroke-width="8"/> 
-    <circle cx="182" cy="132" r="14" stroke-width="8"/> 
-    <circle cx="93" cy="163" r="14" stroke-width="8"/> 
-    <circle cx="163" cy="163" r="14" stroke-width="8"/> 
-    <circle cx="128" cy="190" r="14" stroke-width="8"/> 
-  </g> 
-  <!-- Leaf --> 
-  <path d="M128 34 C156 54 178 84 176 112 C174 140 152 160 128 170 C104 160 82 140 80 112 C78 84 100 54 128 34 Z" fill="url(#gLeaf)"/> 
-  <!-- Leaf inner slit --> 
-  <rect x="120" y="62" width="16" height="92" rx="8" fill="#064A33" opacity="0.9"/> 
+<svg width="500" height="500" viewBox="0 0 500 500" xmlns="http://www.w3.org/2000/svg">
+  <rect width="500" height="500" fill="#0d141b"/>
+  <circle cx="250" cy="250" r="235" fill="#185337"/>
+  <path d="M250,55 C320,130 320,220 250,285 C180,220 180,130 250,55 Z" fill="#54aa6b"/>
+  <g stroke="#3c9d92" stroke-width="14" stroke-linecap="round" fill="none">
+    <line x1="250" y1="120" x2="250" y2="330" />
+    <line x1="250" y1="330" x2="100" y2="310" />
+    <line x1="250" y1="330" x2="165" y2="420" />
+    <line x1="250" y1="330" x2="250" y2="450" />
+    <line x1="250" y1="330" x2="335" y2="420" />
+    <line x1="250" y1="330" x2="400" y2="310" />
+  </g>
+  <g fill="#185337" stroke="#3c9d92" stroke-width="12">
+    <circle cx="100" cy="310" r="18" />
+    <circle cx="165" cy="420" r="18" />
+    <circle cx="250" cy="450" r="18" />
+    <circle cx="335" cy="420" r="18" />
+    <circle cx="400" cy="310" r="18" />
+  </g>
 </svg>
