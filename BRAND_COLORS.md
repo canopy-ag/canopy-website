@@ -1,5 +1,7 @@
 # Canopy Brand Colors
 
+Source of truth for brand color tokens used across the marketing site.
+
 ## Primary Palette
 
 | Color | Hex | Usage |
