@@ -12,8 +12,20 @@ A modern Astro website for Canopy — growing the future of agriculture.
 
 ## Getting Started
 
+> **Heads up — install requires GitHub Packages auth.** This repo depends on
+> `@canopy-ag/react-ui` (design tokens), which is published to the
+> `canopy-ag` org's GitHub Packages npm registry. Export a classic PAT with
+> `read:packages` scope on `canopy-ag` before installing:
+>
+> ```bash
+> export NODE_AUTH_TOKEN=<your classic PAT>
+> ```
+>
+> The committed `.npmrc` reads the token at `npm install` time; nothing is
+> persisted. Vercel builds use the project-level `NODE_AUTH_TOKEN` env var.
+
 ```bash
-# Install dependencies
+# Install dependencies (requires NODE_AUTH_TOKEN — see above)
 npm install
 
 # Run dev server

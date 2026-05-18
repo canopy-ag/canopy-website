@@ -1,14 +1,5 @@
 @import "tailwindcss";
-
-@theme {
-  --color-canopy-green: #22C55E;
-  --color-canopy-green-light: #4ADE80;
-  --color-canopy-blue: #00D4FF;
-  --color-canopy-blue-dark: #0099CC;
-  --color-canopy-dark: #0B1120;
-  --color-canopy-darker: #070F1A;
-  --color-canopy-card: #111D2F;
-}
+@import "@canopy-ag/react-ui/tokens.css";
 
 body {
   font-family: 'Inter', system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
