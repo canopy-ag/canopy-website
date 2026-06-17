@@ -22,3 +22,10 @@ pnpm-debug.log*
 .tina/__generated__
 admin/
 .vercel
+
+# Agent worktrees (git worktree add via /story-handoff + the Claude Code Agent
+# tool with isolation=worktree). Registered worktrees are already excluded from
+# `git status`; these entries are defensive against orphan state from failed
+# `git worktree remove` runs or manual `mkdir .worktrees/...`.
+.worktrees/
+.claude/worktrees
