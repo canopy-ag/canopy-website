@@ -1,69 +1,49 @@
-# Canopy Logo Assets
+# Canopy logo assets
 
-This document describes the logo assets used across the Canopy website and brand.
+Logo files the site serves live under `public/logos/<variant>/`, not in this
+folder. This document describes what is there and how the site picks a set.
 
 ## Variants
 
-Logos live under `public/logos/<variant>/` where `<variant>` is `hex` or `leafy`.
-Switch between variants with `PUBLIC_LOGO_VARIANT` (defaults to `hex`).
+Two sets exist, `hex` and `leafy`. `src/lib/brand.ts` selects one from
+`PUBLIC_LOGO_VARIANT` (default `hex`) and exposes `activeLogos`, which
+`src/layouts/Layout.astro` uses for the nav badge, footer badge, and favicon.
 
-## Files
+| Variant | Design | Artwork viewBox | Colors in the SVG |
+|---|---|---|---|
+| `hex` | Hex badge with leaf and circuit accent | `30 30 340 389` | leaf `#4ADE80`, circuit stroke `#00D4FF`, outline `#0C1319` |
+| `leafy` | Circular leafy node badge | `0 0 500 500` | fills `#185337`, `#54aa6b`, `#0d141b`; stroke `#3c9d92` |
 
-### `icon.svg`
-- **Dimensions:** 48×48 viewBox
-- **Use case:** Navigation bar, footer, small inline icons
-- **Description:** Compact square icon with circuit and leaf elements
+## Files per variant
 
-### `badge.svg`
-- **Dimensions:** 256×256 viewBox
-- **Use case:** Hero sections, feature highlights, large display contexts
-- **Description:** Full badge-style icon with radial gradient background, circuit tree, and leaf
+Each variant folder has the same five names, and today they all contain the
+**same artwork**. `badge.svg`, `icon.svg`, `favicon.svg`, `full.svg`, and
+`wordmark.svg` are byte-identical within a variant. The names are placeholders
+for a future set where the wordmark carries the CANOPY text and the favicon is
+simplified for 16 to 32 px. Until then, treat them as one mark.
 
-### `wordmark.svg`
-- **Dimensions:** 1024×320 viewBox
-- **Use case:** Full brand presentations, print materials, external documents
-- **Description:** Horizontal layout combining the badge icon with "CANOPY" wordmark text
+| File | Intended use | Where it is used now |
+|---|---|---|
+| `badge.svg` | Primary mark | Nav (36 px, `w-9 h-9`) and footer (28 px, `w-7 h-7`) |
+| `favicon.svg` | Browser tab | `<link rel="icon">` in `Layout.astro` |
+| `icon.svg` | Square icon contexts | Not referenced by the site yet |
+| `wordmark.svg` | Horizontal lockup with text | Placeholder, icon only |
+| `full.svg` | Full lockup | Placeholder, icon only |
 
-### `favicon.svg`
-- **Dimensions:** 32×32 viewBox
-- **Use case:** Browser tab icon, bookmarks, PWA icon
-- **Description:** Optimized 32×32 version of logo-badge with scaled proportions
+Sizing guidance in the per-variant READMEs (`public/logos/hex/README.md`,
+`public/logos/leafy/README.md`) matches the table above.
 
-### `full.svg` (legacy)
-- **Dimensions:** Varies
-- **Use case:** Legacy reference (being phased out in favor of logo-wordmark.svg)
-- **Description:** Previous full logo implementation
+## Adding or replacing a logo
 
-## Color Palette
+1. Export SVGs with a stable `viewBox` and no embedded raster.
+2. Keep gradient and mask `id`s unique per file if you inline them anywhere.
+3. Drop them into `public/logos/<variant>/` with the same five names.
+4. Run `npm run dev` and check the nav, footer, and browser tab at both variants:
 
-### Primary Badge Colors
-| Element | Type | Colors |
-|---------|------|--------|
-| Badge Background | Radial Gradient | `#0B6A43` → `#03583A` → `#013A29` |
-| Leaf | Linear Gradient | `#32BA67` → `#1E9B4A` |
-| Circuit | Solid | `#039E96` (teal) |
+   ```bash
+   PUBLIC_LOGO_VARIANT=leafy npm run dev
+   ```
 
-### Wordmark Colors
-| Element | Type | Colors |
-|---------|------|--------|
-| Text | Linear Gradient | `#23B157` → `#1FAE55` |
-
-### Legacy Brand Colors (UI)
-Note: The logo colors above are refined versions of the site's UI brand colors:
-- Primary Green: `#22C55E`
-- Light Green: `#4ADE80`
-
-## Usage Guidelines
-
-1. **Navigation**: Use `icon.svg` at 36-48px
-2. **Hero Sections**: Use `badge.svg` at 96-144px for visual impact
-3. **Footer**: Use `icon.svg` at 28-32px
-4. **Favicon**: Use `favicon.svg` (32×32 optimized)
-5. **External/Print**: Use `wordmark.svg` for full brand representation
-
-## Technical Notes
-
-- All SVGs use `fill="none"` on the root element with explicit fills on child elements
-- Gradients are defined within `<defs>` with unique IDs per file
-- The favicon is a manually optimized version maintaining visual consistency at small sizes
-- Font in wordmark uses: `Montserrat, Poppins, Inter, Arial, sans-serif`
+The wider brand palette (UI greens, blues, navies) is documented in
+`BRAND_COLORS.md`; the values inside the logo SVGs are tuned for the mark and do
+not have to match the UI tokens exactly.

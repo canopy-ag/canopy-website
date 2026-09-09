@@ -2,7 +2,7 @@
 
 Generated 2026-09-04 via Higgsfield (keyframe: Nano Banana Pro 2k · video: Seedance 2.5, start = end frame · seam: 0.4 s crossfade). Prompt package + regen recipe: `canopy-design/prompts/hero-nursery-higgsfield.md`.
 
-Download these two files into this folder (`public/hero/`). They are in the Higgsfield media library at these public URLs:
+`canopy-hero-loop.mp4` and `canopy-hero-poster.jpg` are committed in this folder and served by the site; nothing needs downloading for a normal checkout. The table below records where each version came from, for re-edits or a regen:
 
 | File | URL | Notes |
 |---|---|---|
@@ -21,7 +21,7 @@ Source assets kept on Higgsfield (job ids) in case of re-edit:
 
 ## Component (shipped)
 
-`src/components/Hero.astro` is wired into `src/pages/index.astro` (replaces the old centered-logo hero). It expects `/hero/canopy-hero-loop.mp4` + `/hero/canopy-hero-poster.jpg` in this folder. Download v3 above and drop them in, then run `npm run dev`. `preview.html` in this folder is a standalone mirror that streams the video from the CDN for judging the layout without the dev server. Copy follows the approved operating-layer positioning; the component uses one primary CTA, and the secondary CTA links to the About page. Reduced-motion and Save-Data users get the poster only.
+`src/components/Hero.astro` is wired into `src/pages/index.astro` (replaces the old centered-logo hero). It reads `/hero/canopy-hero-loop.mp4` + `/hero/canopy-hero-poster.jpg` from this folder (both committed, v3). A webm source is only emitted when the `videoWebm` prop is passed; none is committed today. To swap the loop, replace the two files here and run `npm run dev`. `preview.html` in this folder is a standalone mirror that streams the video from the CDN for judging the layout without the dev server. Copy follows the approved operating-layer positioning; the component uses one primary CTA, and the secondary CTA links to the About page. Reduced-motion and Save-Data users get the poster only.
 
 ## Embed reference: what the component does
 

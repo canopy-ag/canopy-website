@@ -30,17 +30,29 @@ Canopy's visual identity combines **nature (green)** with **technology (blue)**:
 - **Leaf & Text Gradient**: `#22C55E` -> `#4ADE80` (135deg)
 - **Circuit/Tech Gradient**: `#00D4FF` -> `#0099CC` (135deg)
 
-## CSS Variables (Tailwind @theme)
+## CSS variables (design tokens)
+
+The site no longer declares its own `@theme` block. `src/styles/global.css` imports
+`@canopy-ag/react-ui/tokens.css`, the Style-Dictionary build shared with the
+product app, which defines the palette as `--canopy-*` custom properties inside a
+Tailwind v4 `@theme` block:
 
 ```css
---color-canopy-green: #22C55E;
---color-canopy-green-light: #4ADE80;
---color-canopy-blue: #00D4FF;
---color-canopy-blue-dark: #0099CC;
---color-canopy-dark: #0B1120;
---color-canopy-darker: #070F1A;
---color-canopy-card: #111D2F;
+--canopy-green        /* #22C55E */
+--canopy-green-light  /* #4ADE80 */
+--canopy-green-dark
+--canopy-blue         /* #00D4FF */
+--canopy-blue-dark    /* #0099CC */
+--canopy-blue-light
+--canopy-dark         /* #0B1120 */
+--canopy-darker       /* #070F1A */
+--canopy-card         /* #111D2F */
 ```
+
+Use them as `var(--canopy-green)` in `.astro` and CSS. The token source of truth is
+`react/ui/src/tokens/tokens.json` in `canopy-roost`; change colors there and
+release the package rather than editing this file alone. The hex values in this
+document are a reference for design tools and must match that source.
 
 ## Selection & Glow Effects
 
