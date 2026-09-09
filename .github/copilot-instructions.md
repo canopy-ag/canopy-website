@@ -1,54 +1,61 @@
-# Copilot Instructions for Canopy Website
+# Copilot instructions for canopy-website
 
-## Purpose
+Marketing site and blog for Canopy at canopy.ag. Astro 5 static site with one
+serverless API route, deployed by Vercel. `AGENTS.md` at the repo root holds the
+rules; `README.md` explains the architecture. Keep both in mind.
 
-Marketing website for Canopy (`canopy.ag`). Astro 5 static site with serverless API routes, deployed on Vercel.
+## Stack
 
-## Tech Stack
-
-- **Astro 5** with `output: 'static'` + Vercel adapter (enables serverless API routes)
-- **React** for interactive islands only (DemoForm modal via `client:load`)
-- **Tailwind CSS v4** via `@tailwindcss/vite` plugin (NOT PostCSS — no `tailwind.config.js`)
-- **postgres.js** for direct SQL (not an ORM) to CNPG PostgreSQL via Tailscale Funnel
-- **Zod** for validation schemas
-- **Resend** for transactional email
+- Astro 5, `output: 'static'` with the Vercel adapter. Only `src/pages/api/submit-demo.ts`
+  sets `prerender = false`.
+- MDX blog via `@astrojs/mdx`; content collections defined in `src/content.config.ts`
+  with a `glob` loader over `src/content/blog/<slug>/index.mdx`.
+- React only for islands. `src/components/DemoForm.tsx` is the one island.
+- Tailwind CSS v4 through `@tailwindcss/vite`. No `tailwind.config.js`. Design
+  tokens are imported from `@canopy-ag/react-ui/tokens.css` (GitHub Packages, so
+  `npm install` needs `NODE_AUTH_TOKEN` with `read:packages`).
+- Zod for the demo-form schema (`src/lib/schema.ts`), mirrored in `ingest/server.mjs`.
+- Vitest for `src/lib/blog/*.test.ts`.
 
 ## Commands
 
 ```bash
 npm run dev      # astro dev
-npm run build    # astro check && astro build (type-checks first)
-npm run preview  # astro preview
+npm test         # vitest run
+npm run build    # astro check && astro build
 ```
 
 ## Structure
 
 ```
-src/
-  pages/         # File-based routing (.astro), API routes in api/
-  layouts/       # Single Layout.astro (glassmorphism nav, footer)
-  components/    # React .tsx (interactive islands only)
-  lib/           # db.ts, schema.ts
-  styles/        # global.css (@theme vars, custom utilities)
-  content/posts/ # Markdown blog posts (Astro Content Collections + Zod schema)
-public/          # Static assets (SVG logos, favicon)
-specs/           # Feature specifications
+src/pages/          routes; api/submit-demo.ts is the serverless endpoint
+src/layouts/        Layout.astro, PostLayout.astro
+src/components/     Hero.astro, DemoForm.tsx, blog/*.astro + blog/mdx.ts
+src/content/blog/   one folder per post with colocated media; _template/ is skipped
+src/content/authors caleb.json, ermias.json
+src/lib/blog/       pure helpers + tests; lib/brand.ts logo switch; lib/schema.ts
+src/styles/         global.css (tokens import + utilities), blog.css
+ingest/             demo-form ingest shim (Node + Dockerfile), its own image
+public/hero, public/logos   media assets
+specs/              design docs; see specs/README.md for status
 ```
 
-## Key Patterns
+## Patterns
 
-- **Dark theme only**: Deep navy backgrounds (#0B1120), green (#22C55E) primary, blue (#00D4FF) accents
-- **Custom CSS utilities**: `.glass`, `.glow`, `.glow-text`, `.gradient-text`, `.btn-primary` defined in `global.css`
-- **Tailwind v4 theming**: Uses `@theme` directive with CSS custom properties — no JS config file
-- **Path alias**: `~/` maps to `src/` (configured in tsconfig)
-- **API routes**: Export named HTTP handlers (`export const POST: APIRoute`), return `new Response(JSON.stringify(...))`
-- **Resilient form submission**: DB insert → email fallback via Resend → always returns success to user
-- **Blog posts**: Content Collections with Zod schema (`title`, `description`, `pubDate`, `draft`, `tags`, `heroImage`)
-- **Database**: `POSTGRES_URL` env var, connection via Tailscale Funnel to home K8s cluster CNPG
+- Demo form: browser -> `/api/submit-demo` -> `INGEST_URL` (Tailscale Funnel,
+  bearer `INGEST_SECRET`) -> Postgres in the homelab cluster. Email fallback via
+  Resend. Never open a Postgres connection from the site.
+- Drafts: `draft: true` posts render unless `VERCEL_ENV === 'production'`.
+- All post queries go through `src/lib/blog/collection.ts`.
+- Custom utilities in `global.css`: `.glass`, `.glow`, `.glow-text`, `.gradient-text`,
+  `.btn-primary`, `.btn-secondary`, `.nav-link`.
+- Path alias `~/` maps to `src/`.
+- API routes export named handlers (`export const POST: APIRoute`) and return
+  `Response` objects with JSON bodies.
 
-## Conventions
+## Rules
 
-- Pages are `.astro`, interactive components are `.tsx` (React islands)
-- No testing setup currently
-- Content in `src/content/posts/` as Markdown with frontmatter
-- Deploy by pushing to `main` (Vercel auto-deploy)
+- No em dashes in `src/` (CI fails). No emoji. Sentence case.
+- Dark theme only; use `var(--canopy-*)` tokens or the palette in `BRAND_COLORS.md`.
+- Alt text on every image; `heroAlt` is required with `heroImage`.
+- Deploy by merging to `main` (Vercel). PRs get preview deployments with drafts on.

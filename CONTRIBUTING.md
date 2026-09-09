@@ -16,6 +16,11 @@ Posts are files in this repo. You write one, open a pull request, look at the pr
 
 4. Open http://localhost:4321/blog. Drafts show locally.
 
+If `npm install` fails with a 403 that mentions "expected scopes", the token is
+missing `read:packages`. A 401 means the token expired. Make a new one and run
+the export again. If you use the GitHub CLI, `gh auth refresh -h github.com -s read:packages`
+then `export NODE_AUTH_TOKEN="$(gh auth token)"` also works.
+
 ## Writing a post
 
 1. Copy `src/content/blog/_template` to `src/content/blog/<slug>`. The folder name becomes the URL, so use lowercase words joined by dashes: `leaching-fraction-on-hot-days`.
@@ -100,3 +105,10 @@ If Site CI fails, the log says why. Common causes: a missing `heroAlt`, an image
 - No exclamation marks. No emoji.
 - Every image gets alt text that says what is in it.
 - Short paragraphs. One idea each.
+
+## Changing code
+
+This guide is for posts. For pages, components, styling, the demo form, CI, and
+deployment, read the [README](README.md), in particular "Contributing code" and
+"How the site works". Agents should also read [AGENTS.md](AGENTS.md). The same
+style rules above apply to copy inside code.

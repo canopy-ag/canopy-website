@@ -1,3 +1,5 @@
+> **Superseded (2026-09).** This describes the original direct-to-CNPG design that was never the production path. The demo form now posts to the ingest shim in `ingest/`, which writes to a dedicated Postgres in the `canopy-website` namespace. See `specs/README.md`, the root README ("Demo form and the ingest shim"), and `ingest/README.md`. Kept for history; do not run these commands.
+
 # CNPG PostgreSQL Integration Guide
 
 ## Quick Reference
