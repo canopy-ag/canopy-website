@@ -1,0 +1,86 @@
+---
+/**
+ * ProofBand: a row of credibility items.
+ *
+ * Each item can be a stat (value + label) or a short claim (label + body).
+ * Use it for honest, sourced proof. An optional `note` renders small print
+ * below the row, for attribution.
+ */
+interface Item {
+  value?: string;
+  label: string;
+  body?: string;
+}
+
+interface Props {
+  items: Item[];
+  note?: string;
+}
+
+const { items, note } = Astro.props;
+---
+
+<div class="pband glass">
+  <ul class="pband__row">
+    {items.map((item) => (
+      <li class="pband__item">
+        {item.value && <span class="pband__value">{item.value}</span>}
+        <span class="pband__label">{item.label}</span>
+        {item.body && <span class="pband__body">{item.body}</span>}
+      </li>
+    ))}
+  </ul>
+  {note && <p class="pband__note">{note}</p>}
+</div>
+
+<style>
+  .pband {
+    border-radius: 1rem;
+    padding: clamp(1.5rem, 3vw, 2.25rem);
+  }
+  .pband__row {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 1.5rem;
+  }
+  @media (max-width: 48rem) {
+    .pband__row { grid-template-columns: 1fr; gap: 1.75rem; }
+  }
+  .pband__item {
+    display: flex;
+    flex-direction: column;
+    gap: 0.4rem;
+  }
+  .pband__value {
+    font-size: clamp(1.9rem, 4vw, 2.6rem);
+    font-weight: 700;
+    line-height: 1;
+    letter-spacing: -0.01em;
+    background: linear-gradient(135deg, #22c55e 0%, #4ade80 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+    font-variant-numeric: tabular-nums;
+  }
+  .pband__label {
+    font-size: 0.98rem;
+    font-weight: 600;
+    color: var(--canopy-text-primary, #fff);
+  }
+  .pband__body {
+    font-size: 0.9rem;
+    line-height: 1.55;
+    color: var(--canopy-text-secondary, rgba(255, 255, 255, 0.62));
+  }
+  .pband__note {
+    margin: 1.5rem 0 0;
+    padding-top: 1.25rem;
+    border-top: 1px solid rgba(255, 255, 255, 0.08);
+    font-size: 0.82rem;
+    line-height: 1.55;
+    color: var(--canopy-text-secondary, rgba(255, 255, 255, 0.5));
+  }
+</style>

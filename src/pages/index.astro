@@ -1,111 +1,89 @@
 ---
 import Layout from '~/layouts/Layout.astro';
-import DemoForm from '~/components/DemoForm';
 import Hero from '~/components/Hero.astro';
+import Section from '~/components/sections/Section.astro';
+import FeatureGrid from '~/components/sections/FeatureGrid.astro';
+import ProofBand from '~/components/sections/ProofBand.astro';
+import CtaSection from '~/components/sections/CtaSection.astro';
+
+const modules = [
+  {
+    tag: 'Live',
+    tagTone: 'live' as const,
+    title: 'Irrigation that runs itself',
+    body: "Schedule to the crop's real demand, using local weather and your own input, so water and inputs feed the plant instead of the drain.",
+    href: '/irrigation',
+  },
+  {
+    tag: 'Early access',
+    tagTone: 'soon' as const,
+    title: 'Labor you can see before the day starts',
+    body: 'A green and red morning report, in dollars, from your own numbers, so you know what needs you before the crews clock in.',
+    href: '/labor',
+  },
+];
+
+const operatingPoints = [
+  {
+    title: 'See what matters now',
+    body: "Changing signals land in one place, so the day's priorities are clear before it starts.",
+  },
+  {
+    title: 'Put labor where it counts',
+    body: 'Your scarcest resource goes to the work that moves the operation, not to walking the yard.',
+  },
+  {
+    title: 'Keep cost in view',
+    body: 'Throughput and cost stay visible next to the work, in numbers you can take to the office.',
+  },
+];
+
+const proof = [
+  { value: '40+ years', label: 'Growing behind the product', body: 'Built by growers who have done the work, not a software team guessing.' },
+  { value: 'UF research', label: 'The science underneath', body: 'Irrigation research from the University of Florida, proven in working nurseries.' },
+  { value: 'Live beta', label: 'In the field now', body: 'Running today at Saunders Brothers and one more nursery.' },
+];
 ---
 
 <Layout
   title="Canopy | Connect every decision to the work that matters"
-  description="Canopy is building the operating layer that turns changing signals into clear labor priorities and coordinated work for growing operations."
+  description="Canopy is the operating layer for growers. Run irrigation, sensors, and labor from one system, so you can see what matters now, prioritize labor, and coordinate every shift."
 >
-  <!-- Hero: full-bleed nursery loop (src/components/Hero.astro; assets in public/hero) -->
+  <!-- Hero: full-bleed nursery loop (src/components/Hero.astro; assets in public/hero). Kept as-is. -->
   <Hero />
 
-  <!-- Stats Section -->
-  <section class="py-20 border-y border-white/10">
-    <div class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
-      <div class="grid grid-cols-2 md:grid-cols-4 gap-8">
-        <div class="text-center">
-          <div class="text-4xl font-bold gradient-text mb-2">$13.8B</div>
-          <div class="text-white/50">US Horticulture Market</div>
-        </div>
-        <div class="text-center">
-          <div class="text-4xl font-bold gradient-text mb-2">22K+</div>
-          <div class="text-white/50">Growing Operations</div>
-        </div>
-        <div class="text-center">
-          <div class="text-4xl font-bold gradient-text mb-2">40%</div>
-          <div class="text-white/50">Efficiency Gains</div>
-        </div>
-        <div class="text-center">
-          <div class="text-4xl font-bold gradient-text mb-2">∞</div>
-          <div class="text-white/50">Possibilities</div>
-        </div>
-      </div>
-    </div>
-  </section>
+  <Section
+    eyebrow="What runs on Canopy"
+    title="Start where it hurts. It all runs together."
+    intro="Canopy is one operating layer for the whole operation. Begin with irrigation or labor, and everything you add works off the same plan, the same data, and the same screen."
+  >
+    <FeatureGrid items={modules} columns={2} />
+  </Section>
 
-  <!-- Features Section -->
-  <section class="py-24">
-    <div class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
-      <div class="text-center mb-16">
-        <h2 class="text-4xl font-bold mb-4">
-          Why <span class="gradient-text">Canopy</span>?
-        </h2>
-        <p class="text-white/60 text-lg max-w-2xl mx-auto">
-          Built for growers who want to make data-driven decisions without the complexity.
-        </p>
-      </div>
-      
-      <div class="grid md:grid-cols-3 gap-6">
-        <!-- Feature 1 -->
-        <div class="glass rounded-2xl p-8 hover:scale-[1.02] transition duration-300">
-          <div class="w-14 h-14 bg-gradient-to-br from-[#22C55E]/20 to-[#4ADE80]/20 rounded-xl flex items-center justify-center mb-6">
-            <svg class="w-7 h-7 text-[#22C55E]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z"/>
-            </svg>
-          </div>
-          <h3 class="text-xl font-semibold mb-3">Data-Driven Insights</h3>
-          <p class="text-white/60 leading-relaxed">
-            Make informed decisions with real-time analytics, industry benchmarks, and predictive modeling.
-          </p>
-        </div>
+  <Section
+    eyebrow="One system"
+    title="The operation runs on one plan, not three tools."
+    intro="The real state of a growing operation lives in three places: a controller, a clipboard, and someone's head. Canopy brings them together, and works alongside the systems you already rely on."
+    tone="panel"
+  >
+    <FeatureGrid items={operatingPoints} columns={3} />
+  </Section>
 
-        <!-- Feature 2 -->
-        <div class="glass rounded-2xl p-8 hover:scale-[1.02] transition duration-300">
-          <div class="w-14 h-14 bg-gradient-to-br from-[#22C55E]/20 to-[#4ADE80]/20 rounded-xl flex items-center justify-center mb-6">
-            <svg class="w-7 h-7 text-[#22C55E]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M12 6V4m0 2a2 2 0 100 4m0-4a2 2 0 110 4m-6 8a2 2 0 100-4m0 4a2 2 0 110-4m0 4v2m0-6V4m6 6v10m6-2a2 2 0 100-4m0 4a2 2 0 110-4m0 4v2m0-6V4"/>
-            </svg>
-          </div>
-          <h3 class="text-xl font-semibold mb-3">Operations Management</h3>
-          <p class="text-white/60 leading-relaxed">
-            Streamline your workflow from seed to sale with integrated tools for inventory, scheduling, and tracking.
-          </p>
-        </div>
+  <Section
+    eyebrow="Why growers trust it"
+    title="Built by growers, proven in the field."
+  >
+    <ProofBand
+      items={proof}
+      note="Irrigation is live in beta today. Labor is in early access with our design partners. University of Florida figures reflect the research Canopy is built on, not results from Canopy's own controller."
+    />
+  </Section>
 
-        <!-- Feature 3 -->
-        <div class="glass rounded-2xl p-8 hover:scale-[1.02] transition duration-300">
-          <div class="w-14 h-14 bg-gradient-to-br from-[#22C55E]/20 to-[#4ADE80]/20 rounded-xl flex items-center justify-center mb-6">
-            <svg class="w-7 h-7 text-[#22C55E]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z"/>
-            </svg>
-          </div>
-          <h3 class="text-xl font-semibold mb-3">Grower Community</h3>
-          <p class="text-white/60 leading-relaxed">
-            Connect with fellow growers, share best practices, and learn from industry experts.
-          </p>
-        </div>
-      </div>
-    </div>
-  </section>
-
-  <!-- CTA Section -->
-  <section class="py-24 relative overflow-hidden">
-    <div class="absolute inset-0 bg-gradient-to-r from-[#22C55E]/10 via-transparent to-[#22C55E]/10 pointer-events-none"></div>
-    <div class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 text-center relative z-10">
-      <h2 class="text-4xl sm:text-5xl font-bold mb-6">
-        Ready to <span class="gradient-text">grow</span> with Canopy?
-      </h2>
-      <p class="text-white/60 text-lg mb-10 max-w-2xl mx-auto">
-        Join thousands of growers who are transforming their operations with data and technology.
-      </p>
-      <div class="flex flex-col sm:flex-row gap-4 justify-center items-center">
-        <a href="/blog" class="btn-secondary text-lg px-10 py-4">
-          Read the Blog
-        </a>
-        <DemoForm client:load />
-      </div>
-    </div>
-  </section>
+  <CtaSection
+    title="See it on your operation."
+    body="Book a demo and we will show you what Canopy looks like on your zones and your crews, starting wherever the pain is worst."
+    demoLabel="Request a demo"
+    secondaryHref="/labor"
+    secondaryLabel="See the labor report"
+  />
 </Layout>
