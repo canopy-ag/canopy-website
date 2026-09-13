@@ -253,8 +253,12 @@ the recipe is in that directory's README.
 
 ## Contributing code
 
-1. Branch from `main`. `main` is not branch-protected today, so treat a green
-   Site CI check and a look at the Vercel preview as the merge bar.
+1. Branch from `main`. `main` is protected: every change lands through a pull
+   request with a green Site CI check, and no force pushes or deletes. Paths in
+   [`.github/CODEOWNERS`](.github/CODEOWNERS) (CI, the demo-form path,
+   dependencies, build and deploy config, agent instructions) also need a review
+   from @ebizuwo. Posts and page copy merge on green CI after a look at the
+   Vercel preview.
 2. Keep PR titles in the conventional-commit shape the history uses
    (`feat(blog): ...`, `fix: ...`, `docs: ...`, `ci: ...`, `chore: ...`). Merges
    are squash-style with the PR number appended.

@@ -1,0 +1,25 @@
+# Sensitive paths. A pull request that touches any of these needs an approving
+# review from an owner before it can merge into main (enforced by the "main"
+# ruleset). Everything else, including blog posts and page copy, merges on a
+# green Site CI check. Keep this list to paths where a bad change leaks a
+# secret, breaks the lead pipeline, or changes what CI and agents are allowed
+# to do.
+
+# CI workflows, this file, and agent instructions
+/.github/                @ebizuwo
+/AGENTS.md               @ebizuwo
+
+# Demo-form lead path: Vercel function, shared schema, and the ingest shim
+/src/pages/api/          @ebizuwo
+/src/lib/schema.ts       @ebizuwo
+/ingest/                 @ebizuwo
+
+# Dependencies, registry auth, build and deploy config
+/package.json            @ebizuwo
+/package-lock.json       @ebizuwo
+/.npmrc                  @ebizuwo
+/astro.config.mjs        @ebizuwo
+/vercel.json             @ebizuwo
+
+# Keeps .env.local and other local secrets out of this public repo
+/.gitignore              @ebizuwo
