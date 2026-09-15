@@ -10,6 +10,14 @@ on:
   push:
     branches: [main]
 
+concurrency:
+  # Without this, every push to a PR branch started another full Astro build
+  # while the previous one ran on to completion — only the newest commit's
+  # result can be reported on the PR, so the rest is wasted runner time.
+  # push-to-main keeps queueing: main's build is that commit's gate.
+  group: site-ci-${{ github.event.pull_request.number || github.ref }}
+  cancel-in-progress: ${{ github.event_name == 'pull_request' }}
+
 permissions:
   contents: read
   packages: read
