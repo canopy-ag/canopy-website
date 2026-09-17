@@ -82,4 +82,11 @@ describe('legal and support pages', () => {
   it('[#24 AC-1] cross-links support and privacy so a request has somewhere to go', () => {
     expect(page('support')).toContain('href="/privacy"');
   });
+  it('[#24 AC-1] keeps test files out of src/pages, which Astro routes', () => {
+    // This file used to live in src/pages. Astro compiled it as a route and
+    // server-rendered it during the build, which imported vitest and took the
+    // whole static build down. Nothing under src/pages may be a test.
+    const routed = readdirSync(PAGES).filter((f) => f.includes('.test.'));
+    expect(routed, `test files are routes in Astro: ${routed.join(', ')}`).toEqual([]);
+  });
 });
