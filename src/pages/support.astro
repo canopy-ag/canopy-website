@@ -1,0 +1,113 @@
+---
+import Layout from '~/layouts/Layout.astro';
+
+const updated = '17 September 2026';
+---
+
+<Layout
+  title="Support | Canopy"
+  description="How to reach Canopy: one monitored address, what to include, and what happens next."
+>
+  <div class="legal">
+    <div class="shell legal__inner">
+      <p class="section-kicker">Support</p>
+      <h1>Getting help</h1>
+      <p class="legal__lead">
+        One address reaches us:
+        <a href="mailto:hello@canopy.ag">hello@canopy.ag</a>. It is monitored by the team
+        that builds the product, not a queue that routes elsewhere.
+      </p>
+      <p class="legal__meta">Last updated {updated}</p>
+
+      <h2>What to expect</h2>
+      <p>
+        We aim to reply within one working day. Canopy is a small team, so an answer comes
+        from someone who can act on it. If something is broken and it is stopping work in
+        your operation, say so in the subject line and we will treat it that way.
+      </p>
+
+      <h2>What helps us help you</h2>
+      <ul>
+        <li>Your organization, and the site or zone if the problem is specific to one.</li>
+        <li>What you expected to happen, and what happened instead.</li>
+        <li>Roughly when it happened, so we can find it in the logs.</li>
+        <li>A screenshot, if it is something you can see.</li>
+      </ul>
+      <p>
+        None of it is required. A short message beats no message.
+      </p>
+
+      <h2>Reporting a security issue</h2>
+      <p>
+        Send it to <a href="mailto:hello@canopy.ag">hello@canopy.ag</a> with "security" in
+        the subject. Please give us a reasonable chance to fix it before disclosing it
+        publicly, and we will keep you informed while we do.
+      </p>
+
+      <h2>Privacy requests</h2>
+      <p>
+        Requests for a copy of your information, a correction, or deletion go to the same
+        address. What we hold and how it is handled is described in our
+        <a href="/privacy">privacy policy</a>.
+      </p>
+
+      <h2>Not a customer yet</h2>
+      <p>
+        If you are trying to work out whether Canopy fits your operation, the same address
+        works, or you can <a href="/">request a demo</a> from the home page.
+      </p>
+    </div>
+  </div>
+</Layout>
+
+<style>
+  .legal {
+    padding: 8rem 0 6rem;
+  }
+  .legal__inner {
+    max-width: 46rem;
+  }
+  .legal h1 {
+    font-size: clamp(2.25rem, 5vw, 3rem);
+    line-height: 1.1;
+    margin: 0.5rem 0 1.5rem;
+  }
+  .legal h2 {
+    font-size: 1.25rem;
+    margin: 2.5rem 0 0.75rem;
+    color: rgba(255, 255, 255, 0.92);
+  }
+  .legal p {
+    color: rgba(255, 255, 255, 0.62);
+    line-height: 1.7;
+    margin: 0 0 1rem;
+  }
+  .legal__lead {
+    font-size: 1.125rem;
+    color: rgba(255, 255, 255, 0.75) !important;
+  }
+  .legal__meta {
+    font-size: 0.875rem;
+    color: rgba(255, 255, 255, 0.35) !important;
+    margin-bottom: 2rem !important;
+  }
+  .legal a {
+    color: #22c55e;
+    text-decoration: none;
+  }
+  .legal a:hover {
+    text-decoration: underline;
+  }
+  .legal strong {
+    color: rgba(255, 255, 255, 0.85);
+  }
+  .legal ul {
+    color: rgba(255, 255, 255, 0.62);
+    line-height: 1.7;
+    padding-left: 1.25rem;
+    margin: 0 0 1rem;
+  }
+  .legal li {
+    margin-bottom: 0.5rem;
+  }
+</style>

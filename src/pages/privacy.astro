@@ -1,0 +1,133 @@
+---
+import Layout from '~/layouts/Layout.astro';
+
+const updated = '17 September 2026';
+---
+
+<Layout
+  title="Privacy | Canopy"
+  description="What Canopy collects on this website, why, where it goes, and how to have it removed."
+>
+  <div class="legal">
+    <div class="shell legal__inner">
+      <p class="section-kicker">Legal</p>
+      <h1>Privacy</h1>
+      <p class="legal__lead">
+        This policy covers <strong>canopy.ag</strong>, our marketing website. It describes what
+        this site collects, why, and who it reaches. Customers using the Canopy platform are
+        covered by the agreement with their organization, not by this page.
+      </p>
+      <p class="legal__meta">Last updated {updated}</p>
+
+      <h2>What this site collects</h2>
+      <p>
+        One thing: the demo request form. When you submit it, we receive the company name,
+        your name, your email address, your phone number, the company size you select, and
+        anything you write in the message field. Your IP address is sent with the submission
+        so we can tell a genuine enquiry from automated abuse.
+      </p>
+      <p>
+        We run no analytics, advertising, or session-recording trackers on this site, and we
+        set no cookies for those purposes. Reading these pages leaves us nothing.
+      </p>
+
+      <h2>Why we collect it</h2>
+      <p>
+        To reply to your enquiry and to decide whether Canopy is a fit for your operation.
+        That is the only purpose. We do not sell it, rent it, or share it with advertisers,
+        and we do not add you to a marketing list because you asked for a demo.
+      </p>
+
+      <h2>Where it goes</h2>
+      <p>
+        A demo submission is validated by a function running on Vercel, our hosting provider,
+        and forwarded over an encrypted connection to a database Canopy operates on its own
+        infrastructure. If that database cannot be reached, the submission is emailed to
+        Canopy through Resend instead, so an enquiry is never silently lost. Vercel and
+        Resend process the data on our behalf and are not permitted to use it for their own
+        purposes.
+      </p>
+      <p>
+        Access is limited to people at Canopy who need it to respond to you.
+      </p>
+
+      <h2>How long we keep it</h2>
+      <p>
+        We keep demo enquiries while there is a live conversation and for a reasonable
+        period afterwards, so we can pick up where we left off if you come back. When an
+        enquiry is clearly finished and you have not asked us to keep it, we delete it.
+      </p>
+
+      <h2>Your choices</h2>
+      <p>
+        Write to <a href="mailto:hello@canopy.ag">hello@canopy.ag</a> and ask for a copy of
+        what we hold about you, a correction, or deletion. We will act on it. You do not
+        need an account or a specific form of words, and we will not ask why.
+      </p>
+
+      <h2>Changes</h2>
+      <p>
+        If this policy changes in a way that affects what we do with information already
+        given to us, we will say so here and update the date above.
+      </p>
+
+      <h2>Contact</h2>
+      <p>
+        Questions about this policy go to
+        <a href="mailto:hello@canopy.ag">hello@canopy.ag</a>.
+      </p>
+    </div>
+  </div>
+</Layout>
+
+<style>
+  .legal {
+    padding: 8rem 0 6rem;
+  }
+  .legal__inner {
+    max-width: 46rem;
+  }
+  .legal h1 {
+    font-size: clamp(2.25rem, 5vw, 3rem);
+    line-height: 1.1;
+    margin: 0.5rem 0 1.5rem;
+  }
+  .legal h2 {
+    font-size: 1.25rem;
+    margin: 2.5rem 0 0.75rem;
+    color: rgba(255, 255, 255, 0.92);
+  }
+  .legal p {
+    color: rgba(255, 255, 255, 0.62);
+    line-height: 1.7;
+    margin: 0 0 1rem;
+  }
+  .legal__lead {
+    font-size: 1.125rem;
+    color: rgba(255, 255, 255, 0.75) !important;
+  }
+  .legal__meta {
+    font-size: 0.875rem;
+    color: rgba(255, 255, 255, 0.35) !important;
+    margin-bottom: 2rem !important;
+  }
+  .legal a {
+    color: #22c55e;
+    text-decoration: none;
+  }
+  .legal a:hover {
+    text-decoration: underline;
+  }
+  .legal strong {
+    color: rgba(255, 255, 255, 0.85);
+  }
+  .legal ul {
+    color: rgba(255, 255, 255, 0.62);
+    line-height: 1.7;
+    padding-left: 1.25rem;
+    margin: 0 0 1rem;
+  }
+  .legal li {
+    margin-bottom: 0.5rem;
+  }
+</style>

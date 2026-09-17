@@ -316,7 +316,14 @@ export default function DemoForm({
                 </button>
 
                 <p className="text-white/40 text-xs text-center">
-                  By submitting, you agree to our privacy policy.
+                  By submitting, you agree to our{' '}
+                  <a
+                    href="/privacy"
+                    className="underline hover:text-[#22C55E] transition"
+                  >
+                    privacy policy
+                  </a>
+                  .
                 </p>
               </form>
             )}
