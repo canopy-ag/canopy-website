@@ -1,0 +1,121 @@
+---
+import Layout from '~/layouts/Layout.astro';
+
+const updated = '17 September 2026';
+---
+
+<Layout
+  title="Terms | Canopy"
+  description="The terms that apply to the Canopy website. Platform use is governed by a separate agreement."
+>
+  <div class="legal">
+    <div class="shell legal__inner">
+      <p class="section-kicker">Legal</p>
+      <h1>Terms</h1>
+      <p class="legal__lead">
+        These terms cover <strong>canopy.ag</strong>, our marketing website. Use of the Canopy
+        platform is governed by the written agreement between Canopy and your organization,
+        which takes precedence over anything on this page.
+      </p>
+      <p class="legal__meta">Last updated {updated}</p>
+
+      <h2>Using this site</h2>
+      <p>
+        Read it, share it, quote it. What you may not do is interfere with it: no attempts to
+        breach or probe its security, no scraping that degrades it for others, and no using
+        the demo form to send unsolicited commercial messages or anything unlawful.
+      </p>
+
+      <h2>What is on it</h2>
+      <p>
+        The content here describes what Canopy does and where the product is going. Some of
+        it describes work in progress. It is written in good faith and kept current, but it
+        is not a warranty, a specification, or a commitment to ship a particular capability
+        on a particular date. Nothing here forms a contract.
+      </p>
+
+      <h2>Ownership</h2>
+      <p>
+        Canopy owns this site, its text, and its marks. The open-source components it is
+        built from carry their own licences. Anything you send us through the demo form
+        stays yours; you are giving us permission to read it and reply, nothing more.
+      </p>
+
+      <h2>Links out</h2>
+      <p>
+        Where we link to someone else, we are pointing at something useful, not vouching for
+        it. What happens on their site is theirs to govern.
+      </p>
+
+      <h2>Liability</h2>
+      <p>
+        This site is provided as it is. To the extent the law allows, Canopy is not liable
+        for loss arising from relying on the content of this website. Nothing here limits
+        liability that cannot lawfully be limited, and nothing here limits or replaces the
+        obligations in a signed customer agreement.
+      </p>
+
+      <h2>Changes</h2>
+      <p>
+        We may update these terms. The date above says when we last did.
+      </p>
+
+      <h2>Contact</h2>
+      <p>
+        Questions go to <a href="mailto:hello@canopy.ag">hello@canopy.ag</a>.
+      </p>
+    </div>
+  </div>
+</Layout>
+
+<style>
+  .legal {
+    padding: 8rem 0 6rem;
+  }
+  .legal__inner {
+    max-width: 46rem;
+  }
+  .legal h1 {
+    font-size: clamp(2.25rem, 5vw, 3rem);
+    line-height: 1.1;
+    margin: 0.5rem 0 1.5rem;
+  }
+  .legal h2 {
+    font-size: 1.25rem;
+    margin: 2.5rem 0 0.75rem;
+    color: rgba(255, 255, 255, 0.92);
+  }
+  .legal p {
+    color: rgba(255, 255, 255, 0.62);
+    line-height: 1.7;
+    margin: 0 0 1rem;
+  }
+  .legal__lead {
+    font-size: 1.125rem;
+    color: rgba(255, 255, 255, 0.75) !important;
+  }
+  .legal__meta {
+    font-size: 0.875rem;
+    color: rgba(255, 255, 255, 0.35) !important;
+    margin-bottom: 2rem !important;
+  }
+  .legal a {
+    color: #22c55e;
+    text-decoration: none;
+  }
+  .legal a:hover {
+    text-decoration: underline;
+  }
+  .legal strong {
+    color: rgba(255, 255, 255, 0.85);
+  }
+  .legal ul {
+    color: rgba(255, 255, 255, 0.62);
+    line-height: 1.7;
+    padding-left: 1.25rem;
+    margin: 0 0 1rem;
+  }
+  .legal li {
+    margin-bottom: 0.5rem;
+  }
+</style>
