@@ -33,3 +33,7 @@ admin/
 # `git worktree remove` runs or manual `mkdir .worktrees/...`.
 .worktrees/
 .claude/worktrees
+
+# Playwright
+test-results/
+playwright-report/

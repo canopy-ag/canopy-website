@@ -1,0 +1,139 @@
+---
+/**
+ * /product: what Canopy actually looks like.
+ *
+ * Screenshots come from cdn.canopy.ag rather than this repo. See
+ * `src/lib/media.ts` for how a capture id becomes a URL, and
+ * `src/components/ProductShot.astro` for how the page behaves while the bucket
+ * is still empty.
+ */
+import Layout from '~/layouts/Layout.astro';
+import DemoForm from '~/components/DemoForm';
+import ProductShot from '~/components/ProductShot.astro';
+import { PRODUCT_SECTIONS } from '~/lib/media';
+---
+
+<Layout
+  title="Canopy | The product"
+  description="See Canopy: irrigation zones and schedules, crew tasks, plant inventory, connected devices and a map of the operation, in one system."
+>
+  <Fragment slot="head">
+    <!--
+      Set before first paint so the hide-until-loaded rule in ProductShot only
+      applies when its load and error handlers can run. Inline and synchronous
+      on purpose: a deferred module would let an absent image paint the
+      browser's broken-image icon before it could be hidden.
+    -->
+    <script is:inline>
+      document.documentElement.setAttribute('data-shot-js', '');
+    </script>
+  </Fragment>
+
+  <!-- Intro -->
+  <section class="py-20 sm:py-24 border-b border-white/10">
+    <div class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
+      <p class="page-eyebrow">The product</p>
+      <h1 class="text-4xl sm:text-5xl font-bold mb-6 max-w-3xl leading-tight">
+        The operating layer, <span class="gradient-text">on screen</span>
+      </h1>
+      <p class="text-white/60 text-lg max-w-2xl leading-relaxed">
+        Canopy brings irrigation, labor, plants and hardware into one system, so
+        a decision made in the office reaches the crew on the ground. These are
+        the screens growers work in.
+      </p>
+    </div>
+  </section>
+
+  <!-- Screenshot-led sections. Data lives in src/lib/media.ts. -->
+  <div class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
+    {
+      PRODUCT_SECTIONS.map((section, index) => (
+        <section class="feature" data-feature={section.id}>
+          <div class:list={['feature__grid', index % 2 === 1 && 'feature__grid--flip']}>
+            <div class="feature__copy">
+              <h2 class="text-2xl sm:text-3xl font-semibold mb-4">{section.title}</h2>
+              <p class="text-white/60 leading-relaxed">{section.body}</p>
+            </div>
+            <div class="feature__media">
+              <ProductShot
+                id={section.id}
+                alt={section.alt}
+                caption={section.title}
+                eager={index === 0}
+              />
+            </div>
+          </div>
+        </section>
+      ))
+    }
+  </div>
+
+  <!-- CTA -->
+  <section class="py-24 relative overflow-hidden">
+    <div
+      class="absolute inset-0 bg-gradient-to-r from-[#22C55E]/10 via-transparent to-[#22C55E]/10 pointer-events-none"
+    >
+    </div>
+    <div class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 text-center relative z-10">
+      <h2 class="text-3xl sm:text-4xl font-bold mb-6">
+        See it against your <span class="gradient-text">own operation</span>
+      </h2>
+      <p class="text-white/60 text-lg mb-10 max-w-2xl mx-auto">
+        A walkthrough on your blocks, your zones and your crew, rather than a
+        generic tour.
+      </p>
+      <div class="flex flex-col sm:flex-row gap-4 justify-center items-center">
+        <DemoForm client:load label="Request a demo" />
+        <a href="/about" class="btn-secondary text-lg px-10 py-4">How it works</a>
+      </div>
+    </div>
+  </section>
+</Layout>
+
+<style>
+  .page-eyebrow {
+    margin: 0 0 1.25rem;
+    font-size: 0.75rem;
+    font-weight: 600;
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+    color: var(--canopy-blue, #00d4ff);
+  }
+
+  .feature {
+    padding-block: clamp(3rem, 8vw, 5.5rem);
+    border-bottom: 1px solid rgb(255 255 255 / 0.08);
+  }
+  .feature:last-of-type {
+    border-bottom: 0;
+  }
+
+  .feature__grid {
+    display: grid;
+    gap: clamp(2rem, 5vw, 4rem);
+    align-items: center;
+  }
+
+  @media (min-width: 62rem) {
+    .feature__grid {
+      grid-template-columns: minmax(0, 5fr) minmax(0, 7fr);
+    }
+    /* Alternate sides on wide viewports. The track sizes swap along with the
+       order, so the screenshot keeps the wider column on both sides and every
+       frame renders at the same width. The copy stays first in the DOM, so
+       reading order and tab order do not follow the visual flip. */
+    .feature__grid--flip {
+      grid-template-columns: minmax(0, 7fr) minmax(0, 5fr);
+    }
+    .feature__grid--flip .feature__copy {
+      order: 2;
+    }
+    .feature__grid--flip .feature__media {
+      order: 1;
+    }
+  }
+
+  .feature__copy {
+    max-width: 34rem;
+  }
+</style>

@@ -52,3 +52,36 @@ jobs:
         run: npm run build
         env:
           VERCEL_ENV: production
+
+  e2e:
+    # The /product page is built around a CDN that is empty today, so its
+    # graceful-degradation behaviour is the thing most likely to rot silently.
+    # A suite that only ran on a laptop would not be a gate (canopy-ag/canopy-roost#1412).
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+
+      - name: Install
+        run: npm ci --no-audit --no-fund
+        env:
+          NODE_AUTH_TOKEN: ${{ secrets.GH_PACKAGES_READ_TOKEN || secrets.GITHUB_TOKEN }}
+
+      - name: Install Playwright browser
+        run: npx playwright install --with-deps chromium
+
+      - name: End-to-end tests
+        run: npm run test:e2e
+        env:
+          VERCEL_ENV: production
+
+      - uses: actions/upload-artifact@v4
+        if: failure()
+        with:
+          name: playwright-report
+          path: playwright-report/
+          retention-days: 7
