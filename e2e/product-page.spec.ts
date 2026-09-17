@@ -35,68 +35,52 @@ async function blockCdn(page: Page): Promise<void> {
   await page.route(CDN_GLOB, (route) => route.abort('failed'));
 }
 
-interface ClsReading {
-  /** Every un-prompted layout shift on the page. */
-  total: number;
-  /** Only shifts with a source inside a `.shot`, which is what AC-3 is about. */
-  shot: number;
-}
-
 /**
- * Collect layout shifts from before the first paint, split by whether a shot
- * caused them.
+ * Total un-prompted layout shift on the page.
  *
- * The split matters. The page inherits a small webfont-swap reflow from the
- * site layout: Inter loads with `display=swap`, and the fallback's metrics
- * differ, so headings re-flow once. Measured on this page, every shift source
- * is a text node (`SPAN.gradient-text`, `DIV.feature__copy`) and none is inside
- * a `.shot`. The size of that reflow depends on which fallback face the host
- * has, which is why it is about 0.003 on macOS and about 0.031 on a Linux CI
- * runner.
+ * Used only as a coarse ceiling. The page inherits a webfont-swap reflow from
+ * the site layout, where Inter loads with `display=swap` and the fallback's
+ * metrics differ enough to re-flow the headings once. Measured with the CDN
+ * blocked, every shift source is a text node and blocking Google Fonts drops
+ * the figure to exactly zero, but the reflow displaces everything below it,
+ * including the frames. So shift attribution cannot separate "the image
+ * resized its box" from "a heading above it re-flowed", and the size of that
+ * reflow is host dependent: about 0.003 on macOS and 0.031 on a Linux runner.
  *
- * AC-3 is a claim about what an unavailable or slow CDN image does, so it is
- * asserted on `shot`, which must be zero. `total` is still bounded, at Google's
- * 0.1 "good" threshold, so a real regression cannot hide behind the split. It
- * is deliberately not tightened to the current value: that would make this
- * suite fail on an unrelated font or copy change.
+ * AC-3 is therefore asserted on {@link frameHeights} instead, which measures
+ * the reserved box directly and does not care what happens above it. This
+ * number is kept as a ceiling at Google's 0.1 "good" threshold, deliberately
+ * not pinned to today's value, which would fail on an unrelated font change.
  */
 async function recordLayoutShifts(page: Page): Promise<void> {
   await page.addInitScript(() => {
-    const store = window as unknown as { __cls: { total: number; shot: number } };
-    store.__cls = { total: 0, shot: 0 };
+    const store = window as unknown as { __cls: number };
+    store.__cls = 0;
     new PerformanceObserver((list) => {
       for (const entry of list.getEntries()) {
-        const shift = entry as PerformanceEntry & {
-          value: number;
-          hadRecentInput: boolean;
-          sources?: { node?: Node | null }[];
-        };
-        if (shift.hadRecentInput) continue;
-        store.__cls.total += shift.value;
-
-        // Attribute the whole entry to shots if any source sits inside one.
-        // Over-attributing is the safe direction for a test asserting that
-        // shots shift nothing.
-        const fromShot = (shift.sources ?? []).some((source) => {
-          const node = source.node;
-          if (!node) return false;
-          const element = node.nodeType === 1 ? (node as Element) : node.parentElement;
-          return !!element?.closest('.shot');
-        });
-        if (fromShot) store.__cls.shot += shift.value;
+        const shift = entry as PerformanceEntry & { value: number; hadRecentInput: boolean };
+        if (!shift.hadRecentInput) store.__cls += shift.value;
       }
     }).observe({ type: 'layout-shift', buffered: true });
   });
 }
 
-async function readCls(page: Page): Promise<ClsReading> {
-  return page.evaluate(
-    () =>
-      (window as unknown as { __cls?: ClsReading }).__cls ?? {
-        total: 0,
-        shot: 0,
-      },
-  );
+async function readCls(page: Page): Promise<number> {
+  return page.evaluate(() => (window as unknown as { __cls?: number }).__cls ?? 0);
+}
+
+/**
+ * The height of every reserved frame.
+ *
+ * This is the quantity AC-3 is actually about: the box is sized from the
+ * capture viewport, so it must be identical before an image is requested,
+ * while one is in flight, and after one fails or lands. Heights rather than
+ * positions, because a frame legitimately moves when text above it re-flows.
+ */
+async function frameHeights(page: Page): Promise<number[]> {
+  return page
+    .locator('.shot__frame')
+    .evaluateAll((nodes) => nodes.map((node) => node.getBoundingClientRect().height));
 }
 
 test.describe('#23 AC-2: /product renders screenshots served from cdn.canopy.ag', () => {
@@ -211,18 +195,30 @@ test.describe('#23 AC-3: an unavailable or slow CDN image costs no layout and sh
     }
   });
 
-  test('#23 AC-3 an unavailable CDN produces no cumulative layout shift', async ({ page }) => {
+  test('#23 AC-3 an unavailable CDN changes no reserved dimension', async ({ page }) => {
     await recordLayoutShifts(page);
     await blockCdn(page);
     await page.goto('/product');
+
+    const before = await frameHeights(page);
+    expect(before).toHaveLength(PRODUCT_SECTIONS.length);
+    for (const height of before) expect(height).toBeGreaterThan(0);
+
+    // Drive every image to its failed state.
     await page.evaluate(() => window.scrollTo(0, document.body.scrollHeight));
+    for (const section of PRODUCT_SECTIONS) {
+      await expect(page.locator(`.shot[data-shot="${section.id}"]`)).toHaveAttribute(
+        'data-state',
+        'failed',
+      );
+    }
     await page.waitForLoadState('networkidle');
 
+    // Not one box resized when six images failed.
+    expect(await frameHeights(page)).toEqual(before);
+
     const cls = await readCls(page);
-    // The reserved boxes must contribute nothing at all.
-    expect(cls.shot, `shot-attributable layout shift was ${cls.shot}`).toBe(0);
-    // And the page as a whole must still be in Google's "good" band.
-    expect(cls.total, `total layout shift was ${cls.total}`).toBeLessThan(0.1);
+    expect(cls, `total layout shift was ${cls}`).toBeLessThan(0.1);
   });
 
   test('#23 AC-3 a slow CDN image does not move the page when it arrives', async ({ page }) => {
@@ -241,6 +237,7 @@ test.describe('#23 AC-3: an unavailable or slow CDN image costs no layout and sh
 
     const caption = page.locator('.shot__caption').first();
     const before = await caption.evaluate((node) => node.getBoundingClientRect().top);
+    const before_heights = await frameHeights(page);
 
     await expect(page.locator('.shot').first()).toHaveAttribute('data-state', 'loaded', {
       timeout: 15_000,
@@ -251,9 +248,11 @@ test.describe('#23 AC-3: an unavailable or slow CDN image costs no layout and sh
       before,
       0,
     );
+    // The box the image landed in is exactly the size it was reserved at.
+    expect(await frameHeights(page)).toEqual(before_heights);
+
     const cls = await readCls(page);
-    expect(cls.shot, `shot-attributable layout shift was ${cls.shot}`).toBe(0);
-    expect(cls.total, `total layout shift was ${cls.total}`).toBeLessThan(0.1);
+    expect(cls, `total layout shift was ${cls}`).toBeLessThan(0.1);
   });
 });
 
