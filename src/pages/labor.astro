@@ -1,0 +1,69 @@
+---
+import Layout from '~/layouts/Layout.astro';
+import PageHero from '~/components/sections/PageHero.astro';
+import Section from '~/components/sections/Section.astro';
+import FeatureGrid from '~/components/sections/FeatureGrid.astro';
+import CtaSection from '~/components/sections/CtaSection.astro';
+
+const howItWorks = [
+  {
+    kicker: 'See what needs you',
+    title: 'The few things that are red',
+    body: 'Before the crews clock in, Canopy surfaces the handful of things that need you today, ranked, in plain language. The rest stays out of your way.',
+  },
+  {
+    kicker: 'In dollars, from your file',
+    title: 'Numbers you already recognize',
+    body: 'Canopy reads your own labor numbers, so the report is in dollars you recognize. No one re-keys anything, and nothing runs a month behind.',
+  },
+  {
+    kicker: 'Plan, then re-plan',
+    title: 'When the day changes, so does the plan',
+    body: 'When something slips, Canopy re-plans the day and tells you why anything cannot fit, so nothing falls off the board quietly.',
+  },
+];
+---
+
+<Layout
+  title="Labor you can see before the day starts | Canopy"
+  description="Canopy turns your labor numbers into a clear morning report, so you know what is behind and what it is costing before the crews clock in."
+>
+  <PageHero
+    eyebrow="Labor and operations"
+    badge="Early access"
+    badgeTone="soon"
+    title="Labor you can see before the day starts."
+    sub="A report on your desk each morning that shows what is green and what is red, in dollars, from your own numbers, without anyone re-keying it. Canopy turns the day's plan into clear priorities, so you know where to focus before the crews clock in."
+    demoLabel="Join the early access"
+    secondaryHref="/"
+    secondaryLabel="See the platform"
+  />
+
+  <Section
+    eyebrow="The problem"
+    title="Your biggest cost, and the hardest to see."
+    intro="Seasonal labor is often the largest and fastest rising cost of growing, and the hardest to see until it is already spent. The best grower spends the morning walking the yard instead of growing. No one knows what is behind, picking or a task slipping, until it has cost them. So managers rebuild the same report by hand, a month late, with no dollars on it."
+  />
+
+  <Section
+    eyebrow="How it works"
+    title="One clear read, every morning."
+    tone="panel"
+  >
+    <FeatureGrid items={howItWorks} columns={3} />
+  </Section>
+
+  <Section
+    eyebrow="Where it stands"
+    title="Built with growers, in early access."
+    intro="Canopy's planning and re-planning engine is live in the platform today. The morning labor report is in active development with our design partners, growing on top of that engine. We build it with your operation, on your numbers, so it fits how you already run. If that is the report you have been rebuilding by hand, come build it with us."
+  />
+
+  <CtaSection
+    title="Want your morning report?"
+    body="Bring your labor file and we will build your green and red morning report with you, on your own numbers."
+    demoLabel="Join the early access"
+    secondaryHref="/irrigation"
+    secondaryLabel="See irrigation"
+  />
+</Layout>

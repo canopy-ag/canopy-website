@@ -1,0 +1,154 @@
+---
+/**
+ * PageHero: compact interior-page hero (no video, unlike the homepage Hero).
+ *
+ * A calm gradient ground with an optional status badge, eyebrow, title, sub,
+ * a primary demo action, and an optional secondary link. Used by product and
+ * solution pages so they share one hero rhythm.
+ */
+import DemoForm from '~/components/DemoForm';
+
+interface Props {
+  eyebrow?: string;
+  title: string;
+  sub?: string;
+  /** Small status pill, e.g. Live or Early access. */
+  badge?: string;
+  badgeTone?: 'live' | 'soon' | 'neutral';
+  demoLabel?: string;
+  secondaryHref?: string;
+  secondaryLabel?: string;
+}
+
+const {
+  eyebrow,
+  title,
+  sub,
+  badge,
+  badgeTone = 'neutral',
+  demoLabel = 'Request a demo',
+  secondaryHref,
+  secondaryLabel,
+} = Astro.props;
+---
+
+<section class="phero" aria-labelledby="phero-title">
+  <div class="phero__glow" aria-hidden="true"></div>
+  <div class="phero__inner">
+    <div class="phero__copy">
+      {badge && <span class:list={['phero__badge', `phero__badge--${badgeTone}`]}>{badge}</span>}
+      {eyebrow && <p class="phero__eyebrow">{eyebrow}</p>}
+      <h1 id="phero-title" class="phero__title">{title}</h1>
+      {sub && <p class="phero__sub">{sub}</p>}
+      <div class="phero__actions">
+        <DemoForm client:load label={demoLabel} />
+        {secondaryHref && secondaryLabel && (
+          <a href={secondaryHref} class="phero__secondary">
+            {secondaryLabel}
+            <span aria-hidden="true">&rarr;</span>
+          </a>
+        )}
+      </div>
+    </div>
+  </div>
+</section>
+
+<style>
+  .phero {
+    position: relative;
+    overflow: hidden;
+    isolation: isolate;
+    background: var(--canopy-dark, #0b1120);
+    border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+  }
+  .phero__glow {
+    position: absolute;
+    inset: 0;
+    z-index: 0;
+    background:
+      radial-gradient(60% 90% at 82% -10%, rgba(34, 197, 94, 0.16), transparent 60%),
+      radial-gradient(50% 70% at 6% 0%, rgba(0, 212, 255, 0.1), transparent 55%);
+    pointer-events: none;
+  }
+  .phero__inner {
+    position: relative;
+    z-index: 1;
+    max-width: 72rem;
+    margin-inline: auto;
+    padding-inline: clamp(1.25rem, 4vw, 2.75rem);
+    padding-block: clamp(4rem, 11vw, 7.5rem);
+  }
+  .phero__copy { max-width: 42rem; }
+
+  .phero__badge {
+    display: inline-block;
+    margin-bottom: 1.25rem;
+    font-size: 0.7rem;
+    font-weight: 600;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    padding: 0.35rem 0.7rem;
+    border-radius: 999px;
+    border: 1px solid transparent;
+  }
+  .phero__badge--live {
+    color: var(--canopy-green-light, #4ade80);
+    background: rgba(34, 197, 94, 0.12);
+    border-color: rgba(34, 197, 94, 0.35);
+  }
+  .phero__badge--soon {
+    color: var(--canopy-blue, #00d4ff);
+    background: rgba(0, 212, 255, 0.1);
+    border-color: rgba(0, 212, 255, 0.35);
+  }
+  .phero__badge--neutral {
+    color: rgba(255, 255, 255, 0.7);
+    background: rgba(255, 255, 255, 0.06);
+    border-color: rgba(255, 255, 255, 0.16);
+  }
+
+  .phero__eyebrow {
+    margin: 0 0 1rem;
+    font-size: 0.75rem;
+    font-weight: 600;
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+    color: var(--canopy-blue, #00d4ff);
+  }
+  .phero__title {
+    margin: 0 0 1.25rem;
+    font-size: clamp(2.1rem, 5vw, 3.6rem);
+    line-height: 1.06;
+    letter-spacing: -0.02em;
+    font-weight: 700;
+    color: var(--canopy-text-primary, #fff);
+    text-wrap: balance;
+  }
+  .phero__sub {
+    margin: 0 0 2.25rem;
+    font-size: clamp(1.0625rem, 1.4vw, 1.25rem);
+    line-height: 1.55;
+    color: var(--canopy-text-secondary, rgba(255, 255, 255, 0.72));
+    max-width: 36rem;
+  }
+  .phero__actions {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 1.5rem;
+  }
+  .phero__secondary {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    font-weight: 600;
+    color: var(--canopy-blue, #00d4ff);
+    text-decoration: none;
+    border-bottom: 1px solid transparent;
+    transition: border-color 0.2s, gap 0.2s;
+  }
+  .phero__secondary:hover {
+    border-bottom-color: var(--canopy-blue, #00d4ff);
+    gap: 0.75rem;
+  }
+</style>

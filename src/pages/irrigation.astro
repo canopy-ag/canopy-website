@@ -1,0 +1,79 @@
+---
+import Layout from '~/layouts/Layout.astro';
+import PageHero from '~/components/sections/PageHero.astro';
+import Section from '~/components/sections/Section.astro';
+import FeatureGrid from '~/components/sections/FeatureGrid.astro';
+import ProofBand from '~/components/sections/ProofBand.astro';
+import CtaSection from '~/components/sections/CtaSection.astro';
+
+const howItWorks = [
+  {
+    kicker: 'Real time weather',
+    title: 'The weather drives the schedule',
+    body: 'Canopy pulls local, real time weather into every schedule. It holds water back when rain is coming and adds runtime in the heat, so no one is out adjusting timers by hand.',
+  },
+  {
+    kicker: 'Grower input',
+    title: 'Your judgment stays in the loop',
+    body: 'The system is built around how you actually grow. Canopy combines your input with the data, so the schedule reflects your crops and your yard, not a generic default.',
+  },
+  {
+    kicker: 'Proven method',
+    title: 'Runtime set by demand, not a clock',
+    body: 'Evapotranspiration and leaching fraction set the runtime against real targets. The math runs under the hood, so the grower gets the answer instead of the homework.',
+  },
+];
+
+const proof = [
+  { value: 'About 43%', label: 'Less water used', body: 'Measured against the prior three years, documented with flow meters.' },
+  { value: 'About a third', label: 'Less fertilizer', body: 'Lower nutrient loss on the crops that were tracked.' },
+  { value: 'Fewer losses', label: 'Healthier plants', body: 'Less plant mortality from over irrigation as runtimes tightened.' },
+];
+---
+
+<Layout
+  title="Irrigation that runs itself | Canopy"
+  description="Canopy schedules irrigation to the crop's real demand, using local weather and your own input, so water and inputs feed the plant instead of the drain."
+>
+  <PageHero
+    eyebrow="Irrigation"
+    badge="Live"
+    badgeTone="live"
+    title="Irrigation that runs itself."
+    sub="Stop watering by the clock and by feel. Canopy schedules to the crop's real demand, using local weather and your own input, so water and inputs feed the plant instead of the drain."
+    demoLabel="Request a demo"
+    secondaryHref="/blog/tag/irrigation"
+    secondaryLabel="Read the irrigation notes"
+  />
+
+  <Section
+    eyebrow="The problem"
+    title="Irrigation runs by the clock, not by the crop."
+    intro="Connecting a grower's knowledge to the weather, especially rain, and to crop growth across a season takes constant labor and time. Run by a timer, irrigation is decoupled from what the crop and the weather actually did today. Some of the crop gets too much, some gets too little, and the water and input bill climbs quietly."
+  />
+
+  <Section
+    eyebrow="How it works"
+    title="Grower know-how, met by real time data."
+    tone="panel"
+  >
+    <FeatureGrid items={howItWorks} columns={3} />
+  </Section>
+
+  <Section
+    eyebrow="Proven in the field"
+    title="Built on research that already worked."
+    intro="Canopy's approach is built on evapotranspiration research from the University of Florida, run for years at Saunders Brothers. That system, not a Canopy box, produced the results below. It is the foundation Canopy is built on, and Canopy is now live in beta at Saunders and one other nursery."
+  >
+    <ProofBand
+      items={proof}
+      note="Figures are from the University of Florida evapotranspiration system operated at Saunders Brothers, not from Canopy's controller. They show the research lineage Canopy is built on. Canopy box results from the current beta are still being measured. Verify exact figures against the evidence register before wider use."
+    />
+  </Section>
+
+  <CtaSection
+    title="Curious about a demo?"
+    body="See what Canopy looks like on your own zones. Reach out for a live demo and we will walk through how it schedules water on your yard, to save water, fertilizer, and labor while finishing a better plant."
+    demoLabel="Request a demo"
+  />
+</Layout>
