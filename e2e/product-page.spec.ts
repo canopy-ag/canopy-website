@@ -35,23 +35,68 @@ async function blockCdn(page: Page): Promise<void> {
   await page.route(CDN_GLOB, (route) => route.abort('failed'));
 }
 
-/** Collect layout shifts from before the first paint. */
+interface ClsReading {
+  /** Every un-prompted layout shift on the page. */
+  total: number;
+  /** Only shifts with a source inside a `.shot`, which is what AC-3 is about. */
+  shot: number;
+}
+
+/**
+ * Collect layout shifts from before the first paint, split by whether a shot
+ * caused them.
+ *
+ * The split matters. The page inherits a small webfont-swap reflow from the
+ * site layout: Inter loads with `display=swap`, and the fallback's metrics
+ * differ, so headings re-flow once. Measured on this page, every shift source
+ * is a text node (`SPAN.gradient-text`, `DIV.feature__copy`) and none is inside
+ * a `.shot`. The size of that reflow depends on which fallback face the host
+ * has, which is why it is about 0.003 on macOS and about 0.031 on a Linux CI
+ * runner.
+ *
+ * AC-3 is a claim about what an unavailable or slow CDN image does, so it is
+ * asserted on `shot`, which must be zero. `total` is still bounded, at Google's
+ * 0.1 "good" threshold, so a real regression cannot hide behind the split. It
+ * is deliberately not tightened to the current value: that would make this
+ * suite fail on an unrelated font or copy change.
+ */
 async function recordLayoutShifts(page: Page): Promise<void> {
   await page.addInitScript(() => {
-    (window as unknown as { __cls: number }).__cls = 0;
+    const store = window as unknown as { __cls: { total: number; shot: number } };
+    store.__cls = { total: 0, shot: 0 };
     new PerformanceObserver((list) => {
       for (const entry of list.getEntries()) {
-        const shift = entry as PerformanceEntry & { value: number; hadRecentInput: boolean };
-        if (!shift.hadRecentInput) {
-          (window as unknown as { __cls: number }).__cls += shift.value;
-        }
+        const shift = entry as PerformanceEntry & {
+          value: number;
+          hadRecentInput: boolean;
+          sources?: { node?: Node | null }[];
+        };
+        if (shift.hadRecentInput) continue;
+        store.__cls.total += shift.value;
+
+        // Attribute the whole entry to shots if any source sits inside one.
+        // Over-attributing is the safe direction for a test asserting that
+        // shots shift nothing.
+        const fromShot = (shift.sources ?? []).some((source) => {
+          const node = source.node;
+          if (!node) return false;
+          const element = node.nodeType === 1 ? (node as Element) : node.parentElement;
+          return !!element?.closest('.shot');
+        });
+        if (fromShot) store.__cls.shot += shift.value;
       }
     }).observe({ type: 'layout-shift', buffered: true });
   });
 }
 
-async function readCls(page: Page): Promise<number> {
-  return page.evaluate(() => (window as unknown as { __cls: number }).__cls ?? 0);
+async function readCls(page: Page): Promise<ClsReading> {
+  return page.evaluate(
+    () =>
+      (window as unknown as { __cls?: ClsReading }).__cls ?? {
+        total: 0,
+        shot: 0,
+      },
+  );
 }
 
 test.describe('#23 AC-2: /product renders screenshots served from cdn.canopy.ag', () => {
@@ -174,8 +219,10 @@ test.describe('#23 AC-3: an unavailable or slow CDN image costs no layout and sh
     await page.waitForLoadState('networkidle');
 
     const cls = await readCls(page);
-    // Google treats 0.1 as the "good" threshold. Reserved boxes should give 0.
-    expect(cls, `cumulative layout shift was ${cls}`).toBeLessThan(0.02);
+    // The reserved boxes must contribute nothing at all.
+    expect(cls.shot, `shot-attributable layout shift was ${cls.shot}`).toBe(0);
+    // And the page as a whole must still be in Google's "good" band.
+    expect(cls.total, `total layout shift was ${cls.total}`).toBeLessThan(0.1);
   });
 
   test('#23 AC-3 a slow CDN image does not move the page when it arrives', async ({ page }) => {
@@ -204,7 +251,9 @@ test.describe('#23 AC-3: an unavailable or slow CDN image costs no layout and sh
       before,
       0,
     );
-    expect(await readCls(page)).toBeLessThan(0.02);
+    const cls = await readCls(page);
+    expect(cls.shot, `shot-attributable layout shift was ${cls.shot}`).toBe(0);
+    expect(cls.total, `total layout shift was ${cls.total}`).toBeLessThan(0.1);
   });
 });
 
