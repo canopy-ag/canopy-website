@@ -1,0 +1,74 @@
+---
+title: "What square-foot-week costing hides about your irrigation costs"
+description: "Most nurseries allocate overhead the same way whether it goes to irrigation or invoicing: a blended cost per square foot per week. Here's why that hides where automation actually pays, and what an activity-based model shows instead."
+pubDate: 2026-09-18
+author: ermias
+tags: ["economics", "irrigation"]
+draft: true
+---
+
+Input costs at wholesale nurseries and greenhouses have risen 65% since 2007, according to the [Index of Prices Paid by Growers](https://www.greenhousegrower.com/management/the-2024-index-of-prices-paid-by-growers-its-not-easy-being-green/) that AmericanHort's economists track every year — labor alone is up 95% over that span. Growers have responded by raising prices, but "less than half of growers adjusted prices sufficiently to cover all input cost increases," per the same report. [Nursery Management's 2025 State of the Industry survey](https://www.nurserymag.com/article/2025-state-of-the-industry-soi-research-prices-market-segments/) found the share of growers reporting a profit decline more than doubled year over year.
+
+None of that is news to anyone running a yard. What's less talked about is how most nurseries account for where the cost pressure is actually landing — and whether the accounting itself is hiding the answer.
+
+## How nurseries cost a crop today
+
+Greenhouse and nursery cost accounting mostly runs on one number: cost per **square foot per week (SFW)**. Take annual overhead, divide by weeks in production, divide again by bench square footage, and you get a blended overhead rate you can multiply by any crop's footprint and cycle time. [Texas A&M's Ellison Chair program](https://aggie-horticulture.tamu.edu/ornamental/economic-fact-sheets/finding-that-last-red-cent/) and [MSU Extension's nursery costing tools](https://www.canr.msu.edu/resources/nursery-cost-of-production-calculator-25-crops) both teach a version of it; nurseries without bench-space constraints often use a parallel "equivalent unit" method that does the same thing on a per-container basis instead.
+
+It's a genuinely useful shortcut, and it exists for a good reason. As Dr. Charlie Hall, the Ellison Chair, [explained it](https://www.growertalks.com/utility/PDF.aspx?pagename=viewarticle.aspx&id=22663&pub=GT): manufacturers allocate overhead by direct labor or machine hours, but growers historically had no clean way to track labor hours per crop — so the industry standardized on the one resource everyone could measure: bench space over time. SFW isn't a precision instrument. It's a workaround for not being able to measure labor and other inputs at the activity level.
+
+## Where the blend breaks down
+
+A blended rate works fine as long as every crop consumes overhead in roughly the same proportion to its footprint. Most don't. Jim Faust put it bluntly in [Greenhouse Product News](https://gpnmag.com/article/reflections-greenhouse-cost-accounting/): growers usually treat vertical hanging-basket space as "free" under an SFW model, so baskets become "a gravy train," and splitting a shared input bill evenly across dissimilar crops "may not make sense" — sometimes the honest split is 70/30, not 50/50. His conclusion: uniform allocation "defeats the purpose of cost accounting."
+
+Paul Fisher's follow-up in [Greenhouse Grower](https://www.greenhousegrower.com/management/five-keys-to-accurate-greenhouse-production-costing/) is the clearest signal that the industry already half-knows this. He found that most growers overestimate how full their space actually is and therefore *underestimate* their real cost per SFW — and he recommends pulling labor-intensive crops out of the blended pool entirely and costing them by direct labor (trays transplanted per worker-hour) instead, specifically so growers can "evaluate return on investment for automation." MSU's own nursery costing worksheet does something similar: it applies an extra weighting factor to container operations because they carry more indirect cost than field production — irrigation systems and drainage infrastructure, by name — than a flat per-square-foot rate would assume.
+
+In other words: the field's own experts already recommend breaking specific activities out of the blend when they don't scale with bench space. Irrigation is one of the clearest cases. A zone's water, labor, and failure risk don't track its square footage — they track how the zone is watered, how often, and how well the schedule fits the crop and the weather. A blended rate smears that variance across every crop equally, which means it systematically hides exactly where automation would move the number.
+
+## Activity-based costing: the same idea, sharper
+
+This is what activity-based costing (ABC) was built for. Robert Kaplan and Robin Cooper's original insight, back in the 1980s, was that allocating overhead by a single volume-based driver overcosts high-volume, simple activities and undercosts low-volume, high-variance ones — then developed the two-stage model of tracing cost to *activities* first, and to products second, by the activities they actually consume.
+
+ABC hasn't shown up much in horticulture specifically. A [2009 paper in the Spanish Journal of Agricultural Research](https://sjar.revistas.csic.es/index.php/sjar/article/view/394) proposed an activity-based cost model for ornamental plant nurseries, arguing that crop and destination variety make them a particularly bad fit for blended costing — but it's the only nursery-specific academic precedent we found, and it predates the current wave of irrigation automation entirely. More recently, in March 2026, the accounting advisory firm [Baker Tilly named irrigation directly](https://www.bakertilly.com/insights/activity-based-costing-for-agriculture) as one of the agribusiness cost drivers ABC is suited to isolate, alongside fertilization and machine hours. As far as we can tell, nobody has published an activity-based model of irrigation specifically for a U.S. container nursery. So we built one.
+
+## What our own model shows
+
+We modeled the irrigation-touching slice of a mid-sized container nursery — 400 zones, greenhouse and outdoor container yard combined — as eight activity pools: five labor activities (rounds, valve operation, hand-watering, incident response, scheduling), water and pumping energy, incident-driven crop loss, and irrigation-attributable shrink.
+
+| Activity pool | Baseline annual cost |
+|---|---|
+| Irrigation rounds (walk/check zones) | $26,922 |
+| Manual valve operation / reprogramming | $5,772 |
+| Hand-watering dry spots | $19,240 |
+| Incident response | $3,600 |
+| Scheduling & records admin | $6,240 |
+| Water + pumping energy | $30,014 |
+| Crop loss from incidents | $12,000 |
+| Irrigation-attributable shrink | $44,800 |
+| **Total** | **$148,589** ($371/zone-year) |
+
+Broken out this way, two things become visible that a blended SFW rate would never show. First, irrigation-attributable shrink and water/pumping together are half the baseline cost — bigger than every labor pool combined. Second, the labor pools aren't uniform either: hand-watering dry spots costs more than three times as much as manual valve operation, even though both are "irrigation labor" under any blended category.
+
+Against that baseline, automated scheduling and remote zone visibility avoid a modeled $63,602 a year at the mid estimate ($47,759 low, $79,445 high) — split roughly 43% labor, 40% shrink, 17% water. At a typical price point, that leaves the nursery with the larger share of the value created, though how much larger moves with the band: it's a bigger share of a smaller number in a conservative year, a smaller share of a bigger number in an aggressive one.
+
+<Callout label="How confident should you be in these numbers">
+This is an illustrative model, not measured results from a named customer. The water and pumping figures rest on published irrigation-science literature (Majsztrik & Lea-Cox, *Irrigation Science*, 2016) and the shrink-avoidance figure is anchored to a controlled trial (Chappell et al., *HortTechnology*, 2013, gardenia). But two of the largest inputs — how many labor-minutes a round actually takes per zone, and what share of a nursery's overall shrink is irrigation-attributable — have no published time study behind them anywhere in the literature we could find. We used our own field estimates and say so plainly rather than dress them up as measured facts. Treat this as the shape of the argument, not a quote for your operation.
+</Callout>
+
+## The point isn't to replace your costing system
+
+Nobody needs to rebuild their whole chart of accounts around activity-based costing. Square-foot-week is a fine shortcut for space and time, and rebuilding it for every SKU would cost more than it's worth. But when you're deciding whether an irrigation investment pays for itself, the blended number is the wrong number to look at — it was never built to isolate what irrigation actually costs, and the people who built it say so themselves. Cost the activity, not the average, and the ROI case gets a lot easier to see.
+
+## Sources
+
+- AmericanHort / Your Market Metrics, [2024 Index of Prices Paid by Growers](https://www.greenhousegrower.com/management/the-2024-index-of-prices-paid-by-growers-its-not-easy-being-green/), *Greenhouse Grower*, 2025
+- [2025 State of the Industry: Prices & Market Segments](https://www.nurserymag.com/article/2025-state-of-the-industry-soi-research-prices-market-segments/), *Nursery Management*
+- Charlie Hall, [Cost Accounting: Why Do We Do It This Way?](https://www.growertalks.com/utility/PDF.aspx?pagename=viewarticle.aspx&id=22663&pub=GT), *GrowerTalks*, 2016
+- [Finding That Last Red Cent](https://aggie-horticulture.tamu.edu/ornamental/economic-fact-sheets/finding-that-last-red-cent/), Texas A&M AgriLife / Ellison Chair
+- [Estimating the Wholesale Cost of Nursery Production](https://www.canr.msu.edu/resources/nursery-cost-of-production-calculator-25-crops), MSU Extension
+- Jim Faust, [Reflections on Greenhouse Cost Accounting](https://gpnmag.com/article/reflections-greenhouse-cost-accounting/), *Greenhouse Product News*, 2004
+- Paul Fisher, [Five Keys to Accurate Greenhouse Production Costing](https://www.greenhousegrower.com/management/five-keys-to-accurate-greenhouse-production-costing/), *Greenhouse Grower*, 2018
+- A model for cost calculation and management in a multiproduct agricultural framework: the case for ornamental plants, *Spanish Journal of Agricultural Research* 7(1), 2009. DOI: [10.5424/sjar/2009071-394](https://sjar.revistas.csic.es/index.php/sjar/article/view/394)
+- Francisco Sarmiento, [How Can Activity-Based Costing Improve Cost Accuracy in Agribusiness?](https://www.bakertilly.com/insights/activity-based-costing-for-agriculture), Baker Tilly, 2026
+- Majsztrik & Lea-Cox, *Irrigation Science* 34, 2016
+- Chappell et al., *HortTechnology* 23(6), 2013
