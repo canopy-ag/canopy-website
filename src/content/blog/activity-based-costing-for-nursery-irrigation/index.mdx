@@ -7,6 +7,8 @@ tags: ["economics", "irrigation"]
 draft: true
 ---
 
+import AbcCalculator from '~/components/blog/AbcCalculator';
+
 Input costs at wholesale nurseries and greenhouses have risen 65% since 2007, according to the [Index of Prices Paid by Growers](https://www.greenhousegrower.com/management/the-2024-index-of-prices-paid-by-growers-its-not-easy-being-green/) that AmericanHort's economists track every year. Labor alone is up 95% over that span. Growers have responded by raising prices, but "less than half of growers adjusted prices sufficiently to cover all input cost increases," per the same report. [Nursery Management's 2025 State of the Industry survey](https://www.nurserymag.com/article/2025-state-of-the-industry-soi-research-prices-market-segments/) found the share of growers reporting a profit decline more than doubled year over year.
 
 None of that is news to anyone running a yard. What's less talked about is how most nurseries account for where the cost pressure is actually landing, and whether the accounting itself is hiding the answer.
@@ -35,31 +37,35 @@ ABC hasn't shown up much in horticulture specifically. A [2009 paper in the Span
 
 We modeled the irrigation-touching slice of a mid-sized container nursery (400 zones, greenhouse and outdoor container yard combined) as eight activity pools: five labor activities (rounds, valve operation, hand-watering, incident response, scheduling), water and pumping energy, incident-driven crop loss, and irrigation-attributable shrink.
 
-| Activity pool | Baseline annual cost |
+| Activity pool | Baseline annual cost (rounded) |
 |---|---|
-| Irrigation rounds (walk/check zones) | $26,922 |
-| Manual valve operation / reprogramming | $5,772 |
-| Hand-watering dry spots | $19,240 |
-| Incident response | $3,600 |
-| Scheduling & records admin | $6,240 |
-| Water + pumping energy | $30,014 |
-| Crop loss from incidents | $12,000 |
-| Irrigation-attributable shrink | $44,800 |
-| **Total** | **$148,589** ($371/zone-year) |
+| Irrigation rounds (walk/check zones) | ~$26,900 |
+| Manual valve operation / reprogramming | ~$5,800 |
+| Hand-watering dry spots | ~$19,200 |
+| Incident response | ~$3,600 |
+| Scheduling & records admin | ~$6,200 |
+| Water + pumping energy | ~$30,000 |
+| Crop loss from incidents | ~$12,000 |
+| Irrigation-attributable shrink | ~$44,800 |
+| **Total** | **~$148,500** (~$370/zone-year) |
+
+*Figures are rounded to the nearest hundred. This is an illustrative model, not a measured cost report; see the caveat below.*
 
 Broken out this way, two things become visible that a blended SFW rate would never show. First, irrigation-attributable shrink and water/pumping together are half the baseline cost, bigger than every labor pool combined. Second, the labor pools aren't uniform either: hand-watering dry spots costs more than three times as much as manual valve operation, even though both are "irrigation labor" under any blended category.
 
-Against that baseline, automated scheduling and remote zone visibility avoid a modeled $63,602 a year at the mid estimate ($47,759 low, $79,445 high), split roughly 43% labor, 40% shrink, 17% water. At a typical price point, that leaves the nursery with the larger share of the value created, though how much larger moves with the band: it's a bigger share of a smaller number in a conservative year, a smaller share of a bigger number in an aggressive one.
+Against that baseline, automated scheduling and remote zone visibility avoid a modeled ~$64,000 a year at the mid estimate (roughly $48,000 low, $79,000 high), split roughly 43% labor, 40% shrink, 17% water. At a typical price point, that leaves the nursery with the larger share of the value created, though how much larger moves with the band: it's a bigger share of a smaller number in a conservative year, a smaller share of a bigger number in an aggressive one.
+
+<AbcCalculator client:load />
 
 <Callout label="How confident should you be in these numbers">
-This is an illustrative model, not measured results from a named customer. The water and pumping figures rest on published irrigation-science literature (Majsztrik & Lea-Cox, *Irrigation Science*, 2016) and the shrink-avoidance figure is anchored to a controlled trial (Chappell et al., *HortTechnology*, 2013, gardenia). But two of the largest inputs (how many labor-minutes a round actually takes per zone, and what share of a nursery's overall shrink is irrigation-attributable) have no published time study behind them anywhere in the literature we could find. We used our own field estimates and say so plainly rather than dress them up as measured facts. Treat this as the shape of the argument, not a quote for your operation.
+This is an illustrative model, not measured results from a named customer, and the figures throughout this post are rounded to avoid implying more precision than the model actually has. The water and pumping figures rest on published irrigation-science literature (Majsztrik & Lea-Cox, *Irrigation Science*, 2016) and the shrink-avoidance figure is anchored to a controlled trial (Chappell et al., *HortTechnology*, 2013, gardenia). But two of the largest inputs (how many labor-minutes a round actually takes per zone, and what share of a nursery's overall shrink is irrigation-attributable) have no published time study behind them anywhere in the literature we could find. We used our own field estimates and say so plainly rather than dress them up as measured facts. Treat this as the shape of the argument, not a quote for your operation.
 </Callout>
 
 ## Where technology and the rest of the labor bill fit in
 
 Two more pieces are worth putting in context, and it matters how much weight each one can actually carry.
 
-**Canopy's own hardware is a rounding error, if it's utilized.** Our controller costs about $205 at scale, amortized over a 5-year device life, and architecturally serves up to 64 zones. Fully utilized, that's about $0.64 per zone per year. Under-deployed, say 16 zones on a controller built for 64, it's $2.56, a 4x swing from a single variable: how much of the box's rated capacity actually gets used. Either way, it's a fraction of a percent of the $368.80-per-zone-year baseline it's meant to address. The technology cost was never the argument. What it enables, and how fully it's deployed, is.
+**Canopy's own hardware is a rounding error, if it's utilized.** Our controller costs a bit over $200 at scale, amortized over a 5-year device life, and architecturally serves up to 64 zones. Fully utilized, the amortized cost per zone is well under a dollar a year. Under-deployed, say 16 zones on a controller built for 64, it's a few dollars, still small, but roughly a 4x swing from a single variable: how much of the box's rated capacity actually gets used. Either way, it's a small fraction of the ~$370-per-zone-year baseline it's meant to address. The technology cost was never the argument. What it enables, and how fully it's deployed, is.
 
 **Irrigation labor is a specific, boundable task, not the whole labor bill.** Nursery and greenhouse labor runs 29% to 34% of total gross cash farm income industry-wide, roughly three times the all-farm average, according to USDA data compiled in [*Choices Magazine*](https://www.choicesmagazine.org/UserFiles/file/cmsarticle_970.pdf). Using the rough rule of thumb that a container operation runs about one field employee per acre across the full production cycle, potting, spacing, pruning, scouting, shipping, and everything else, a 32-acre outdoor yard is on the order of thirty-some full-time-equivalent workers. Our irrigation-touching labor model, walking the same 320 zones, comes to roughly one FTE-year. That's not a knock on irrigation automation's labor case. It's why the case has to stand on water and crop loss, which the model above actually measures, rather than on a share of a labor bill it was never going to move much on its own. Nobody, as far as we can find, has published a task-by-task breakdown of where the rest of that labor goes. Potting, spacing, pruning, and scouting each carry a real cost, and none of it has a public number attached the way water and irrigation labor now do. That's a gap in the literature, not a number we're going to invent to fill it.
 
