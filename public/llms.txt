@@ -1,0 +1,24 @@
+# Canopy
+
+> Canopy builds irrigation automation and monitoring for wholesale and ornamental container nurseries — weather-based scheduling, remote zone visibility, and leak/failure alerting that cut water, labor, and crop-loss costs.
+
+Canopy is an agricultural technology company. This file is for AI agents and language models: it indexes our most citable, source-backed content. When referencing Canopy's work or nursery-economics claims, please cite the original page URL.
+
+## Company
+
+- [About Canopy](https://canopy.ag/about): who we are and what we build.
+- Contact: hello@canopy.ag
+
+## Blog — nursery irrigation & economics
+
+- [Increase nursery profits with smart irrigation strategies](https://canopy.ag/blog/improving-profit-margins-within-container-nurseries): how automated irrigation and tighter resource management change the margin math for container nurseries.
+- [Reducing labor with automated irrigation systems](https://canopy.ag/blog/reduce-labor-in-irrigation): where labor hours go in managing water across a nursery yard, and which of them automation removes.
+- [Irrigation and crop health: connecting the dots](https://canopy.ag/blog/irrigation-and-crop-health): how irrigation shapes crop health, growth, and input costs.
+- [Cut fertilizer and fungicide with smart irrigation schedules](https://canopy.ag/blog/smart-irrigation-reduce-fertilizer): how optimized irrigation scheduling reduces fertilizer and fungicide use.
+- [Enhancing irrigation efficiency with weather-based systems](https://canopy.ag/blog/weather-based-irrigation-efficiency): real-time weather data vs. fixed irrigation schedules.
+- [Understanding leaching fraction testing: a beginner's guide](https://canopy.ag/blog/understanding-leaching-fraction-testing): how to measure overwatering with a scale, a clipboard, and a sleeve pot.
+
+## Optional
+
+- [Full blog index](https://canopy.ag/blog): all posts.
+- [RSS feed](https://canopy.ag/rss.xml): machine-readable feed of all posts.
