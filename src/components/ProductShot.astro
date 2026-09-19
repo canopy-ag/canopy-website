@@ -4,12 +4,17 @@
  *
  * ## Why this is not `<Image />`
  *
- * `astro:assets` optimizes a remote image by fetching it at build time. The
- * bucket is empty today, so every fetch would 404 and take the build down with
- * it. A plain `<img>` defers the fetch to the browser, which is the only way
- * the page can exist before the first capture is published. The CDN host is
- * still authorized in `astro.config.mjs`, so switching to `<Image />` once
- * assets land is a component change and not a config one.
+ * `astro:assets` optimizes a remote image by fetching it at build time, and a
+ * 404 there takes the whole build down. The bucket is no longer empty — the
+ * first publish landed 2026-09-18 — but every id this page renders is still
+ * absent, because all six are `demo` tier and blocked on the Canopy Creek
+ * Farms tenant. A plain `<img>` defers the fetch to the browser, which is what
+ * lets the page exist while that is true.
+ *
+ * The CDN host is authorized in `astro.config.mjs`, so switching to `<Image />`
+ * is a component change and not a config one. The precondition is not "assets
+ * exist" but "every id in `PRODUCT_SECTIONS` resolves" — switching while one
+ * still 404s trades a graceful placeholder for a red build.
  *
  * ## Absent images are a designed state, not an accident
  *
