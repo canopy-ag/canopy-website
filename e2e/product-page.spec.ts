@@ -1,5 +1,5 @@
 import { expect, test, type APIRequestContext, type Page } from '@playwright/test';
-import { CDN_ORIGIN, MANIFEST_URL, PRODUCT_SECTIONS, shotUrl } from '../src/lib/media';
+import { CDN_ORIGIN, MANIFEST_URL, PRODUCT_SECTIONS, cdnUrl, shotUrl } from '../src/lib/media';
 
 /**
  * #23: the /product page, and the promise that adding it did not cost the
@@ -21,12 +21,36 @@ import { CDN_ORIGIN, MANIFEST_URL, PRODUCT_SECTIONS, shotUrl } from '../src/lib/
 const CDN_GLOB = 'https://cdn.canopy.ag/**';
 
 /** Is anything actually published? Never throws: no network is "not published". */
-async function manifestIsPublished(request: APIRequestContext): Promise<boolean> {
+/** One row of the published provenance manifest. */
+interface PublishedAsset {
+  /** `<capture-id>-<theme>`, e.g. `login-dark`. */
+  id: string;
+  /** Bucket key relative to the origin. */
+  path: string;
+  family: 'product' | 'showcase';
+  scale: number;
+}
+
+/**
+ * What the CDN actually holds, or null when the manifest cannot be read.
+ *
+ * Replaces an earlier `manifestIsPublished()` that returned a single boolean,
+ * which asked the wrong question. Publication is per ASSET, not per bucket: on
+ * 2026-09-18 the first capture run published 41 objects while every screenshot
+ * `/product` references stayed absent, because those are `demo` tier and need
+ * a seeded tenant. A manifest-exists gate flipped every test below from
+ * skipped to failing on that day without anything about the page changing.
+ */
+async function publishedAssets(
+  request: APIRequestContext,
+): Promise<PublishedAsset[] | null> {
   try {
     const response = await request.get(MANIFEST_URL, { timeout: 15_000 });
-    return response.status() === 200;
+    if (response.status() !== 200) return null;
+    const manifest = (await response.json()) as { assets?: PublishedAsset[] };
+    return manifest.assets ?? [];
   } catch {
-    return false;
+    return null;
   }
 }
 
@@ -115,11 +139,22 @@ test.describe('#23 AC-2: /product renders screenshots served from cdn.canopy.ag'
   });
 
   test('#23 AC-2 the CDN screenshots actually paint', async ({ page, request }) => {
+    // This one needs THIS PAGE's imagery, not merely a non-empty bucket: it
+    // asserts the first frame reaches `loaded`, and a 404 resolves it to
+    // `failed` instead.
+    const assets = await publishedAssets(request);
+    const ids = new Set((assets ?? []).map((asset) => asset.id));
+    const firstShot = `${PRODUCT_SECTIONS[0]!.id}-dark`;
     test.skip(
-      !(await manifestIsPublished(request)),
-      'unproven: cdn.canopy.ag bucket is empty. No R2 API credential exists, so ' +
-        'media:publish in canopy-roost has never run and every asset 404s. ' +
-        'Re-run this test once a capture has been published.',
+      !ids.has(firstShot),
+      assets === null
+        ? `unproven: ${MANIFEST_URL} is unreachable, so nothing can be said ` +
+            'about what is published.'
+        : `unproven: ${firstShot} is not published. The bucket is NOT empty ` +
+            `(${assets.length} asset(s) as of the manifest read just now), but ` +
+            'every /product screenshot is a `demo` tier capture and needs the ' +
+            'Canopy Creek Farms tenant seeded on dev first. See ' +
+            'canopy-roost/docs/DEMO-TENANT-SEEDING.md.',
     );
 
     await page.goto('/product');
@@ -316,14 +351,27 @@ test.describe('#23 AC-4: the existing video hero still works', () => {
 
 test.describe('#23 AC-5: CDN media carries a long-lived Cache-Control', () => {
   test('#23 AC-5 a published asset is cached for a long time', async ({ request }) => {
+    // Cache-Control is a property of the bucket and its custom domain, not of
+    // any particular picture, so ANY published asset proves it. Pinning this
+    // to `PRODUCT_SECTIONS[0]` made it unprovable until the demo tenant lands,
+    // for no reason: `login` has been published since 2026-09-18 and answers
+    // the question just as well.
+    const assets = await publishedAssets(request);
     test.skip(
-      !(await manifestIsPublished(request)),
-      'unproven: cdn.canopy.ag bucket is empty, so no response exists to inspect. ' +
-        'No R2 API credential exists yet, so media:publish has never run.',
+      assets === null,
+      `unproven: ${MANIFEST_URL} is unreachable, so no response exists to inspect.`,
+    );
+    const candidate = assets!.find(
+      (asset) => asset.family === 'product' && asset.scale === 1,
+    );
+    test.skip(
+      candidate === undefined,
+      'unproven: no product-family asset is published yet, so there is no ' +
+        'response to inspect. media:publish in canopy-roost writes them.',
     );
 
-    const response = await request.get(shotUrl(PRODUCT_SECTIONS[0]!.id, 'dark', 1));
-    expect(response.status()).toBe(200);
+    const response = await request.get(cdnUrl(candidate!.path));
+    expect(response.status(), candidate!.path).toBe(200);
 
     const cacheControl = response.headers()['cache-control'] ?? '';
     const maxAge = /max-age=(\d+)/.exec(cacheControl);

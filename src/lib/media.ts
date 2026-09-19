@@ -26,14 +26,14 @@
  *
  * The first publish landed 2026-09-18 (canopy-roost media-capture run
  * 35390366680, 41 objects). It does NOT mean every URL below resolves. Two of
- * the fourteen ids are live — `login` and `forgot-password`, the only routes
- * that render without a session — and the other twelve still answer 404
+ * the fourteen ids are live: `login` and `forgot-password`, the only routes
+ * that render without a session. The other twelve still answer 404
  * because they are `demo` tier and need the Canopy Creek Farms tenant seeded
  * on dev first.
  *
  * That split is the important part: "published" is per-asset, not per-bucket,
  * and every section of `/product` currently points at one of the twelve. So
- * nothing here fetches at build time, exactly as before — see
+ * nothing here fetches at build time, exactly as before. See
  * `ProductShot.astro` for how the page stays deliberate while an image is
  * absent. Verified by curl against the live CDN on 2026-09-18.
  */
@@ -129,7 +129,7 @@ export interface ProductSection {
  * Farms tenant seeded before it can be taken. All six answer 404 as of
  * 2026-09-18 and render as reserved placeholders rather than broken images.
  *
- * The two ids that ARE published — `login` and `forgot-password` — are
+ * The two ids that ARE published, `login` and `forgot-password`, are
  * deliberately not listed here. They are auth screens, and a product page that
  * led with them would be advertising the front door instead of the building.
  * They exist so the pipeline can be proven end-to-end without a tenant, which
