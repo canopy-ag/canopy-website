@@ -22,12 +22,20 @@
  * readable by a site that was built before the capture ran. `media.test.ts`
  * pins the shape so the duplication cannot drift silently.
  *
- * ## The bucket may be empty, and that is a supported state
+ * ## A PARTLY filled bucket is the current state, and is supported
  *
- * No asset has been published yet: R2 API credentials do not exist, so every
- * URL below currently answers 404. Nothing here fetches at build time for
- * exactly that reason. See `ProductShot.astro` for how the page stays
- * deliberate while the images are absent.
+ * The first publish landed 2026-09-18 (canopy-roost media-capture run
+ * 35390366680, 41 objects). It does NOT mean every URL below resolves. Two of
+ * the fourteen ids are live: `login` and `forgot-password`, the only routes
+ * that render without a session. The other twelve still answer 404
+ * because they are `demo` tier and need the Canopy Creek Farms tenant seeded
+ * on dev first.
+ *
+ * That split is the important part: "published" is per-asset, not per-bucket,
+ * and every section of `/product` currently points at one of the twelve. So
+ * nothing here fetches at build time, exactly as before. See
+ * `ProductShot.astro` for how the page stays deliberate while an image is
+ * absent. Verified by curl against the live CDN on 2026-09-18.
  */
 
 /** Origin of the Cloudflare R2 bucket `canopy-media`. */
@@ -117,9 +125,21 @@ export interface ProductSection {
  * work that follows from it, then what the work is done to, then the hardware
  * underneath, then where all of it sits.
  *
- * Every entry names a `demo` tier capture, which needs the Canopy Creek Farms
- * tenant seeded before it can be taken. Until then these render as reserved
- * placeholders rather than broken images.
+ * ⚠ Every entry names a `demo` tier capture, which needs the Canopy Creek
+ * Farms tenant seeded before it can be taken. All six answer 404 as of
+ * 2026-09-18 and render as reserved placeholders rather than broken images.
+ *
+ * The two ids that ARE published, `login` and `forgot-password`, are
+ * deliberately not listed here. They are auth screens, and a product page that
+ * led with them would be advertising the front door instead of the building.
+ * They exist so the pipeline can be proven end-to-end without a tenant, which
+ * is the job they did.
+ *
+ * Do NOT substitute a `showcase` asset for a missing one. Those are
+ * design-system gallery pages, and `canopy-roost/e2e/media/shots.ts` namespaces
+ * them away from product shots precisely because `page-layout` in particular
+ * "is exactly the image someone would reach for as a product screenshot, and
+ * exactly the claim the product does not support".
  */
 export const PRODUCT_SECTIONS: readonly ProductSection[] = [
   {
