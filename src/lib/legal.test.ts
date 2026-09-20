@@ -112,7 +112,7 @@ describe('public connector page', () => {
   it('[#24 AC-5] states the actuation exclusion in plain language', () => {
     // The epic's exit criterion 7 is a promise to customers, not just a test
     // assertion. If the connector ever gains an actuating tool, this page becomes
-    // a false claim — so the claim is pinned here where a change has to be
+    // a false claim, so the claim is pinned here where a change has to be
     // deliberate.
     const body = page('connect');
     expect(body).toMatch(/cannot start or\s+stop irrigation/i);
