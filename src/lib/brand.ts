@@ -24,9 +24,16 @@ export const logoVariant = resolvedLogoVariant;
  * Logo paths per variant, resolved at BUILD time from PUBLIC_LOGO_VARIANT.
  *
  * `mono` carries the greyscale marks used under the night and light themes
- * (roadmap#149). Only `badge` and `favicon` have mono counterparts, because
- * those are the only marks whose background is the page: `full` is the social
- * card image, which sits on its own backdrop and keeps brand colour.
+ * (roadmap#149). `badge` is the one in use: it sits on the page, so it follows
+ * `data-theme`.
+ *
+ * `mono.favicon` is deliberately UNUSED. The tab icon keeps brand colour in
+ * every theme, because browser chrome cannot observe `data-theme` and trading
+ * the most-seen instance of the mark for a theme it cannot see is a bad trade.
+ * It is kept here so that decision is one line to revisit.
+ *
+ * `full` has no mono counterpart: it is the social card image, which sits on
+ * its own backdrop rather than the page, and keeps brand colour.
  *
  * The per-mode CHOICE is not made here. This module runs once at build time
  * and cannot know a visitor's theme, so both marks are rendered and CSS keyed
