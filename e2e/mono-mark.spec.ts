@@ -82,18 +82,28 @@ test.describe('roadmap#149 AC-2 both marks ship and CSS picks one', () => {
   });
 });
 
-test.describe('roadmap#149 AC-4 the favicon is the mono mark, fixed', () => {
-  test('the icon link points at the mono favicon', async ({ page }) => {
+/**
+ * The favicon is FIXED and keeps brand colour, in every theme.
+ *
+ * roadmap#149 originally shipped a grey favicon everywhere, reasoning that
+ * browser chrome cannot follow `data-theme` so one neutral mark was safer than
+ * a JS swap path. That was reversed: the tab icon is the most-seen instance of
+ * the mark, and trading its brand colour to serve a theme the chrome cannot
+ * even observe was a bad trade. The mono asset stays in the brand map for the
+ * in-page marks, which DO follow the theme.
+ */
+test.describe('roadmap#149 AC-4 the favicon is fixed, and keeps brand colour', () => {
+  test('the icon link points at the colour favicon', async ({ page }) => {
     await page.goto('/');
     const href = await page
       .locator('link[rel="icon"]')
       .first()
       .getAttribute('href');
-    expect(href).toBe(activeLogos.mono.favicon);
+    expect(href).toBe(activeLogos.favicon);
   });
 
   for (const theme of ['night', 'light', 'dark'] as const) {
-    test(`stays the mono favicon under data-theme="${theme}"`, async ({ page }) => {
+    test(`stays the colour favicon under data-theme="${theme}"`, async ({ page }) => {
       await page.goto('/');
       await page.evaluate((t) => {
         document.documentElement.setAttribute('data-theme', t);
@@ -103,17 +113,16 @@ test.describe('roadmap#149 AC-4 the favicon is the mono mark, fixed', () => {
         .locator('link[rel="icon"]')
         .first()
         .getAttribute('href');
-      expect(href).toBe(activeLogos.mono.favicon);
+      expect(href).toBe(activeLogos.favicon);
     });
   }
 
-  test('the mono favicon is served and carries no brand colour', async ({ request }) => {
-    const res = await request.get(activeLogos.mono.favicon);
+  test('the colour favicon is served and carries the brand palette', async ({ request }) => {
+    const res = await request.get(activeLogos.favicon);
     expect(res.status()).toBe(200);
 
     const svg = (await res.text()).toLowerCase();
-    for (const hex of ['#00d4ff', '#4ade80', '#185337', '#54aa6b', '#3c9d92']) {
-      expect(svg).not.toContain(hex);
-    }
+    expect(svg).toContain('#00d4ff');
+    expect(svg).toContain('#4ade80');
   });
 });

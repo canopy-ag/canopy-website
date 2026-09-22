@@ -100,16 +100,25 @@ inherits the surrounding text colour for free.
 Both marks ship in the DOM and CSS picks one, so switching theme involves no
 JS swap and no second network fetch, and cannot flash.
 
-### The favicon is fixed
+### The favicon keeps brand colour
 
-`public/logos/{hex,leafy}/mono/favicon.svg` carries a baked mid grey
-`#A3A3A3` instead of `currentColor`, and is used in **every** theme.
+`<link rel="icon">` points at the **colour** mark in every theme, and does not
+follow `data-theme`.
 
-Browser chrome does not follow `data-theme`, and an SVG favicon has no host
-page to inherit a colour from, so `currentColor` there would resolve to its own
-initial value and vanish against dark chrome. A fixed mid grey reads against
-both light and dark browser chrome. The trade is a little brand colour in the
-tab for no JS swap path.
+This reverses the original roadmap#149 decision, which shipped a grey favicon
+everywhere on the reasoning that browser chrome cannot observe `data-theme`, so
+one neutral mark beat carrying a JS swap path. The swap-path argument still
+holds, but the conclusion was wrong: the tab icon is the most-seen instance of
+the mark, and giving up its brand colour to serve a theme the chrome cannot
+even see is a bad trade. A fixed colour mark reads against both light and dark
+browser chrome, because the hex mark carries its own dark interior.
+
+`public/logos/{hex,leafy}/mono/favicon.svg` is kept in the brand map
+(`logos.<variant>.mono.favicon`) so the decision is one line to revisit, but
+nothing references it today.
+
+The in-page marks are unaffected: they DO follow `data-theme`, because they sit
+on the page rather than in browser chrome.
 
 The social card image (`full.svg`) keeps brand colour: it sits on its own
 backdrop, not on the page.
