@@ -19,6 +19,15 @@ const {
   ogType = 'website',
   canonical = new URL(Astro.url.pathname, Astro.site).href,
 } = Astro.props;
+
+const orgJsonLd = {
+  '@context': 'https://schema.org',
+  '@type': 'Organization',
+  name: 'Canopy',
+  url: Astro.site?.href,
+  logo: new URL(activeLogos.full, Astro.site).href,
+  sameAs: ['https://github.com/canopy-ag'],
+};
 ---
 
 <!DOCTYPE html>
@@ -26,11 +35,12 @@ const {
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <link rel="icon" type="image/svg+xml" href={activeLogos.favicon} />
+    <link rel="icon" type="image/svg+xml" href={activeLogos.mono.favicon} />
     <meta name="description" content={description} />
     <title>{title}</title>
     <link rel="canonical" href={canonical} />
     <link rel="alternate" type="application/rss+xml" title="Canopy blog" href="/rss.xml" />
+    <script is:inline type="application/ld+json" set:html={JSON.stringify(orgJsonLd)} />
     <meta property="og:site_name" content="Canopy" />
     <meta property="og:type" content={ogType} />
     <meta property="og:title" content={title} />
@@ -49,7 +59,15 @@ const {
       <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div class="flex items-center justify-between h-16">
           <a href="/" class="flex items-center gap-3 group">
-            <img src={activeLogos.badge} alt="Canopy" class="w-9 h-9 group-hover:scale-105 transition" />
+            <span class="brand-mark w-9 h-9 group-hover:scale-105 transition">
+              <img src={activeLogos.badge} alt="Canopy" class="brand-mark-colour w-9 h-9" />
+              <span
+                class="brand-mark-mono w-9 h-9"
+                role="img"
+                aria-label="Canopy"
+                style={`--brand-mono-mark: url('${activeLogos.mono.badge}')`}
+              ></span>
+            </span>
             <span class="text-lg font-bold tracking-wide gradient-text">CANOPY</span>
           </a>
           <div class="hidden md:flex items-center gap-8">
@@ -76,7 +94,15 @@ const {
         <div class="grid md:grid-cols-3 gap-8 mb-8">
           <div>
             <div class="flex items-center gap-2 mb-4">
-              <img src={activeLogos.badge} alt="Canopy" class="w-7 h-7" />
+              <span class="brand-mark w-7 h-7">
+                <img src={activeLogos.badge} alt="Canopy" class="brand-mark-colour w-7 h-7" />
+                <span
+                  class="brand-mark-mono w-7 h-7"
+                  role="img"
+                  aria-label="Canopy"
+                  style={`--brand-mono-mark: url('${activeLogos.mono.badge}')`}
+                ></span>
+              </span>
               <span class="font-bold gradient-text">CANOPY</span>
             </div>
             <p class="text-white/50 text-sm">
@@ -104,8 +130,7 @@ const {
             <h4 class="font-semibold mb-4 text-white/80">Connect</h4>
             <ul class="space-y-2 text-sm">
               <li><a href="mailto:hello@canopy.ag" class="text-white/50 hover:text-[#22C55E] transition">hello@canopy.ag</a></li>
-              <li><span class="text-white/30">GitHub</span></li>
-              <li><span class="text-white/30">Twitter</span></li>
+              <li><a href="https://github.com/canopy-ag" class="text-white/50 hover:text-[#22C55E] transition" rel="me">GitHub</a></li>
             </ul>
           </div>
         </div>
@@ -116,3 +141,44 @@ const {
     </footer>
   </body>
 </html>
+
+<style is:global>
+  /*
+    roadmap#149. Two marks ship in the DOM and CSS picks one, so switching
+    theme cannot flash: there is no JS swap path and no second network fetch.
+
+    The colour mark is the default, which is exactly today's behaviour on a
+    page with no `data-theme` attribute. canopy.ag does not set one yet
+    (roadmap#148 introduces it), so this whole block stays inert until then
+    and the site keeps rendering the colour mark as it does now.
+
+    The mono mark is painted as a CSS mask rather than an `img`: an SVG loaded
+    through `img` is its own document, so `currentColor` inside it would
+    resolve against that document and not the page, and the mark would come
+    out black on a black background. As a mask only the alpha matters, the
+    paint comes from `background-color: currentColor`, and the mark therefore
+    inherits the surrounding text colour: white on night, near black on light.
+    The punched out leaf veins stay transparent and show the page through.
+  */
+  .brand-mark {
+    display: inline-block;
+    position: relative;
+  }
+
+  .brand-mark-mono {
+    display: none;
+    background-color: currentColor;
+    -webkit-mask: var(--brand-mono-mark) center / contain no-repeat;
+    mask: var(--brand-mono-mark) center / contain no-repeat;
+  }
+
+  :root[data-theme='night'] .brand-mark-colour,
+  :root[data-theme='light'] .brand-mark-colour {
+    display: none;
+  }
+
+  :root[data-theme='night'] .brand-mark-mono,
+  :root[data-theme='light'] .brand-mark-mono {
+    display: inline-block;
+  }
+</style>

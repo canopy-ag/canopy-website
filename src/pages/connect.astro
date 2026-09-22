@@ -1,0 +1,79 @@
+---
+import Layout from '~/layouts/Layout.astro';
+
+const updated = '20 September 2026';
+const connectionUrl = 'https://connect.canopy.ag/mcp';
+---
+
+<Layout
+  title="Canopy connector | Canopy"
+  description="Connect Canopy to an AI assistant and ask about your operation in plain language."
+>
+  <div class="legal">
+    <div class="shell legal__inner">
+      <p class="section-kicker">Connector</p>
+      <h1>Connecting Canopy to an AI assistant</h1>
+      <p class="legal__lead">
+        The Canopy connector lets an AI assistant read your Canopy data so you can ask
+        about your operation in plain language, without leaving the conversation:
+        what a zone did overnight, which schedules ran, what a crew logged.
+      </p>
+      <p class="legal__meta">Last updated {updated}</p>
+
+      <h2>Availability</h2>
+      <p>
+        The connector is in <strong>limited access</strong> while we verify it with a
+        small number of growers. It is not yet open to every Canopy account. If you
+        would like to be part of that group, email
+        <a href="mailto:hello@canopy.ag">hello@canopy.ag</a>.
+      </p>
+
+      <h2>The connection address</h2>
+      <p>
+        Assistants that support connectors ask for a URL. Canopy's is:
+      </p>
+      <p><code>{connectionUrl}</code></p>
+      <p>
+        This address is only for the connector. It is not the address you use to sign in
+        to Canopy in a browser, and it is separate from the tools our own team uses.
+      </p>
+
+      <h2>Signing in</h2>
+      <p>
+        You sign in with the same Canopy account you already use. The assistant sends you
+        to a Canopy page, you sign in there, and you are shown exactly what the assistant
+        is asking to do before you agree to anything. You can decline, and nothing is
+        shared.
+      </p>
+      <p>
+        Your password is never given to the assistant. Canopy signs you in, and the
+        assistant only ever receives permission to act as you, which you can withdraw.
+      </p>
+
+      <h2>What it can reach</h2>
+      <p>
+        Only your own organization's data. The connector cannot see another Canopy
+        customer's operation, and it cannot see the internal tools our team uses to run
+        the platform.
+      </p>
+      <p>
+        <strong>It cannot operate your equipment.</strong> The connector cannot start or
+        stop irrigation, open or close a valve, or switch a relay. Those actions stay in
+        the Canopy app and with our team. An assistant connected to Canopy can tell you
+        what happened; it cannot make water move.
+      </p>
+
+      <h2>Questions, and turning it off</h2>
+      <p>
+        Disconnecting is done in the assistant, and takes effect immediately. For anything
+        else, including a request to remove data, write to
+        <a href="mailto:hello@canopy.ag">hello@canopy.ag</a>; see
+        <a href="/support">support</a> for what to include.
+      </p>
+      <p>
+        Our <a href="/privacy">privacy policy</a> and <a href="/terms">terms</a> apply to
+        the connector exactly as they do to the rest of Canopy.
+      </p>
+    </div>
+  </div>
+</Layout>

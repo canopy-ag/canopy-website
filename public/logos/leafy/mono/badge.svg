@@ -1,0 +1,30 @@
+<svg width="500" height="500" viewBox="0 0 500 500" fill="none" xmlns="http://www.w3.org/2000/svg" role="img" aria-labelledby="canopy-leafy-mono-title">
+  <title id="canopy-leafy-mono-title">Canopy</title>
+  <!--
+    Monochrome leafy mark. The disc takes currentColor and the whole plant is
+    punched OUT through a mask, so the page background reads as the plant. One
+    file therefore works as white on black under night and black on white under
+    light. The opaque backdrop rect of the colour mark is deliberately dropped:
+    a baked backdrop would defeat the point.
+  -->
+  <mask id="canopy-leafy-mono-cut" maskUnits="userSpaceOnUse" x="0" y="0" width="500" height="500">
+    <rect width="500" height="500" fill="white"/>
+    <path d="M250,55 C320,130 320,220 250,285 C180,220 180,130 250,55 Z" fill="black"/>
+    <g stroke="black" stroke-width="14" stroke-linecap="round" fill="none">
+      <line x1="250" y1="120" x2="250" y2="330"/>
+      <line x1="250" y1="330" x2="100" y2="310"/>
+      <line x1="250" y1="330" x2="165" y2="420"/>
+      <line x1="250" y1="330" x2="250" y2="450"/>
+      <line x1="250" y1="330" x2="335" y2="420"/>
+      <line x1="250" y1="330" x2="400" y2="310"/>
+    </g>
+    <g fill="black" stroke="black" stroke-width="12">
+      <circle cx="100" cy="310" r="18"/>
+      <circle cx="165" cy="420" r="18"/>
+      <circle cx="250" cy="450" r="18"/>
+      <circle cx="335" cy="420" r="18"/>
+      <circle cx="400" cy="310" r="18"/>
+    </g>
+  </mask>
+  <circle cx="250" cy="250" r="235" fill="currentColor" mask="url(#canopy-leafy-mono-cut)"/>
+</svg>
