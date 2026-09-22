@@ -4,7 +4,14 @@ export type LogoVariant = 'hex' | 'leafy';
 export const LOGO_VARIANTS = ['hex', 'leafy'] as const satisfies readonly LogoVariant[];
 
 const defaultLogoVariant: LogoVariant = 'hex';
-const envLogoVariant = import.meta.env.PUBLIC_LOGO_VARIANT;
+/*
+ * `import.meta.env` only exists under Vite, which Astro and vitest both run
+ * through. Playwright does not: e2e specs are loaded by plain Node, so reading
+ * a property off it there throws before any test runs. The optional chain lets
+ * this module be imported from an e2e spec, which is what keeps the expected
+ * logo paths shared with the source rather than restated as literals.
+ */
+const envLogoVariant = import.meta.env?.PUBLIC_LOGO_VARIANT;
 
 const resolvedLogoVariant: LogoVariant =
   envLogoVariant === 'hex' || envLogoVariant === 'leafy'
