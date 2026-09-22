@@ -59,3 +59,57 @@ document are a reference for design tools and must match that source.
 - **Green selection**: `rgba(34, 197, 94, 0.3)` for text selection
 - **Green glow**: `rgba(34, 197, 94, 0.15)` for card shadows
 - **Blue glow**: `rgba(0, 212, 255, 0.15)` for tech element shadows
+
+## Monochrome mark (night and light)
+
+Canopy's light green `#4ADE80` and electric blue `#00D4FF` are tuned for a dark
+navy backdrop. Against a pale background they wash out, so the colour mark is
+kept for **dark** only and a greyscale mark is used under **night** and
+**light**.
+
+| Theme | Mark |
+|---|---|
+| `dark` (today, and the default when no `data-theme` is set) | colour |
+| `night` | mono |
+| `light` | mono |
+
+### One asset, both backgrounds
+
+`public/logos/{hex,leafy}/mono/badge.svg` is a single file per variant. The
+outline and leaf take `currentColor`, and the interior detail (the hex mark's
+leaf veins, the leafy mark's whole plant) is punched **out** through an SVG
+mask rather than painted. The page background therefore shows through the
+detail, and one file reads as white on black under night and as near black on
+white under light. There is no second tinted copy to keep in sync.
+
+The mark is painted through a CSS mask, not an `<img>`:
+
+```css
+.brand-mark-mono {
+  background-color: currentColor;
+  mask: var(--brand-mono-mark) center / contain no-repeat;
+}
+```
+
+This matters. An SVG loaded through `<img>` is its own document, so
+`currentColor` inside it resolves against *that* document rather than the page,
+and the mark would render black on a black background. As a mask only the
+alpha channel is used, the paint comes from `background-color`, and the mark
+inherits the surrounding text colour for free.
+
+Both marks ship in the DOM and CSS picks one, so switching theme involves no
+JS swap and no second network fetch, and cannot flash.
+
+### The favicon is fixed
+
+`public/logos/{hex,leafy}/mono/favicon.svg` carries a baked mid grey
+`#A3A3A3` instead of `currentColor`, and is used in **every** theme.
+
+Browser chrome does not follow `data-theme`, and an SVG favicon has no host
+page to inherit a colour from, so `currentColor` there would resolve to its own
+initial value and vanish against dark chrome. A fixed mid grey reads against
+both light and dark browser chrome. The trade is a little brand colour in the
+tab for no JS swap path.
+
+The social card image (`full.svg`) keeps brand colour: it sits on its own
+backdrop, not on the page.
