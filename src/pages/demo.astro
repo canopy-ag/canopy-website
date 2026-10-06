@@ -1,0 +1,58 @@
+---
+import Layout from '~/layouts/Layout.astro';
+import BookDemo from '~/components/BookDemo.astro';
+---
+
+<Layout
+  title="Book a demo | Canopy"
+  description="Pick a time for a live walkthrough of Canopy with the team that builds it."
+>
+  <section class="demo">
+    <div class="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8">
+      <p class="demo__kicker">Book a demo</p>
+      <h1 class="demo__title">See Canopy on your operation</h1>
+      <p class="demo__lead">
+        Pick a time that suits you. You get a calendar invite with a Google Meet link, and
+        the call is with the people who build the product.
+      </p>
+      <BookDemo mode="inline" />
+      <p class="demo__alt">
+        Prefer email? Write to <a href="mailto:hello@canopy.ag">hello@canopy.ag</a>.
+      </p>
+    </div>
+  </section>
+</Layout>
+
+<style>
+  .demo {
+    padding: 8rem 0 5rem;
+  }
+
+  .demo__kicker {
+    margin: 0;
+    color: var(--canopy-blue, #00d4ff);
+    font-size: 0.875rem;
+    font-weight: 600;
+  }
+
+  .demo__title {
+    font-size: clamp(2rem, 4vw, 3rem);
+    font-weight: 700;
+    margin: 0.5rem 0 1rem;
+  }
+
+  .demo__lead {
+    max-width: 40rem;
+    color: rgb(255 255 255 / 0.7);
+    margin-bottom: 2.5rem;
+  }
+
+  .demo__alt {
+    margin-top: 2rem;
+    color: rgb(255 255 255 / 0.6);
+  }
+
+  .demo__alt a {
+    color: var(--canopy-blue, #00d4ff);
+  }
+</style>
