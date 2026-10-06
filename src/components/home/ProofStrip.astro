@@ -1,0 +1,128 @@
+---
+/**
+ * What is true about Canopy today, plus a beta grower's words when we have
+ * them. Replaces the old market-size stats strip.
+ *
+ * The quote has its own flag and also needs `BETA_QUOTE` to be set, so it
+ * cannot appear by accident. Without it the facts take the full width.
+ */
+import SectionIntro from './SectionIntro.astro';
+import { BETA_QUOTE, PROOF_FACTS } from '~/lib/home-content';
+
+interface Props {
+  showQuote: boolean;
+}
+
+const quote = Astro.props.showQuote ? BETA_QUOTE : null;
+---
+
+{
+  PROOF_FACTS.length > 0 && (
+    <section class="proof" aria-labelledby="proof-title" data-home-section="proof">
+      <div class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
+        <SectionIntro id="proof-title" eyebrow="In the field">
+          Built for the way a <span class="gradient-text">nursery day</span> actually runs
+        </SectionIntro>
+
+        <div class:list={['proof__grid', quote && 'proof__grid--quote']}>
+          {quote && (
+            <figure class="proof__quote glass" data-home-section="quote">
+              <blockquote>
+                <p>{quote.text}</p>
+              </blockquote>
+              <figcaption>
+                <span class="proof__name">{quote.name}</span>
+                {quote.role}, {quote.organization}
+              </figcaption>
+            </figure>
+          )}
+
+          <ul class="proof__facts">
+            {PROOF_FACTS.map((fact) => (
+              <li class="proof__fact glass">
+                <span class="proof__value gradient-text">{fact.value}</span>
+                <span class="proof__label">{fact.label}</span>
+              </li>
+            ))}
+          </ul>
+        </div>
+      </div>
+    </section>
+  )
+}
+
+<style>
+  .proof {
+    padding-block: clamp(4rem, 10vw, 6rem);
+  }
+
+  .proof__grid {
+    display: grid;
+    gap: 1.5rem;
+    margin-top: 3rem;
+  }
+
+  .proof__facts {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(min(100%, 14rem), 1fr));
+    gap: 1rem;
+    margin: 0;
+    padding: 0;
+    list-style: none;
+  }
+
+  .proof__fact {
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+    padding: 1.5rem;
+    border-radius: 0.875rem;
+  }
+
+  .proof__value {
+    font-size: 1.875rem;
+    font-weight: 700;
+    line-height: 1.1;
+  }
+
+  .proof__label {
+    font-size: 0.9375rem;
+    line-height: 1.5;
+    color: rgb(255 255 255 / 0.6);
+  }
+
+  .proof__quote {
+    margin: 0;
+    padding: 2rem;
+    border-radius: 1rem;
+  }
+  .proof__quote blockquote {
+    margin: 0;
+  }
+  .proof__quote p {
+    margin: 0;
+    font-size: 1.25rem;
+    line-height: 1.6;
+    color: rgb(255 255 255 / 0.9);
+  }
+  .proof__quote figcaption {
+    margin-top: 1.5rem;
+    font-size: 0.875rem;
+    color: rgb(255 255 255 / 0.55);
+  }
+  .proof__name {
+    display: block;
+    font-weight: 600;
+    color: #fff;
+  }
+
+  @media (min-width: 62rem) {
+    .proof__grid--quote {
+      grid-template-columns: minmax(0, 3fr) minmax(0, 2fr);
+      align-items: center;
+    }
+    .proof__grid--quote .proof__facts {
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+  }
+</style>

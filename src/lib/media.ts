@@ -157,20 +157,20 @@ export const PRODUCT_SECTIONS: readonly ProductSection[] = [
   {
     id: 'tasks',
     title: 'Work that reaches the crew',
-    body: 'A decision that stays on a dashboard is not a decision. Tasks carry priority, assignment and due date, so the plan and the shift are the same thing.',
-    alt: 'Canopy tasks screen listing assigned work with priority and due dates.',
+    body: 'A decision that stays on a dashboard is not a decision. Tasks carry a zone, a time window, a headcount and a priority, and are scheduled around irrigation, so the plan and the shift are the same thing.',
+    alt: 'Canopy tasks screen listing work by zone with priority and time windows.',
   },
   {
     id: 'plants-inventory',
     title: 'Know what is on the ground',
-    body: 'Inventory tracks varieties, counts and location down to the block, so a sales call and a production plan draw on the same numbers.',
+    body: 'Inventory tracks varieties, containers, counts and the zone each lot sits in, so a sales call and a production plan draw on the same numbers.',
     alt: 'Canopy plant inventory screen listing varieties with counts and locations.',
   },
   {
     id: 'devices',
     title: 'The hardware, accounted for',
-    body: 'Controllers, sensors and relay modules report in with their connection state. When a device goes quiet you find out from Canopy, not from a dry block.',
-    alt: 'Canopy devices screen listing connected controllers and sensors with their status.',
+    body: 'The on-farm device and its relay modules report in with their connection state. When a device goes quiet you find out from Canopy, not from a dry block.',
+    alt: 'Canopy devices screen listing the on-farm device and relay modules with their status.',
   },
   {
     id: 'map',

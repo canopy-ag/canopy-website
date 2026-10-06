@@ -1,0 +1,148 @@
+---
+/**
+ * Questions growers ask, as native <details> disclosures: keyboard and screen
+ * reader support come from the browser, and it works without JavaScript.
+ *
+ * The same items are emitted as FAQPage structured data, so search engines
+ * can show the answers. The JSON-LD and the visible text come from one array
+ * and cannot disagree.
+ */
+import SectionIntro from './SectionIntro.astro';
+import { FAQ_ITEMS } from '~/lib/home-content';
+
+const jsonLd = {
+  '@context': 'https://schema.org',
+  '@type': 'FAQPage',
+  mainEntity: FAQ_ITEMS.map((item) => ({
+    '@type': 'Question',
+    name: item.question,
+    acceptedAnswer: { '@type': 'Answer', text: item.answer },
+  })),
+};
+---
+
+{
+  FAQ_ITEMS.length > 0 && (
+    <section class="faq" aria-labelledby="faq-title" data-home-section="faq">
+      <div class="max-w-3xl mx-auto px-4 sm:px-6 lg:px-8">
+        <SectionIntro id="faq-title" eyebrow="FAQ">
+          Questions growers ask us
+        </SectionIntro>
+
+        <div class="faq__list">
+          {FAQ_ITEMS.map((item) => (
+            <details class="faq__item">
+              <summary class="faq__question">
+                <span>{item.question}</span>
+                <span class="faq__icon" aria-hidden="true" />
+              </summary>
+              <p class="faq__answer">{item.answer}</p>
+            </details>
+          ))}
+        </div>
+
+        <p class="faq__more">
+          Something else? Ask us at <a href="mailto:hello@canopy.ag">hello@canopy.ag</a>.
+        </p>
+      </div>
+      <script is:inline type="application/ld+json" set:html={JSON.stringify(jsonLd)} />
+    </section>
+  )
+}
+
+<style>
+  .faq {
+    padding-block: clamp(4rem, 10vw, 6.5rem);
+    background: var(--canopy-darker, #070f1a);
+    border-block: 1px solid rgb(255 255 255 / 0.08);
+  }
+
+  .faq__list {
+    display: grid;
+    gap: 0.75rem;
+    margin-top: 2.5rem;
+  }
+
+  .faq__item {
+    border-radius: 0.875rem;
+    border: 1px solid rgb(255 255 255 / 0.08);
+    background: rgb(17 29 47 / 0.6);
+    transition: border-color 0.2s;
+  }
+  .faq__item:hover,
+  .faq__item[open] {
+    border-color: rgb(34 197 94 / 0.35);
+  }
+
+  .faq__question {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 1rem;
+    padding: 1.125rem 1.25rem;
+    font-weight: 500;
+    font-size: 1.0625rem;
+    cursor: pointer;
+    list-style: none;
+    border-radius: 0.875rem;
+  }
+  .faq__question::-webkit-details-marker {
+    display: none;
+  }
+  .faq__question:focus-visible {
+    outline: 2px solid var(--canopy-blue, #00d4ff);
+    outline-offset: 2px;
+  }
+
+  /* A plus drawn from two bars; the vertical one folds away when open. */
+  .faq__icon {
+    position: relative;
+    flex: none;
+    width: 1rem;
+    height: 1rem;
+  }
+  .faq__icon::before,
+  .faq__icon::after {
+    content: '';
+    position: absolute;
+    inset: 50% 0 auto;
+    height: 2px;
+    margin-top: -1px;
+    border-radius: 2px;
+    background: var(--canopy-green, #22c55e);
+    transition: transform 0.25s ease;
+  }
+  .faq__icon::after {
+    transform: rotate(90deg);
+  }
+  .faq__item[open] .faq__icon::after {
+    transform: rotate(0deg);
+  }
+
+  .faq__answer {
+    margin: 0;
+    padding: 0 1.25rem 1.25rem;
+    line-height: 1.7;
+    color: rgb(255 255 255 / 0.65);
+  }
+
+  .faq__more {
+    margin: 2rem 0 0;
+    text-align: center;
+    color: rgb(255 255 255 / 0.55);
+  }
+  .faq__more a {
+    color: var(--canopy-blue, #00d4ff);
+  }
+  .faq__more a:hover {
+    text-decoration: underline;
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .faq__item,
+    .faq__icon::before,
+    .faq__icon::after {
+      transition: none;
+    }
+  }
+</style>

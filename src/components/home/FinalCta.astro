@@ -1,0 +1,65 @@
+---
+/** Closing call to action. States the beta plainly instead of claiming a user base. */
+import DemoForm from '~/components/DemoForm';
+---
+
+<section class="cta" aria-labelledby="cta-title" data-home-section="cta">
+  <div class="cta__wash" aria-hidden="true"></div>
+  <div class="cta__inner max-w-3xl mx-auto px-4 sm:px-6 lg:px-8">
+    <h2 id="cta-title" class="cta__title">
+      Bring us the shift that <span class="gradient-text">keeps breaking</span>
+    </h2>
+    <p class="cta__lede">
+      We are bringing a small group of growing operations into the beta. Walk us
+      through your zones and your crew, and we will show you Canopy against them.
+    </p>
+    <div class="cta__actions">
+      <DemoForm client:visible label="Request a demo" />
+      <a href="/product" class="btn-secondary text-lg px-10 py-4">See the product</a>
+    </div>
+  </div>
+</section>
+
+<style>
+  .cta {
+    position: relative;
+    overflow: hidden;
+    padding-block: clamp(4.5rem, 11vw, 7rem);
+    text-align: center;
+  }
+
+  .cta__wash {
+    position: absolute;
+    inset: 0;
+    pointer-events: none;
+    background: linear-gradient(90deg, rgb(34 197 94 / 0.1), transparent 50%, rgb(34 197 94 / 0.1));
+  }
+
+  .cta__inner {
+    position: relative;
+  }
+
+  .cta__title {
+    margin: 0 0 1.25rem;
+    font-size: clamp(2.25rem, 5vw, 3rem);
+    font-weight: 700;
+    line-height: 1.1;
+    text-wrap: balance;
+  }
+
+  .cta__lede {
+    margin: 0 auto 2.5rem;
+    max-width: 38rem;
+    font-size: 1.125rem;
+    line-height: 1.65;
+    color: rgb(255 255 255 / 0.6);
+  }
+
+  .cta__actions {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 1rem;
+    justify-content: center;
+    align-items: center;
+  }
+</style>

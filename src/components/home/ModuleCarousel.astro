@@ -1,0 +1,199 @@
+---
+/**
+ * The product modules on a swipeable rail.
+ *
+ * Built from `PRODUCT_SECTIONS`, the same data as /product, so the two pages
+ * cannot drift. Native CSS scroll-snap does the work: touch and trackpad swipe
+ * for free, the rail is focusable so arrow keys scroll it, and the buttons
+ * are an enhancement that scrolls by one card.
+ */
+import ProductShot from '~/components/ProductShot.astro';
+import SectionIntro from './SectionIntro.astro';
+import { PRODUCT_SECTIONS } from '~/lib/media';
+---
+
+<section class="modules" aria-labelledby="modules-title" data-home-section="modules">
+  <div class="modules__head max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
+    <SectionIntro id="modules-title" eyebrow="One system" align="start">
+      The whole operation, <span class="gradient-text">connected</span>
+    </SectionIntro>
+    <div class="modules__controls" hidden>
+      <button type="button" class="modules__btn" data-dir="-1" aria-label="Previous module">
+        <span aria-hidden="true">&larr;</span>
+      </button>
+      <button type="button" class="modules__btn" data-dir="1" aria-label="Next module">
+        <span aria-hidden="true">&rarr;</span>
+      </button>
+    </div>
+  </div>
+
+  <ul class="modules__rail" tabindex="0" aria-label="Canopy modules">
+    {
+      PRODUCT_SECTIONS.map((section) => (
+        <li class="modules__card glass">
+          <ProductShot id={section.id} alt={section.alt} caption={section.title} hideCaption />
+          <div class="modules__copy">
+            <h3 class="modules__title">{section.title}</h3>
+            <p class="modules__body">{section.body}</p>
+          </div>
+        </li>
+      ))
+    }
+  </ul>
+
+  <div class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
+    <a href="/product" class="modules__more">
+      See every screen <span aria-hidden="true">&rarr;</span>
+    </a>
+  </div>
+</section>
+
+<style>
+  .modules {
+    padding-block: clamp(4rem, 10vw, 6.5rem);
+    background: var(--canopy-darker, #070f1a);
+    border-block: 1px solid rgb(255 255 255 / 0.08);
+  }
+
+  .modules__head {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: flex-end;
+    justify-content: space-between;
+    gap: 1.5rem;
+    margin-bottom: 2.5rem;
+  }
+
+  .modules__controls:not([hidden]) {
+    display: flex;
+    gap: 0.5rem;
+  }
+
+  .modules__btn {
+    width: 2.75rem;
+    height: 2.75rem;
+    border-radius: 999px;
+    border: 1px solid rgb(0 212 255 / 0.3);
+    background: rgb(17 29 47 / 0.6);
+    color: var(--canopy-blue, #00d4ff);
+    font-size: 1.125rem;
+    cursor: pointer;
+    transition: background 0.2s, border-color 0.2s, opacity 0.2s;
+  }
+  .modules__btn:hover:not([aria-disabled='true']) {
+    background: rgb(0 212 255 / 0.1);
+    border-color: var(--canopy-blue, #00d4ff);
+  }
+  .modules__btn[aria-disabled='true'] {
+    opacity: 0.35;
+    cursor: default;
+  }
+
+  /* Line the first card up with the page container, and let the rail bleed off the right edge. */
+  .modules__rail {
+    --gutter: max(1rem, calc((100vw - 72rem) / 2 + 2rem));
+    display: flex;
+    gap: 1.25rem;
+    margin: 0;
+    padding: 0.25rem var(--gutter) 1.5rem;
+    list-style: none;
+    overflow-x: auto;
+    scroll-snap-type: x mandatory;
+    scroll-padding-inline: var(--gutter);
+    scrollbar-width: none;
+    overscroll-behavior-x: contain;
+  }
+  .modules__rail::-webkit-scrollbar {
+    display: none;
+  }
+  .modules__rail:focus-visible {
+    outline: 2px solid var(--canopy-blue, #00d4ff);
+    outline-offset: -2px;
+  }
+
+  .modules__card {
+    flex: 0 0 min(22rem, 82vw);
+    scroll-snap-align: start;
+    border-radius: 1rem;
+    overflow: hidden;
+    display: flex;
+    flex-direction: column;
+  }
+  .modules__card :global(.shot__frame) {
+    border-radius: 0;
+    border: 0;
+    border-bottom: 1px solid rgb(255 255 255 / 0.06);
+    box-shadow: none;
+  }
+
+  .modules__copy {
+    padding: 1.25rem 1.5rem 1.5rem;
+  }
+
+  .modules__title {
+    margin: 0 0 0.5rem;
+    font-size: 1.125rem;
+    font-weight: 600;
+  }
+
+  .modules__body {
+    margin: 0;
+    font-size: 0.9375rem;
+    line-height: 1.6;
+    color: rgb(255 255 255 / 0.6);
+  }
+
+  .modules__more {
+    display: inline-flex;
+    gap: 0.4rem;
+    margin-top: 1rem;
+    font-weight: 600;
+    color: var(--canopy-blue, #00d4ff);
+  }
+  .modules__more:hover {
+    text-decoration: underline;
+  }
+
+  @media (prefers-reduced-motion: no-preference) {
+    .modules__rail {
+      scroll-behavior: smooth;
+    }
+  }
+</style>
+
+<script>
+  const rail = document.querySelector<HTMLElement>('.modules__rail');
+  const controls = document.querySelector<HTMLElement>('.modules__controls');
+
+  if (rail && controls) {
+    const buttons = controls.querySelectorAll<HTMLButtonElement>('.modules__btn');
+
+    const step = () => {
+      const card = rail.querySelector<HTMLElement>('.modules__card');
+      const gap = parseFloat(getComputedStyle(rail).columnGap) || 0;
+      return card ? card.offsetWidth + gap : rail.clientWidth * 0.8;
+    };
+
+    // aria-disabled rather than disabled, so a button keeps focus when it reaches an end.
+    const update = () => {
+      const max = rail.scrollWidth - rail.clientWidth - 2;
+      buttons.forEach((button) => {
+        const dir = Number(button.dataset.dir);
+        const atEnd = dir < 0 ? rail.scrollLeft <= 2 : rail.scrollLeft >= max;
+        button.setAttribute('aria-disabled', String(atEnd));
+      });
+      controls.hidden = rail.scrollWidth <= rail.clientWidth + 2;
+    };
+
+    buttons.forEach((button) =>
+      button.addEventListener('click', () => {
+        if (button.getAttribute('aria-disabled') === 'true') return;
+        rail.scrollBy({ left: step() * Number(button.dataset.dir) });
+      }),
+    );
+
+    rail.addEventListener('scroll', update, { passive: true });
+    window.addEventListener('resize', update);
+    update();
+  }
+</script>

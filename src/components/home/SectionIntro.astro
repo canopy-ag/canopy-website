@@ -1,0 +1,50 @@
+---
+/** Eyebrow + heading + optional lede, shared by the home page sections. */
+interface Props {
+  id: string;
+  eyebrow: string;
+  align?: 'center' | 'start';
+}
+
+const { id, eyebrow, align = 'center' } = Astro.props;
+---
+
+<div class:list={['intro', `intro--${align}`]}>
+  <p class="intro__eyebrow">{eyebrow}</p>
+  <h2 id={id} class="intro__title"><slot /></h2>
+  {Astro.slots.has('lede') && <p class="intro__lede"><slot name="lede" /></p>}
+</div>
+
+<style>
+  .intro {
+    max-width: 44rem;
+  }
+  .intro--center {
+    margin-inline: auto;
+    text-align: center;
+  }
+
+  .intro__eyebrow {
+    margin: 0 0 1rem;
+    font-size: 0.75rem;
+    font-weight: 600;
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+    color: var(--canopy-blue, #00d4ff);
+  }
+
+  .intro__title {
+    margin: 0;
+    font-size: clamp(1.875rem, 4vw, 2.5rem);
+    font-weight: 700;
+    line-height: 1.15;
+    text-wrap: balance;
+  }
+
+  .intro__lede {
+    margin: 1rem 0 0;
+    font-size: 1.0625rem;
+    line-height: 1.65;
+    color: rgb(255 255 255 / 0.6);
+  }
+</style>
