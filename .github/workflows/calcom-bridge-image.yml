@@ -20,7 +20,10 @@ env:
 
 jobs:
   build:
-    runs-on: canopy-arc-runners-dind
+    # GitHub-hosted on purpose: canopy-website is a PUBLIC repo, and the org's
+    # self-hosted runner group does not (and must not) serve public repos, so a
+    # canopy-arc-runners-* label queues forever. Hosted runners ship Docker.
+    runs-on: ubuntu-latest
     permissions:
       contents: read
       packages: write
