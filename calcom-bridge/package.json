@@ -1,0 +1,16 @@
+{
+  "name": "canopy-calcom-erpnext-bridge",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "description": "Cal.com booking webhooks -> ERPNext Lead + Opportunity. Cluster-internal; see README.md.",
+  "main": "server.mjs",
+  "scripts": {
+    "start": "node server.mjs",
+    "test": "node --test test/*.test.mjs",
+    "erpnext:setup": "node scripts/ensure-erpnext-setup.mjs"
+  },
+  "engines": {
+    "node": ">=22"
+  }
+}
