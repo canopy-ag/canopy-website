@@ -1,7 +1,7 @@
 ---
 import Layout from '~/layouts/Layout.astro';
 
-const updated = '17 September 2026';
+const updated = '6 October 2026';
 ---
 
 <Layout
@@ -21,10 +21,20 @@ const updated = '17 September 2026';
 
       <h2>What this site collects</h2>
       <p>
-        One thing: the demo request form. When you submit it, we receive the company name,
-        your name, your email address, your phone number, the company size you select, and
-        anything you write in the message field. Your IP address is sent with the submission
-        so we can tell a genuine enquiry from automated abuse.
+        Two things: the demo request form and the demo scheduler.
+      </p>
+      <p>
+        When you submit the demo request form, we receive the company name, your name, your
+        email address, your phone number, the company size you select, and anything you
+        write in the message field. Your IP address is sent with the submission so we can
+        tell a genuine enquiry from automated abuse.
+      </p>
+      <p>
+        When you book a demo, we receive the time you pick and the details the booking form
+        asks for, such as your name, email address, company and phone number. If the link
+        that brought you here carried campaign tags (the <code>utm_</code> parameters or a
+        Google Ads click ID), we record those with your booking so we know which campaign
+        led to the conversation.
       </p>
       <p>
         We run no analytics, advertising, or session-recording trackers on this site, and we
@@ -46,6 +56,12 @@ const updated = '17 September 2026';
         Canopy through Resend instead, so an enquiry is never silently lost. Vercel and
         Resend process the data on our behalf and are not permitted to use it for their own
         purposes.
+      </p>
+      <p>
+        The scheduler runs on Canopy's own infrastructure at schedule.canopy.ag. A booking
+        creates an event, with a Google Meet link, in the calendar of the Canopy person you
+        will meet, so Google processes the booking details as our Google Workspace provider.
+        The booking is also recorded in the business system we use to follow up enquiries.
       </p>
       <p>
         Access is limited to people at Canopy who need it to respond to you.

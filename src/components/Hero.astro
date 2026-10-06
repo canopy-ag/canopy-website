@@ -8,7 +8,7 @@
  * layer positioning, with one primary action above the fold and a secondary
  * text link.
  */
-import DemoForm from '~/components/DemoForm';
+import BookDemo from '~/components/BookDemo.astro';
 
 interface Props {
   eyebrow?: string;
@@ -60,7 +60,7 @@ const {
       <h1 id="hero-title" class="hero__title">{headline}</h1>
       <p class="hero__sub">{sub}</p>
       <div class="hero__actions">
-        <DemoForm client:load label="Request a demo" />
+        <BookDemo />
         <a href={secondaryHref} class="hero__secondary">
           {secondaryLabel}
           <span aria-hidden="true">&rarr;</span>

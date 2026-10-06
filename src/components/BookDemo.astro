@@ -1,0 +1,157 @@
+---
+/**
+ * "Book a demo": the Cal.com booker from schedule.canopy.ag, embedded with
+ * Cal.com's official embed library so visitors stay on canopy.ag.
+ *
+ *   <BookDemo />                  button that opens the booker in a modal
+ *   <BookDemo mode="inline" />    the booker rendered in place
+ *
+ * The embed library is loaded only when it is about to be used: on first
+ * hover, focus or click for the modal, and when the inline booker nears the
+ * viewport. Pages that do not render this component never load it.
+ *
+ * Progressive enhancement: the modal trigger is a real link to the booking
+ * page, so it still works without JavaScript or if embed.js fails to load.
+ *
+ * Configured by PUBLIC_CALCOM_DEMO_LINK ("<user>/<event-slug>", or the full
+ * booking URL). When unset, this renders the existing DemoForm instead, so the
+ * site never shows a broken scheduler.
+ */
+import DemoForm from './DemoForm';
+import { bookingPageUrl, normalizeCalLink } from '~/lib/calcom';
+
+interface Props {
+  mode?: 'modal' | 'inline';
+  label?: string;
+  className?: string;
+  /** Overrides PUBLIC_CALCOM_DEMO_LINK for one placement. */
+  calLink?: string;
+}
+
+const {
+  mode = 'modal',
+  label = 'Book a demo',
+  className = 'btn-primary text-lg px-10 py-4',
+  calLink: override,
+} = Astro.props;
+
+const calLink = normalizeCalLink(override ?? import.meta.env.PUBLIC_CALCOM_DEMO_LINK);
+---
+
+{
+  !calLink ? (
+    // The fallback is a request form, not a scheduler, so it keeps its own label.
+    <DemoForm client:load label="Request a demo" className={className} />
+  ) : mode === 'modal' ? (
+    <a href={bookingPageUrl(calLink)} class={className} data-book-demo="modal" data-cal-link={calLink}>
+      {label}
+    </a>
+  ) : (
+    <div class="book-demo-inline" data-book-demo="inline" data-cal-link={calLink}>
+      <p class="book-demo-inline__placeholder">
+        Loading available times. If nothing appears,{' '}
+        <a href={bookingPageUrl(calLink)}>open the scheduler</a>.
+      </p>
+    </div>
+  )
+}
+
+<script>
+  import { bookerConfig, bookingPageUrl, CALCOM_ORIGIN, loadCal } from '~/lib/calcom';
+
+  let embedFailed = false;
+
+  function cal() {
+    const api = loadCal();
+    const script = document.querySelector<HTMLScriptElement>(
+      `script[src="${CALCOM_ORIGIN}/embed/embed.js"]`,
+    );
+    if (script && !script.dataset.bookDemoWatched) {
+      script.dataset.bookDemoWatched = '1';
+      script.addEventListener('error', () => {
+        embedFailed = true;
+      });
+    }
+    return api;
+  }
+
+  function setupModal(el: HTMLAnchorElement, calLink: string, search: string) {
+    el.href = bookingPageUrl(calLink, search);
+    const warm = () => cal();
+    el.addEventListener('pointerenter', warm, { once: true });
+    el.addEventListener('focus', warm, { once: true });
+    el.addEventListener('click', (e) => {
+      // New tab / window and a failed embed fall through to the plain link.
+      if (embedFailed || e.button !== 0 || e.metaKey || e.ctrlKey || e.shiftKey || e.altKey) return;
+      e.preventDefault();
+      cal()('modal', { calLink, config: bookerConfig(search) });
+    });
+  }
+
+  function setupInline(el: HTMLElement, calLink: string, search: string) {
+    const fallback = el.querySelector<HTMLAnchorElement>('.book-demo-inline__placeholder a');
+    if (fallback) fallback.href = bookingPageUrl(calLink, search);
+    const start = () => {
+      cal()('inline', { elementOrSelector: el, calLink, config: bookerConfig(search) });
+      // Cal shows its own skeleton; keep our text only if the embed failed.
+      window.setTimeout(() => {
+        if (!embedFailed) el.querySelector('.book-demo-inline__placeholder')?.remove();
+      }, 1500);
+    };
+    if (!('IntersectionObserver' in window)) return start();
+    const io = new IntersectionObserver(
+      (entries) => {
+        if (entries.some((entry) => entry.isIntersecting)) {
+          io.disconnect();
+          start();
+        }
+      },
+      { rootMargin: '300px' },
+    );
+    io.observe(el);
+  }
+
+  function init() {
+    const search = window.location.search;
+    document.querySelectorAll<HTMLElement>('[data-book-demo]').forEach((el) => {
+      if (el.dataset.bookDemoReady) return;
+      el.dataset.bookDemoReady = '1';
+      const calLink = el.dataset.calLink;
+      if (!calLink) return;
+      if (el.dataset.bookDemo === 'modal' && el instanceof HTMLAnchorElement) {
+        setupModal(el, calLink, search);
+      } else if (el.dataset.bookDemo === 'inline') {
+        setupInline(el, calLink, search);
+      }
+    });
+  }
+
+  init();
+</script>
+
+<style>
+  .book-demo-inline {
+    width: 100%;
+    /* Reserve the booker's height so the page does not jump when it loads. */
+    min-height: 40rem;
+    overflow: auto;
+  }
+
+  .book-demo-inline__placeholder {
+    padding: 2rem 1rem;
+    text-align: center;
+    color: rgb(255 255 255 / 0.6);
+  }
+
+  .book-demo-inline__placeholder a {
+    color: var(--canopy-blue, #00d4ff);
+    text-decoration: underline;
+  }
+
+  @media (max-width: 640px) {
+    .book-demo-inline {
+      /* Month view stacks on phones; give the slot list room. */
+      min-height: 48rem;
+    }
+  }
+</style>
