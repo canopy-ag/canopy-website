@@ -56,6 +56,7 @@ first. A 401 means the token expired.
 | Content schema | `src/content.config.ts` |
 | Demo-form validation | `src/lib/schema.ts` and `ingest/server.mjs` together |
 | Lead-database service | `ingest/`; image is published by `.github/workflows/ingest-image.yml`, deployed by a pin in `canopy-k8s-configs` |
+| Cal.com booking to ERPNext Lead/Opportunity | `calcom-bridge/` (cluster-internal, zero deps, `npm test` inside it); image by `.github/workflows/calcom-bridge-image.yml`, deployed by a pin in `canopy-k8s-configs` |
 | Logo or hero assets | `public/logos/<variant>/`, `public/hero/` (read the README there) |
 
 ## Verification before you say it is done

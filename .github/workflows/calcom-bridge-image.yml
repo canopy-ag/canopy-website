@@ -1,0 +1,64 @@
+name: Build calcom-bridge image
+
+# Tests and builds the Cal.com -> ERPNext bridge (calcom-bridge/). Pull requests
+# run the tests and prove the image builds; main also publishes to GHCR. The
+# k8s manifests in canopy-k8s-configs pin an immutable tag from here.
+on:
+  pull_request:
+    paths:
+      - 'calcom-bridge/**'
+      - '.github/workflows/calcom-bridge-image.yml'
+  push:
+    branches: [main]
+    paths:
+      - 'calcom-bridge/**'
+      - '.github/workflows/calcom-bridge-image.yml'
+  workflow_dispatch: {}
+
+env:
+  IMAGE: ghcr.io/canopy-ag/canopy-calcom-erpnext-bridge
+
+jobs:
+  build:
+    # GitHub-hosted on purpose: canopy-website is a PUBLIC repo, and the org's
+    # self-hosted runner group does not (and must not) serve public repos, so a
+    # canopy-arc-runners-* label queues forever. Hosted runners ship Docker.
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      packages: write
+    steps:
+      - uses: actions/checkout@v4
+
+      # The image's own Node runs the tests, so no setup-node (and no runner
+      # npm cache) is involved; the suite has no dependencies to install.
+      - name: Test
+        run: docker run --rm -v "$PWD/calcom-bridge:/app" -w /app node:22-alpine node --test test/*.test.mjs
+
+      - name: Log in to GHCR
+        if: github.ref == 'refs/heads/main'
+        uses: docker/login-action@v3
+        with:
+          registry: ghcr.io
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Compute tags
+        id: tags
+        run: |
+          SHORT_SHA="$(git rev-parse --short HEAD)"
+          STAMP="$(date -u +%Y%m%d%H%M%S)"
+          echo "immutable=${IMAGE}:main-${SHORT_SHA}-${STAMP}" >> "$GITHUB_OUTPUT"
+
+      - name: Build and push
+        uses: docker/build-push-action@v6
+        with:
+          context: ./calcom-bridge
+          push: ${{ github.ref == 'refs/heads/main' }}
+          tags: ${{ steps.tags.outputs.immutable }}
+
+      - name: Summary
+        if: github.ref == 'refs/heads/main'
+        run: |
+          echo "Published: ${{ steps.tags.outputs.immutable }}" >> "$GITHUB_STEP_SUMMARY"
+          echo "Pin this tag in canopy-k8s-configs/canopy-tools/calcom-erpnext-bridge/kustomization.yaml" >> "$GITHUB_STEP_SUMMARY"
