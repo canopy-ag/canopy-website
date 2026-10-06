@@ -53,9 +53,11 @@ interface Props {
   theme?: Theme;
   /** Set on the first shot so it is not lazily deferred above the fold. */
   eager?: boolean;
+  /** Keep the caption for assistive tech only, when a heading beside the shot already says it. */
+  hideCaption?: boolean;
 }
 
-const { id, alt, caption, theme = 'dark', eager = false } = Astro.props;
+const { id, alt, caption, theme = 'dark', eager = false, hideCaption = false } = Astro.props;
 ---
 
 <figure class="shot" data-shot={id}>
@@ -90,7 +92,7 @@ const { id, alt, caption, theme = 'dark', eager = false } = Astro.props;
       draggable="false"
     />
   </div>
-  <figcaption class="shot__caption">{caption}</figcaption>
+  <figcaption class:list={['shot__caption', hideCaption && 'sr-only']}>{caption}</figcaption>
 </figure>
 
 <style>

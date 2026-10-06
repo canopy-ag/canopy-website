@@ -1,0 +1,253 @@
+---
+/**
+ * "How it works": a scroll story in three steps.
+ *
+ * Wide screens: the steps scroll on the left while a sticky frame on the right
+ * swaps to the screenshot for whichever step is in the middle of the viewport.
+ * Narrow screens: no sticky frame; each step shows its own screenshot inline.
+ *
+ * Complete at rest. Without JavaScript every step is fully readable and the
+ * sticky frame shows the first screenshot; the script only adds the emphasis
+ * and the swap. Inactive screenshots in the sticky frame are aria-hidden so a
+ * screen reader meets each one once, in the inline copy that is only
+ * displayed on narrow screens.
+ */
+import ProductShot from '~/components/ProductShot.astro';
+import SectionIntro from './SectionIntro.astro';
+import { STORY_STEPS } from '~/lib/home-content';
+---
+
+<section id="how-it-works" class="story" aria-labelledby="story-title" data-home-section="how-it-works">
+  <div class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
+    <SectionIntro id="story-title" eyebrow="How it works">
+      From what changed to <span class="gradient-text">what happens next</span>
+    </SectionIntro>
+
+    <div class="story__grid">
+      <ol class="story__steps">
+        {
+          STORY_STEPS.map((step, index) => (
+            <li class="story__step" data-step={index} data-active={index === 0 ? '' : undefined}>
+              <p class="story__verb">{step.verb}</p>
+              <h3 class="story__title">{step.title}</h3>
+              <p class="story__body">{step.body}</p>
+              <div class="story__inline-shot">
+                <ProductShot id={step.shot} alt={step.alt} caption={step.title} hideCaption />
+              </div>
+            </li>
+          ))
+        }
+      </ol>
+
+      <div class="story__stage" aria-hidden="true">
+        <div class="story__sticky">
+          <div class="story__progress">
+            {STORY_STEPS.map((_, index) => (
+              <span class="story__tick" data-tick={index} data-active={index === 0 ? '' : undefined} />
+            ))}
+          </div>
+          <div class="story__frames">
+            {
+              STORY_STEPS.map((step, index) => (
+                <div class="story__frame" data-frame={index} data-active={index === 0 ? '' : undefined}>
+                  <ProductShot id={step.shot} alt="" caption={step.title} hideCaption />
+                </div>
+              ))
+            }
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<style>
+  .story {
+    padding-block: clamp(4rem, 10vw, 6.5rem);
+    /* Clears the sticky 4rem nav when the hero links here. */
+    scroll-margin-top: 4rem;
+  }
+
+  .story__grid {
+    display: grid;
+    gap: 3rem;
+    margin-top: 3rem;
+  }
+
+  .story__steps {
+    display: grid;
+    gap: 3.5rem;
+    margin: 0;
+    padding: 0;
+    list-style: none;
+  }
+
+  .story__verb {
+    margin: 0 0 0.5rem;
+    font-size: 0.8125rem;
+    font-weight: 600;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: var(--canopy-green-light, #4ade80);
+  }
+
+  .story__title {
+    margin: 0 0 0.75rem;
+    font-size: clamp(1.375rem, 2.6vw, 1.75rem);
+    font-weight: 600;
+    line-height: 1.25;
+    text-wrap: balance;
+  }
+
+  .story__body {
+    margin: 0;
+    max-width: 32rem;
+    line-height: 1.7;
+    color: rgb(255 255 255 / 0.6);
+  }
+
+  .story__inline-shot {
+    margin-top: 1.5rem;
+  }
+
+  .story__stage {
+    display: none;
+  }
+
+  @media (min-width: 62rem) {
+    .story__grid {
+      grid-template-columns: minmax(0, 5fr) minmax(0, 7fr);
+      gap: 4rem;
+    }
+
+    .story__steps {
+      gap: 0;
+    }
+
+    /* Each step gets most of a viewport so exactly one sits in the middle band. */
+    .story__step {
+      min-height: 70vh;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      transition: opacity 0.4s ease;
+    }
+    /* Dimmed only once the script has marked a step active, so a no-JS page is never faded. */
+    .story[data-enhanced] .story__step:not([data-active]) {
+      opacity: 0.4;
+    }
+
+    .story__inline-shot {
+      display: none;
+    }
+
+    .story__stage {
+      display: block;
+    }
+
+    .story__sticky {
+      position: sticky;
+      top: calc(50vh - 14rem);
+      display: flex;
+      align-items: center;
+      gap: 1.25rem;
+    }
+
+    .story__progress {
+      display: grid;
+      gap: 0.5rem;
+    }
+
+    .story__tick {
+      display: block;
+      width: 0.3rem;
+      height: 1.75rem;
+      border-radius: 999px;
+      background: rgb(255 255 255 / 0.12);
+      transition: background 0.3s;
+    }
+    .story__tick[data-active] {
+      background: var(--canopy-green, #22c55e);
+    }
+
+    .story__frames {
+      position: relative;
+      flex: 1;
+      display: grid;
+    }
+
+    /* Stacked in one grid cell so the box is always the size of one shot. */
+    .story__frame {
+      grid-area: 1 / 1;
+      opacity: 0;
+      transform: translateY(1rem) scale(0.98);
+      transition: opacity 0.5s ease, transform 0.5s ease;
+    }
+    .story__frame[data-active] {
+      opacity: 1;
+      transform: none;
+    }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .story__step,
+    .story__tick,
+    .story__frame {
+      transition: none;
+    }
+    .story__frame {
+      transform: none;
+    }
+  }
+</style>
+
+<script>
+  const story = document.querySelector<HTMLElement>('.story');
+  if (story) {
+    const steps = [...story.querySelectorAll<HTMLElement>('.story__step')];
+    const marked = story.querySelectorAll<HTMLElement>('[data-tick], [data-frame], .story__step');
+    let current = 0;
+    let queued = false;
+
+    const activate = (index: number) => {
+      if (index === current) return;
+      current = index;
+      marked.forEach((el) => {
+        const own = el.dataset.step ?? el.dataset.tick ?? el.dataset.frame;
+        el.toggleAttribute('data-active', Number(own) === index);
+      });
+    };
+
+    // The current step is the one nearest the middle of the viewport. Measured
+    // on every frame that scrolls, rather than from IntersectionObserver
+    // entries, whose order is not reliable when a fast or smooth scroll
+    // crosses several steps in one batch.
+    const update = () => {
+      queued = false;
+      const middle = window.innerHeight / 2;
+      let best = 0;
+      let bestDistance = Infinity;
+      steps.forEach((step, index) => {
+        const rect = step.getBoundingClientRect();
+        const distance =
+          rect.top > middle ? rect.top - middle : rect.bottom < middle ? middle - rect.bottom : 0;
+        if (distance < bestDistance) {
+          bestDistance = distance;
+          best = index;
+        }
+      });
+      activate(best);
+    };
+
+    const schedule = () => {
+      if (queued) return;
+      queued = true;
+      requestAnimationFrame(update);
+    };
+
+    window.addEventListener('scroll', schedule, { passive: true });
+    window.addEventListener('resize', schedule);
+    update();
+    story.setAttribute('data-enhanced', '');
+  }
+</script>

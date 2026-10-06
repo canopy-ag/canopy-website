@@ -1,0 +1,117 @@
+---
+/**
+ * Partner logos on a slow, endless scroll.
+ *
+ * Renders nothing when `PARTNERS` is empty, so the flag can be on before any
+ * approval lands without publishing an empty strip.
+ *
+ * The list is drawn twice and the track moves by exactly half its width, which
+ * is what makes the loop seamless. The second copy is hidden from assistive
+ * tech so each name is announced once. Hovering or focusing pauses it, and
+ * reduced motion stops it and lays the logos out as a static wrap.
+ */
+import { PARTNERS } from '~/lib/home-content';
+
+const partners = PARTNERS;
+---
+
+{
+  partners.length > 0 && (
+    <section class="marquee" aria-labelledby="partners-title" data-home-section="logos">
+      <h2 id="partners-title" class="marquee__title">
+        Growing with nurseries and partners in our beta
+      </h2>
+      <div class="marquee__viewport">
+        <ul class="marquee__track">
+          {[0, 1].map((copy) =>
+            partners.map((partner) => (
+              <li class="marquee__item" aria-hidden={copy === 1 ? 'true' : undefined}>
+                {partner.href ? (
+                  <a href={partner.href} tabindex={copy === 1 ? -1 : undefined} rel="noopener">
+                    <img src={partner.logo} alt={partner.name} loading="lazy" decoding="async" />
+                  </a>
+                ) : (
+                  <img src={partner.logo} alt={partner.name} loading="lazy" decoding="async" />
+                )}
+              </li>
+            )),
+          )}
+        </ul>
+      </div>
+    </section>
+  )
+}
+
+<style>
+  .marquee {
+    padding-block: 3.5rem;
+    border-bottom: 1px solid rgb(255 255 255 / 0.08);
+  }
+
+  .marquee__title {
+    margin: 0 0 2rem;
+    padding-inline: 1rem;
+    text-align: center;
+    font-size: 0.75rem;
+    font-weight: 600;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    color: rgb(255 255 255 / 0.45);
+  }
+
+  .marquee__viewport {
+    overflow: hidden;
+    mask-image: linear-gradient(90deg, transparent, #000 12%, #000 88%, transparent);
+  }
+
+  .marquee__track {
+    display: flex;
+    gap: 4rem;
+    width: max-content;
+    margin: 0;
+    padding: 0;
+    list-style: none;
+    animation: marquee 40s linear infinite;
+  }
+  .marquee__viewport:hover .marquee__track,
+  .marquee__viewport:focus-within .marquee__track {
+    animation-play-state: paused;
+  }
+
+  @keyframes marquee {
+    to {
+      transform: translateX(calc(-50% - 2rem));
+    }
+  }
+
+  .marquee__item img {
+    display: block;
+    height: 2.25rem;
+    width: auto;
+    opacity: 0.55;
+    filter: grayscale(1) brightness(1.6);
+    transition: opacity 0.2s, filter 0.2s;
+  }
+  .marquee__item a:hover img,
+  .marquee__item a:focus-visible img {
+    opacity: 1;
+    filter: none;
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .marquee__viewport {
+      mask-image: none;
+    }
+    .marquee__track {
+      animation: none;
+      width: auto;
+      flex-wrap: wrap;
+      justify-content: center;
+      gap: 2rem 3rem;
+      padding-inline: 1rem;
+    }
+    .marquee__item[aria-hidden='true'] {
+      display: none;
+    }
+  }
+</style>

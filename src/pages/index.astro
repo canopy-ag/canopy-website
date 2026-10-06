@@ -1,111 +1,44 @@
 ---
+/**
+ * Home page. The hero is always on; every section below it is behind a
+ * build-time flag in `src/lib/home-sections.ts`, so a section that is off is
+ * not in the HTML at all.
+ */
 import Layout from '~/layouts/Layout.astro';
-import DemoForm from '~/components/DemoForm';
 import Hero from '~/components/Hero.astro';
+import LogoMarquee from '~/components/home/LogoMarquee.astro';
+import HowItWorks from '~/components/home/HowItWorks.astro';
+import ModuleCarousel from '~/components/home/ModuleCarousel.astro';
+import ProofStrip from '~/components/home/ProofStrip.astro';
+import Faq from '~/components/home/Faq.astro';
+import FinalCta from '~/components/home/FinalCta.astro';
+import { homeSections as on } from '~/lib/home-sections';
+
+const showsShots = on['how-it-works'] || on.modules;
 ---
 
 <Layout
   title="Canopy | Connect every decision to the work that matters"
   description="Canopy is building the operating layer that turns changing signals into clear labor priorities and coordinated work for growing operations."
 >
+  <Fragment slot="head">
+    {
+      showsShots && (
+        <script is:inline>
+          // ProductShot's hide-until-loaded rule; see that component and product.astro.
+          document.documentElement.setAttribute('data-shot-js', '');
+        </script>
+      )
+    }
+  </Fragment>
+
   <!-- Hero: full-bleed nursery loop (src/components/Hero.astro; assets in public/hero) -->
-  <Hero />
+  <Hero secondaryHref={on['how-it-works'] ? '#how-it-works' : '/about'} />
 
-  <!-- Stats Section -->
-  <section class="py-20 border-y border-white/10">
-    <div class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
-      <div class="grid grid-cols-2 md:grid-cols-4 gap-8">
-        <div class="text-center">
-          <div class="text-4xl font-bold gradient-text mb-2">$13.8B</div>
-          <div class="text-white/50">US Horticulture Market</div>
-        </div>
-        <div class="text-center">
-          <div class="text-4xl font-bold gradient-text mb-2">22K+</div>
-          <div class="text-white/50">Growing Operations</div>
-        </div>
-        <div class="text-center">
-          <div class="text-4xl font-bold gradient-text mb-2">40%</div>
-          <div class="text-white/50">Efficiency Gains</div>
-        </div>
-        <div class="text-center">
-          <div class="text-4xl font-bold gradient-text mb-2">∞</div>
-          <div class="text-white/50">Possibilities</div>
-        </div>
-      </div>
-    </div>
-  </section>
-
-  <!-- Features Section -->
-  <section class="py-24">
-    <div class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
-      <div class="text-center mb-16">
-        <h2 class="text-4xl font-bold mb-4">
-          Why <span class="gradient-text">Canopy</span>?
-        </h2>
-        <p class="text-white/60 text-lg max-w-2xl mx-auto">
-          Built for growers who want to make data-driven decisions without the complexity.
-        </p>
-      </div>
-      
-      <div class="grid md:grid-cols-3 gap-6">
-        <!-- Feature 1 -->
-        <div class="glass rounded-2xl p-8 hover:scale-[1.02] transition duration-300">
-          <div class="w-14 h-14 bg-gradient-to-br from-[#22C55E]/20 to-[#4ADE80]/20 rounded-xl flex items-center justify-center mb-6">
-            <svg class="w-7 h-7 text-[#22C55E]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z"/>
-            </svg>
-          </div>
-          <h3 class="text-xl font-semibold mb-3">Data-Driven Insights</h3>
-          <p class="text-white/60 leading-relaxed">
-            Make informed decisions with real-time analytics, industry benchmarks, and predictive modeling.
-          </p>
-        </div>
-
-        <!-- Feature 2 -->
-        <div class="glass rounded-2xl p-8 hover:scale-[1.02] transition duration-300">
-          <div class="w-14 h-14 bg-gradient-to-br from-[#22C55E]/20 to-[#4ADE80]/20 rounded-xl flex items-center justify-center mb-6">
-            <svg class="w-7 h-7 text-[#22C55E]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M12 6V4m0 2a2 2 0 100 4m0-4a2 2 0 110 4m-6 8a2 2 0 100-4m0 4a2 2 0 110-4m0 4v2m0-6V4m6 6v10m6-2a2 2 0 100-4m0 4a2 2 0 110-4m0 4v2m0-6V4"/>
-            </svg>
-          </div>
-          <h3 class="text-xl font-semibold mb-3">Operations Management</h3>
-          <p class="text-white/60 leading-relaxed">
-            Streamline your workflow from seed to sale with integrated tools for inventory, scheduling, and tracking.
-          </p>
-        </div>
-
-        <!-- Feature 3 -->
-        <div class="glass rounded-2xl p-8 hover:scale-[1.02] transition duration-300">
-          <div class="w-14 h-14 bg-gradient-to-br from-[#22C55E]/20 to-[#4ADE80]/20 rounded-xl flex items-center justify-center mb-6">
-            <svg class="w-7 h-7 text-[#22C55E]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z"/>
-            </svg>
-          </div>
-          <h3 class="text-xl font-semibold mb-3">Grower Community</h3>
-          <p class="text-white/60 leading-relaxed">
-            Connect with fellow growers, share best practices, and learn from industry experts.
-          </p>
-        </div>
-      </div>
-    </div>
-  </section>
-
-  <!-- CTA Section -->
-  <section class="py-24 relative overflow-hidden">
-    <div class="absolute inset-0 bg-gradient-to-r from-[#22C55E]/10 via-transparent to-[#22C55E]/10 pointer-events-none"></div>
-    <div class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 text-center relative z-10">
-      <h2 class="text-4xl sm:text-5xl font-bold mb-6">
-        Ready to <span class="gradient-text">grow</span> with Canopy?
-      </h2>
-      <p class="text-white/60 text-lg mb-10 max-w-2xl mx-auto">
-        Join thousands of growers who are transforming their operations with data and technology.
-      </p>
-      <div class="flex flex-col sm:flex-row gap-4 justify-center items-center">
-        <a href="/blog" class="btn-secondary text-lg px-10 py-4">
-          Read the Blog
-        </a>
-        <DemoForm client:load />
-      </div>
-    </div>
-  </section>
+  {on.logos && <LogoMarquee />}
+  {on['how-it-works'] && <HowItWorks />}
+  {on.modules && <ModuleCarousel />}
+  {on.proof && <ProofStrip showQuote={on.quote} />}
+  {on.faq && <Faq />}
+  {on.cta && <FinalCta />}
 </Layout>
