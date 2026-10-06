@@ -107,7 +107,7 @@ export const FAQ_ITEMS: readonly FaqItem[] = [
   {
     question: 'What hardware do I need?',
     answer:
-      'One Canopy device per site, wired to relay boards that switch your valves. Our team installs and pairs the device and maps each relay to its valve. If you already run an irrigation controller, tell us about it on the demo call and we will walk through how your site would be set up.',
+      'One Canopy device per site, wired to relay boards that switch your valves. Our team installs and pairs the device and maps each relay to its valve.',
   },
   {
     question: 'What happens if the internet goes down?',
