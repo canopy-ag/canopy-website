@@ -3,66 +3,129 @@
  * "Book a demo": the Cal.com booker from schedule.canopy.ag, embedded with
  * Cal.com's official embed library so visitors stay on canopy.ag.
  *
- *   <BookDemo />                  button that opens the booker in a modal
- *   <BookDemo mode="inline" />    the booker rendered in place
+ *   <BookDemo />                  button: opens the booker in a modal
+ *   <BookDemo mode="inline" />    the booker rendered in place (/demo)
+ *
+ * Hosts come from PUBLIC_CALCOM_DEMO_HOSTS ("Ermias:ermias/demo,Caleb:caleb/demo")
+ * or the single-host PUBLIC_CALCOM_DEMO_LINK. Self-hosted Cal.diy has no team
+ * round-robin, so with several hosts the visitor picks: the inline booker gets
+ * a "Book with …" toggle, and the button becomes a link to /demo (which carries
+ * the toggle) instead of opening one person's modal.
  *
  * The embed library is loaded only when it is about to be used: on first
- * hover, focus or click for the modal, and when the inline booker nears the
- * viewport. Pages that do not render this component never load it.
+ * hover, focus or click for the modal, when the inline booker nears the
+ * viewport, and per host the first time that host is selected. Pages that do
+ * not render this component never load it.
  *
- * Progressive enhancement: the modal trigger is a real link to the booking
- * page, so it still works without JavaScript or if embed.js fails to load.
- *
- * Configured by PUBLIC_CALCOM_DEMO_LINK ("<user>/<event-slug>", or the full
- * booking URL). When unset, this renders the existing DemoForm instead, so the
- * site never shows a broken scheduler.
+ * Progressive enhancement: every trigger is a real link, so it still works
+ * without JavaScript or if embed.js fails to load. With no host configured
+ * this renders the existing DemoForm, so the site never shows a broken
+ * scheduler.
  */
 import DemoForm from './DemoForm';
-import { bookingPageUrl, normalizeCalLink } from '~/lib/calcom';
+import { bookingPageUrl, parseDemoHosts } from '~/lib/calcom';
 
 interface Props {
   mode?: 'modal' | 'inline';
   label?: string;
   className?: string;
-  /** Overrides PUBLIC_CALCOM_DEMO_LINK for one placement. */
-  calLink?: string;
+  /** Overrides the env configuration for one placement ("Name:user/slug,…" or one link). */
+  hosts?: string;
 }
 
 const {
   mode = 'modal',
   label = 'Book a demo',
   className = 'btn-primary text-lg px-10 py-4',
-  calLink: override,
+  hosts: override,
 } = Astro.props;
 
-const calLink = normalizeCalLink(override ?? import.meta.env.PUBLIC_CALCOM_DEMO_LINK);
+const hosts = override
+  ? parseDemoHosts(override, override)
+  : parseDemoHosts(import.meta.env.PUBLIC_CALCOM_DEMO_HOSTS, import.meta.env.PUBLIC_CALCOM_DEMO_LINK);
+const multi = hosts.length > 1;
+const uid = `book-demo-${Math.random().toString(36).slice(2, 8)}`;
 ---
 
 {
-  !calLink ? (
+  hosts.length === 0 ? (
     // The fallback is a request form, not a scheduler, so it keeps its own label.
     <DemoForm client:load label="Request a demo" className={className} />
   ) : mode === 'modal' ? (
-    <a href={bookingPageUrl(calLink)} class={className} data-book-demo="modal" data-cal-link={calLink}>
-      {label}
-    </a>
+    multi ? (
+      // Several hosts: the choice lives on /demo. Campaign params are appended
+      // client-side so attribution survives the hop.
+      <a href="/demo" class={className} data-book-demo="link">
+        {label}
+      </a>
+    ) : (
+      <a
+        href={bookingPageUrl(hosts[0].calLink)}
+        class={className}
+        data-book-demo="modal"
+        data-cal-link={hosts[0].calLink}
+      >
+        {label}
+      </a>
+    )
   ) : (
-    <div class="book-demo-inline" data-book-demo="inline" data-cal-link={calLink}>
-      <p class="book-demo-inline__placeholder">
-        Loading available times. If nothing appears,{' '}
-        <a href={bookingPageUrl(calLink)}>open the scheduler</a>.
-      </p>
+    <div class="book-demo" data-book-demo="inline-group">
+      {multi && (
+        <div class="book-demo__hosts" role="tablist" aria-label="Who would you like to meet?">
+          {hosts.map((h, i) => (
+            <button
+              type="button"
+              role="tab"
+              id={`${uid}-tab-${i}`}
+              aria-controls={`${uid}-panel-${i}`}
+              aria-selected={i === 0 ? 'true' : 'false'}
+              tabindex={i === 0 ? 0 : -1}
+              class="book-demo__host"
+              data-host-index={i}
+            >
+              Book with {h.name}
+            </button>
+          ))}
+        </div>
+      )}
+      {hosts.map((h, i) => (
+        <div
+          class="book-demo-inline"
+          data-book-demo="inline"
+          data-cal-link={h.calLink}
+          id={`${uid}-panel-${i}`}
+          role={multi ? 'tabpanel' : undefined}
+          aria-labelledby={multi ? `${uid}-tab-${i}` : undefined}
+          hidden={i !== 0}
+        >
+          <p class="book-demo-inline__placeholder">
+            Loading available times. If nothing appears,{' '}
+            <a href={bookingPageUrl(h.calLink)}>open {multi ? `${h.name}'s` : 'the'} scheduler</a>.
+          </p>
+        </div>
+      ))}
+      {multi && (
+        <noscript>
+          <ul class="book-demo__noscript">
+            {hosts.map((h) => (
+              <li>
+                <a href={bookingPageUrl(h.calLink)}>Book with {h.name}</a>
+              </li>
+            ))}
+          </ul>
+        </noscript>
+      )}
     </div>
   )
 }
 
 <script>
-  import { bookerConfig, bookingPageUrl, CALCOM_ORIGIN, loadCal } from '~/lib/calcom';
+  import { bookerConfig, bookingPageUrl, CALCOM_ORIGIN, inlineNamespace, loadCal } from '~/lib/calcom';
 
   let embedFailed = false;
 
-  function cal() {
-    const api = loadCal();
+  function cal(namespace?: string) {
+    const api = loadCal(namespace);
     const script = document.querySelector<HTMLScriptElement>(
       `script[src="${CALCOM_ORIGIN}/embed/embed.js"]`,
     );
@@ -88,15 +151,62 @@ const calLink = normalizeCalLink(override ?? import.meta.env.PUBLIC_CALCOM_DEMO_
     });
   }
 
-  function setupInline(el: HTMLElement, calLink: string, search: string) {
-    const fallback = el.querySelector<HTMLAnchorElement>('.book-demo-inline__placeholder a');
-    if (fallback) fallback.href = bookingPageUrl(calLink, search);
+  /** Mount one inline booker. Idempotent: a panel is only ever mounted once. */
+  function mountInline(el: HTMLElement, search: string) {
+    if (el.dataset.bookDemoMounted) return;
+    el.dataset.bookDemoMounted = '1';
+    const calLink = el.dataset.calLink!;
+    // One namespace per host: Cal ignores a second inline booker on a shared one.
+    cal(inlineNamespace(calLink))('inline', { elementOrSelector: el, calLink, config: bookerConfig(search) });
+    // Cal shows its own skeleton; keep our text only if the embed failed.
+    window.setTimeout(() => {
+      if (!embedFailed) el.querySelector('.book-demo-inline__placeholder')?.remove();
+    }, 1500);
+  }
+
+  function setupInlineGroup(group: HTMLElement, search: string) {
+    const panels = [...group.querySelectorAll<HTMLElement>('[data-book-demo="inline"]')];
+    for (const p of panels) {
+      const a = p.querySelector<HTMLAnchorElement>('.book-demo-inline__placeholder a');
+      if (a) a.href = bookingPageUrl(p.dataset.calLink!, search);
+    }
+    const visible = () => panels.find((p) => !p.hidden) ?? panels[0];
+
+    // Tabs (only rendered with several hosts): WAI-ARIA tabs pattern, manual
+    // activation by click/Enter/Space, arrow keys move focus and select.
+    const tabs = [...group.querySelectorAll<HTMLButtonElement>('[role="tab"]')];
+    let inView = false;
+    const select = (i: number, focus = false) => {
+      tabs.forEach((t, j) => {
+        t.setAttribute('aria-selected', String(j === i));
+        t.tabIndex = j === i ? 0 : -1;
+      });
+      panels.forEach((p, j) => (p.hidden = j !== i));
+      if (focus) tabs[i].focus();
+      // A host's booker loads the first time it is shown (once the group has
+      // been scrolled near). Switching back keeps the visitor's selection.
+      if (inView) mountInline(panels[i], search);
+    };
+    tabs.forEach((t, i) => {
+      t.addEventListener('click', () => select(i));
+      t.addEventListener('keydown', (e) => {
+        const n = tabs.length;
+        const to =
+          e.key === 'ArrowRight' ? (i + 1) % n
+          : e.key === 'ArrowLeft' ? (i - 1 + n) % n
+          : e.key === 'Home' ? 0
+          : e.key === 'End' ? n - 1
+          : -1;
+        if (to >= 0) {
+          e.preventDefault();
+          select(to, true);
+        }
+      });
+    });
+
     const start = () => {
-      cal()('inline', { elementOrSelector: el, calLink, config: bookerConfig(search) });
-      // Cal shows its own skeleton; keep our text only if the embed failed.
-      window.setTimeout(() => {
-        if (!embedFailed) el.querySelector('.book-demo-inline__placeholder')?.remove();
-      }, 1500);
+      inView = true;
+      mountInline(visible(), search);
     };
     if (!('IntersectionObserver' in window)) return start();
     const io = new IntersectionObserver(
@@ -108,7 +218,7 @@ const calLink = normalizeCalLink(override ?? import.meta.env.PUBLIC_CALCOM_DEMO_
       },
       { rootMargin: '300px' },
     );
-    io.observe(el);
+    io.observe(group);
   }
 
   function init() {
@@ -116,12 +226,16 @@ const calLink = normalizeCalLink(override ?? import.meta.env.PUBLIC_CALCOM_DEMO_
     document.querySelectorAll<HTMLElement>('[data-book-demo]').forEach((el) => {
       if (el.dataset.bookDemoReady) return;
       el.dataset.bookDemoReady = '1';
-      const calLink = el.dataset.calLink;
-      if (!calLink) return;
-      if (el.dataset.bookDemo === 'modal' && el instanceof HTMLAnchorElement) {
-        setupModal(el, calLink, search);
-      } else if (el.dataset.bookDemo === 'inline') {
-        setupInline(el, calLink, search);
+      const kind = el.dataset.bookDemo;
+      if (kind === 'modal' && el instanceof HTMLAnchorElement && el.dataset.calLink) {
+        setupModal(el, el.dataset.calLink, search);
+      } else if (kind === 'link' && el instanceof HTMLAnchorElement) {
+        // Carry campaign params to /demo so the booker there can forward them.
+        const url = new URL(el.href, window.location.href);
+        url.search = search;
+        el.href = url.pathname + url.search;
+      } else if (kind === 'inline-group') {
+        setupInlineGroup(el, search);
       }
     });
   }
@@ -130,11 +244,57 @@ const calLink = normalizeCalLink(override ?? import.meta.env.PUBLIC_CALCOM_DEMO_
 </script>
 
 <style>
+  .book-demo__hosts {
+    display: inline-flex;
+    gap: 0.25rem;
+    padding: 0.25rem;
+    margin-bottom: 1.5rem;
+    border: 1px solid rgb(255 255 255 / 0.12);
+    border-radius: 999px;
+    max-width: 100%;
+    overflow-x: auto;
+  }
+
+  .book-demo__host {
+    padding: 0.5rem 1.1rem;
+    border-radius: 999px;
+    font-weight: 600;
+    font-size: 0.95rem;
+    color: rgb(255 255 255 / 0.7);
+    white-space: nowrap;
+    transition:
+      background 0.15s,
+      color 0.15s;
+  }
+
+  .book-demo__host:hover {
+    color: #fff;
+  }
+
+  .book-demo__host[aria-selected='true'] {
+    background: var(--canopy-green, #22c55e);
+    color: #0b1120;
+  }
+
+  .book-demo__host:focus-visible {
+    outline: 2px solid var(--canopy-blue, #00d4ff);
+    outline-offset: 2px;
+  }
+
+  .book-demo__noscript a {
+    color: var(--canopy-blue, #00d4ff);
+    text-decoration: underline;
+  }
+
   .book-demo-inline {
     width: 100%;
     /* Reserve the booker's height so the page does not jump when it loads. */
     min-height: 40rem;
     overflow: auto;
+  }
+
+  .book-demo-inline[hidden] {
+    display: none;
   }
 
   .book-demo-inline__placeholder {

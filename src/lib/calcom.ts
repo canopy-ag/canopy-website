@@ -52,6 +52,44 @@ export function normalizeCalLink(raw: string | undefined | null): string | null 
   return /^[A-Za-z0-9_.-]+\/[A-Za-z0-9_.-]+$/.test(link) ? link : null;
 }
 
+export interface DemoHost {
+  /** Shown on the toggle: "Book with {name}". */
+  name: string;
+  /** Normalised Cal link, "<user>/<event-slug>". */
+  calLink: string;
+}
+
+const MAX_HOSTS = 6;
+
+/**
+ * Demo hosts from PUBLIC_CALCOM_DEMO_HOSTS ("Ermias:ermias/demo,Caleb:caleb/demo"),
+ * falling back to the single-host PUBLIC_CALCOM_DEMO_LINK. Self-hosted Cal.diy
+ * has no team round-robin, so each person has their own booking page and the
+ * visitor picks. Malformed entries and duplicate links are dropped rather than
+ * rendered as a broken scheduler; an empty result means "not configured".
+ */
+export function parseDemoHosts(
+  hostsRaw: string | undefined | null,
+  singleLinkRaw?: string | undefined | null,
+): DemoHost[] {
+  const hosts: DemoHost[] = [];
+  const seen = new Set<string>();
+  for (const entry of (hostsRaw ?? '').split(',')) {
+    const sep = entry.indexOf(':');
+    if (sep <= 0) continue;
+    const name = entry.slice(0, sep).trim().slice(0, 40);
+    // Keep "https://..." links intact: only the FIRST colon separates the name.
+    const calLink = normalizeCalLink(entry.slice(sep + 1));
+    if (!name || !calLink || seen.has(calLink)) continue;
+    seen.add(calLink);
+    hosts.push({ name, calLink });
+    if (hosts.length === MAX_HOSTS) break;
+  }
+  if (hosts.length) return hosts;
+  const single = normalizeCalLink(singleLinkRaw);
+  return single ? [{ name: '', calLink: single }] : [];
+}
+
 /** Campaign params present on the current page, trimmed and length-capped. */
 export function campaignParams(search: string | URLSearchParams): Record<string, string> {
   const params = typeof search === 'string' ? new URLSearchParams(search) : search;
@@ -143,15 +181,24 @@ function installSnippet(C: Window, A: string, L: string): void {
 }
 
 /**
- * Install the snippet and initialise the namespace once per page. Calling this
+ * Install the snippet and initialise a namespace once per page. Calling this
  * is what starts the embed.js download, so components call it lazily (first
  * hover/focus/click for a modal, near-viewport for an inline booker).
+ *
+ * Cal's embed allows ONE inline booker per namespace, so each host's inline
+ * booker passes its own namespace (inlineNamespace); a second inline call on a
+ * shared namespace is silently ignored.
  */
-export function loadCal(): (...args: unknown[]) => void {
-  if (!window.Cal?.ns?.[CAL_NAMESPACE]) {
+export function loadCal(namespace: string = CAL_NAMESPACE): (...args: unknown[]) => void {
+  if (!window.Cal?.ns?.[namespace]) {
     installSnippet(window, `${CALCOM_ORIGIN}/embed/embed.js`, 'init');
-    window.Cal!('init', CAL_NAMESPACE, { origin: CALCOM_ORIGIN });
-    window.Cal!.ns![CAL_NAMESPACE]('ui', CAL_UI);
+    window.Cal!('init', namespace, { origin: CALCOM_ORIGIN });
+    window.Cal!.ns![namespace]('ui', CAL_UI);
   }
-  return window.Cal!.ns![CAL_NAMESPACE];
+  return window.Cal!.ns![namespace];
+}
+
+/** Namespace for one host's inline booker: stable, and distinct per Cal link. */
+export function inlineNamespace(calLink: string): string {
+  return `${CAL_NAMESPACE}-${calLink.replace(/[^A-Za-z0-9]+/g, '-').toLowerCase()}`;
 }

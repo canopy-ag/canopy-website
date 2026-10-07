@@ -1,5 +1,47 @@
 import { describe, expect, it } from 'vitest';
-import { bookerConfig, bookingPageUrl, campaignParams, normalizeCalLink } from './calcom';
+import {
+  bookerConfig,
+  bookingPageUrl,
+  campaignParams,
+  inlineNamespace,
+  normalizeCalLink,
+  parseDemoHosts,
+} from './calcom';
+
+describe('inlineNamespace', () => {
+  it('gives each host a distinct, stable namespace', () => {
+    expect(inlineNamespace('ermias/demo')).toBe('demo-ermias-demo');
+    expect(inlineNamespace('caleb/demo')).toBe('demo-caleb-demo');
+    expect(inlineNamespace('ermias/demo')).not.toBe(inlineNamespace('caleb/demo'));
+  });
+});
+
+describe('parseDemoHosts', () => {
+  it('parses named hosts in order', () => {
+    expect(parseDemoHosts('Ermias:ermias/demo, Caleb:caleb/demo')).toEqual([
+      { name: 'Ermias', calLink: 'ermias/demo' },
+      { name: 'Caleb', calLink: 'caleb/demo' },
+    ]);
+  });
+
+  it('accepts a pasted booking URL after the first colon', () => {
+    expect(parseDemoHosts('Caleb:https://schedule.canopy.ag/caleb/demo/')).toEqual([
+      { name: 'Caleb', calLink: 'caleb/demo' },
+    ]);
+  });
+
+  it('drops malformed entries and duplicate links', () => {
+    expect(parseDemoHosts('nolink, :ermias/demo, Bad:demo, A:ermias/demo, B:ermias/demo')).toEqual([
+      { name: 'A', calLink: 'ermias/demo' },
+    ]);
+  });
+
+  it('falls back to the single-host link, then to not configured', () => {
+    expect(parseDemoHosts('', 'ermias/demo')).toEqual([{ name: '', calLink: 'ermias/demo' }]);
+    expect(parseDemoHosts(undefined, undefined)).toEqual([]);
+    expect(parseDemoHosts('junk', 'also junk')).toEqual([]);
+  });
+});
 
 describe('normalizeCalLink', () => {
   it('accepts a user/event link', () => {
