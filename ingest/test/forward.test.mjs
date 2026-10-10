@@ -281,6 +281,53 @@ test('healthz reports stale_new (roadmap#324 AC-4)', async () => {
   }
 });
 
+// ---------------------------------------------------------------- live stub
+// The route is E5-s2's work (roadmap#325) and does not exist yet, so on dev
+// the first deliveries meet a 404. This drives the REAL fetch at a real
+// listener: 404 leaves the row at new, a later 202 on replay marks it.
+
+test('degrades against a live stub that 404s, then forwards on replay once it answers 202', async () => {
+  let answer = 404;
+  const seen = [];
+  const stub = createServer((req, res) => {
+    let body = '';
+    req.on('data', (c) => (body += c));
+    req.on('end', () => {
+      seen.push({ auth: req.headers.authorization, body: JSON.parse(body) });
+      res.writeHead(answer);
+      res.end();
+    });
+  });
+  await new Promise((resolve) => stub.listen(0, '127.0.0.1', resolve));
+  const url = `http://127.0.0.1:${stub.address().port}/leads/intake`;
+  const db = fakeDb();
+  const log = fakeLog();
+  const forwarder = createForwarder({ sql: db.sql, url, token: LEADS_TOKEN, timeoutMs: 2000, log });
+  const app = await startApp({ db, forwarder, log });
+  try {
+    assert.equal((await postDemo(app.base)).status, 200);
+    const [row] = db.rows;
+    assert.equal(row.status, 'new');
+    assert.match(log.lines.warn[0], /404/);
+
+    row.submitted_at = minutesAgo(6); // old enough for the replay
+    assert.deepEqual(await forwarder.replayOnce(), { attempted: 1, forwarded: 0 });
+    assert.equal(row.status, 'new');
+
+    answer = 202;
+    assert.deepEqual(await forwarder.replayOnce(), { attempted: 1, forwarded: 1 });
+    assert.equal(row.status, 'forwarded');
+    assert.deepEqual(await forwarder.replayOnce(), { attempted: 0, forwarded: 0 });
+
+    assert.equal(seen.length, 3);
+    assert.ok(seen.every((s) => s.auth === `Bearer ${LEADS_TOKEN}` && s.body.id === row.id));
+    assert.equal(seen.every((s) => !('ip_address' in s.body) && !('user_agent' in s.body)), true);
+  } finally {
+    await app.close();
+    await new Promise((resolve) => stub.close(resolve));
+  }
+});
+
 // ---------------------------------------------------------------- guards
 
 test('intakePayload carries exactly the nine fields and nothing from the request', () => {

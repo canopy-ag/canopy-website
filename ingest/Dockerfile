@@ -1,4 +1,4 @@
-# Canopy Website ingest shim — minimal, single-file Node service.
+# Canopy Website ingest shim — minimal Node service (server.mjs + lib/).
 FROM node:20-alpine
 
 ENV NODE_ENV=production
@@ -9,6 +9,7 @@ COPY package.json package-lock.json* ./
 RUN npm install --omit=dev --no-audit --no-fund
 
 COPY server.mjs ./
+COPY lib ./lib
 
 # Run as the built-in unprivileged node user.
 USER node
