@@ -14,7 +14,7 @@ rules; `README.md` explains the architecture. Keep both in mind.
 - Tailwind CSS v4 through `@tailwindcss/vite`. No `tailwind.config.js`. Design
   tokens are imported from `@canopy-ag/react-ui/tokens.css` (GitHub Packages, so
   `npm install` needs `NODE_AUTH_TOKEN` with `read:packages`).
-- Zod for the demo-form schema (`src/lib/schema.ts`), mirrored in `ingest/server.mjs`.
+- Zod for the demo-form schema (`src/lib/schema.ts`), mirrored in `ingest/lib/app.mjs`.
 - Vitest for `src/lib/blog/*.test.ts`.
 
 ## Commands
