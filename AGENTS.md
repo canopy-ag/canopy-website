@@ -43,7 +43,7 @@ first. A 401 means the token expired.
 - Do not reintroduce a direct Postgres connection in the site. The demo form
   forwards to the ingest shim in `ingest/`; see README "Demo form and the ingest
   shim". If you change the submission shape, update both `src/lib/schema.ts` and
-  the mirrored schema in `ingest/server.mjs`.
+  the mirrored schema in `ingest/lib/app.mjs`.
 
 ## Where things live
 
@@ -54,8 +54,8 @@ first. A 401 means the token expired.
 | New MDX component for posts | `src/components/blog/*.astro`, register in `src/components/blog/mdx.ts` |
 | Post list, sort, draft, related logic | `src/lib/blog/*.ts`, with a Vitest case beside it |
 | Content schema | `src/content.config.ts` |
-| Demo-form validation | `src/lib/schema.ts` and `ingest/server.mjs` together |
-| Lead-database service | `ingest/`; image is published by `.github/workflows/ingest-image.yml`, deployed by a pin in `canopy-k8s-configs` |
+| Demo-form validation | `src/lib/schema.ts` and `ingest/lib/app.mjs` together |
+| Lead-database service | `ingest/` (`npm test` inside it; forwards each row to mastra `POST /leads/intake`, replays rows left at `new`); image is published by `.github/workflows/ingest-image.yml`, deployed by a pin in `canopy-k8s-configs` |
 | Cal.com booking to ERPNext Lead/Opportunity | `calcom-bridge/` (cluster-internal, zero deps, `npm test` inside it); image by `.github/workflows/calcom-bridge-image.yml`, deployed by a pin in `canopy-k8s-configs` |
 | Logo or hero assets | `public/logos/<variant>/`, `public/hero/` (read the README there) |
 

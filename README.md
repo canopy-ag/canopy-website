@@ -183,10 +183,15 @@ browser
   -> POST /api/submit-demo          Vercel function (prerender = false), validates with Zod
     -> POST $INGEST_URL             ingest shim over Tailscale Funnel :443, Bearer $INGEST_SECRET, 8 s timeout
       -> INSERT demo_submissions    Postgres StatefulSet canopy-website-db (namespace canopy-website)
+      -> POST $LEADS_INTAKE_URL     mastra lead-intake pipeline (canopy-tools), Bearer $LEADS_INTAKE_TOKEN, 5 s timeout
 ```
 
 - The function forwards the visitor's IP, user agent, and referrer as headers so
   the shim's audit columns are real, not the Vercel egress IP.
+- After the INSERT the shim forwards the row (never `ip_address` / `user_agent`)
+  to mastra and marks it `forwarded`; if mastra is down the row stays `new` and
+  an in-process replay retries every ten minutes. The shim's `/healthz` reports
+  `stale_new` (rows `new` for over an hour). Details: `ingest/README.md`.
 - If the shim is unreachable, times out, or returns non-2xx, the function emails
   the lead to `hello@canopy.ag` through Resend and still returns success to the
   visitor. If `RESEND_API_KEY` is also missing the lead is only logged. Check

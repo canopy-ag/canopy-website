@@ -6,7 +6,8 @@
   "description": "Demo-form ingest shim for canopy-website. Public HTTPS endpoint (Tailscale Funnel) that writes to in-cluster Postgres.",
   "main": "server.mjs",
   "scripts": {
-    "start": "node server.mjs"
+    "start": "node server.mjs",
+    "test": "node --test test/*.test.mjs"
   },
   "engines": {
     "node": ">=20"
